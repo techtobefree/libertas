@@ -18,6 +18,7 @@
     "@nrwl/react": "15.8.5",
     "@nrwl/vite": "15.8.5",
     "@nrwl/workspace": "15.8.5",
+    "@nxrocks/nx-flutter": "^7.0.3",
     "@testing-library/react": "14.0.0",
     "@types/node": "18.14.2",
     "@types/react": "18.0.28",
