@@ -38,44 +38,46 @@ class _ProjectsPageState extends State<ProjectsPage> {
   int numMembers = 0;
 
   Future<List<dynamic>> getProjects() async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      numProjs = jsonResponse.length;
-      var myProjs = [];
-      var counter = 0;
-      for (var proj in jsonResponse) {
-        if (proj.containsKey('hoursSpent')) {
-          int projHours = proj['hoursSpent'].toInt();
-          hoursSpent += projHours;
-        }
-        for (var member in proj['members']) {
-          if (Provider.of<UserProvider>(context, listen: false).id == member) {
-            if (counter <= 2) {
-              myProjs.add(proj);
-              counter++;
-            }
-          }
-        }
-        counter = 2;
-      }
-      return myProjs;
-    } else {
-      throw Exception('Failed to load projects');
-    }
+    return [];
+    // var url = Uri.parse('http://44.203.120.103:3000/projects');
+    // var response = await http.get(url);
+    // if (response.statusCode == 200) {
+    //   var jsonResponse = jsonDecode(response.body);
+    //   numProjs = jsonResponse.length;
+    //   var myProjs = [];
+    //   var counter = 0;
+    //   for (var proj in jsonResponse) {
+    //     if (proj.containsKey('hoursSpent')) {
+    //       int projHours = proj['hoursSpent'].toInt();
+    //       hoursSpent += projHours;
+    //     }
+    //     for (var member in proj['members']) {
+    //       if (Provider.of<UserProvider>(context, listen: false).id == member) {
+    //         if (counter <= 2) {
+    //           myProjs.add(proj);
+    //           counter++;
+    //         }
+    //       }
+    //     }
+    //     counter = 2;
+    //   }
+    //   return myProjs;
+    // } else {
+    //   throw Exception('Failed to load projects');
+    // }
   }
 
   Future<int> getNumUsers() async {
-    var url = Uri.parse('http://44.203.120.103:3000/users/numMembers');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
+    return 123;
+    // var url = Uri.parse('http://44.203.120.103:3000/users/numMembers');
+    // var response = await http.get(url);
+    // if (response.statusCode == 200) {
+    //   var jsonResponse = jsonDecode(response.body);
 
-      return jsonResponse['numUsers'];
-    } else {
-      throw Exception('Failed to load projects');
-    }
+    //   return jsonResponse['numUsers'];
+    // } else {
+    //   throw Exception('Failed to load projects');
+    // }
   }
 
   @override

@@ -35,14 +35,15 @@ class ProjectHandlers {
   }
 
   static Future<List<dynamic>> getProjectsIncomplete() async {
-    var url = Uri.parse('$_baseUrl/incomplete'); // Use the new endpoint
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      return jsonResponse;
-    } else {
-      throw Exception('Failed to load projects');
-    }
+    return [];
+    // var url = Uri.parse('$_baseUrl/incomplete'); // Use the new endpoint
+    // var response = await http.get(url);
+    // if (response.statusCode == 200) {
+    //   var jsonResponse = jsonDecode(response.body);
+    //   return jsonResponse;
+    // } else {
+    //   throw Exception('Failed to load projects');
+    // }
   }
 
   // Future<void> addMember(projId) async {

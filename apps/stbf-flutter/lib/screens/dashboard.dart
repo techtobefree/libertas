@@ -36,18 +36,19 @@ class _DashboardPageState extends State<DashboardPage> {
   List<dynamic> names = ["", "", "", "", ""];
 
   Future<List<dynamic>> getPosts() async {
+    return [];
     //final userId = Provider.of<UserProvider>(context, listen: false).id;
-    final url = Uri.parse(
-        'http://44.203.120.103:3000/users/${Provider.of<UserProvider>(context, listen: false).id}/myPosts');
-    //'http://10.0.2.2:3000/users/${userId}/myPosts');
+    // final url = Uri.parse(
+    //     'http://44.203.120.103:3000/users/${Provider.of<UserProvider>(context, listen: false).id}/myPosts');
+    // //'http://10.0.2.2:3000/users/${userId}/myPosts');
 
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      return jsonResponse;
-    } else {
-      throw Exception('Failed to load projects');
-    }
+    // var response = await http.get(url);
+    // if (response.statusCode == 200) {
+    //   var jsonResponse = jsonDecode(response.body);
+    //   return jsonResponse;
+    // } else {
+    //   throw Exception('Failed to load projects');
+    // }
   }
 
   Future<List<dynamic>> getUsers() async {
