@@ -36,12 +36,10 @@ class _DashboardPageState extends State<DashboardPage> {
   List<dynamic> names = ["", "", "", "", ""];
 
   Future<List<dynamic>> getPosts() async {
-
     //final userId = Provider.of<UserProvider>(context, listen: false).id;
     final url = Uri.parse(
         'http://44.203.120.103:3000/users/${Provider.of<UserProvider>(context, listen: false).id}/myPosts');
     //'http://10.0.2.2:3000/users/${userId}/myPosts');
-
 
     var response = await http.get(url);
     if (response.statusCode == 200) {
@@ -53,16 +51,17 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<List<dynamic>> getUsers() async {
-    var url = Uri.parse('http://44.203.120.103:3000/users');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      jsonResponse.shuffle();
+    return jsonDecode('[]');
+    // var url = Uri.parse('http://44.203.120.103:3000/users');
+    // var response = await http.get(url);
+    // if (response.statusCode == 200) {
+    //   var jsonResponse = jsonDecode(response.body);
+    //   jsonResponse.shuffle();
 
-      return jsonResponse;
-    } else {
-      throw Exception('Failed to load projects');
-    }
+    //   return jsonResponse;
+    // } else {
+    //   throw Exception('Failed to load projects');
+    // }
   }
 
   List<dynamic> getProfPics(users) {
@@ -273,7 +272,6 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
             ),
-
           Container(
             child: Expanded(
               child: ListView.builder(

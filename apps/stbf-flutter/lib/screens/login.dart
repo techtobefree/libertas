@@ -285,64 +285,61 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> tryLogin() async {
-    final url = Uri.parse(
-        'http://44.203.120.103:3000/users/email/${emailController.text}');
-    // 'http://localhost:3000/users/email/${emailController.text}');
-    print(url);
-
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      // API call successful\
-
-      final res = json.decode(response.body);
-      print(response.body);
-      print(passwordController.text);
-
-      bool isAuthenticated =
-          await authenticateUser(res['email'], passwordController.text);
-      if (isAuthenticated || passwordController.text == res['password']) {
-        Provider.of<UserProvider>(context, listen: false).email = res['email'];
-        Provider.of<UserProvider>(context, listen: false).id = res['_id'];
-        Provider.of<UserProvider>(context, listen: false).firstName =
-            res['firstName'];
-        Provider.of<UserProvider>(context, listen: false).lastName =
-            res['lastName'];
-        if (res['profilePictureUrl'] != null) {
-          Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-              res['profilePictureUrl'];
-        }
-        context.go('/dashboard');
-      } else {
-        // do something else
-        showAlertDialog(context);
-      }
-
-      // if (passwordController.text == res['password']) {
-      //   Provider.of<UserClass>(context, listen: false).email = res['email'];
-      //   Provider.of<UserClass>(context, listen: false).id = res['_id'];
-      //   Provider.of<UserClass>(context, listen: false).firstName =
-      //       res['firstName'];
-      //   Provider.of<UserClass>(context, listen: false).lastName =
-      //       res['lastName'];
-
-      //   context.go('/dashboard');
-      //   // print('iloveyou');
-      //   // Navigator.push(
-      //   //   context,
-      //   //   MaterialPageRoute(builder: (context) => const AppPage()),
-      //   // );
-      //   // setState(() {
-      //   //   AppPage();
-      //   // });
-      // } else {
-      //   showAlertDialog(context);
-      // }
+  void tryLogin() {
+    if ((emailController.text == "johndoe@gmail.com" ||
+            emailController.text == 'x') &&
+        (passwordController.text == "johndoe" ||
+            passwordController.text == 'x')) {
+      Provider.of<UserProvider>(context, listen: false).email =
+          "johndoe@gmail.com";
+      Provider.of<UserProvider>(context, listen: false).id = '123';
+      Provider.of<UserProvider>(context, listen: false).firstName = "John";
+      Provider.of<UserProvider>(context, listen: false).lastName = "Doe";
+      Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
+          "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcS1voCPUYTtXj3TlsWOrJVAzHNh1gP0c59mFXE7Ke29HmlkYZzavHNlXxmdHNHMpD7cKPLVeVigv5TFr78";
+      context.go('/dashboard');
     } else {
-      // API call unsuccessful
       showAlertDialog(context);
-      print('Failed to fetch data');
     }
   }
+//   Future<void> tryLogin() async {
+//     final url = Uri.parse(
+//         'http://44.203.120.103:3000/users/email/${emailController.text}');
+//     // 'http://localhost:3000/users/email/${emailController.text}');
+//     print(url);
+
+//     final response = await http.get(url);
+
+//     if (response.statusCode == 200) {
+//       // API call successful\
+
+//       final res = json.decode(response.body);
+//       print(response.body);
+//       print(passwordController.text);
+
+//       bool isAuthenticated =
+//           await authenticateUser(res['email'], passwordController.text);
+//       if (isAuthenticated || passwordController.text == res['password']) {
+//         Provider.of<UserProvider>(context, listen: false).email = res['email'];
+//         Provider.of<UserProvider>(context, listen: false).id = res['_id'];
+//         Provider.of<UserProvider>(context, listen: false).firstName =
+//             res['firstName'];
+//         Provider.of<UserProvider>(context, listen: false).lastName =
+//             res['lastName'];
+//         if (res['profilePictureUrl'] != null) {
+//           Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
+//               res['profilePictureUrl'];
+//         }
+//         context.go('/dashboard');
+//       } else {
+//         // do something else
+//         showAlertDialog(context);
+//       }
+
+//     } else {
+//       // API call unsuccessful
+//       showAlertDialog(context);
+//       print('Failed to fetch data');
+//     }
+//   }
 }
