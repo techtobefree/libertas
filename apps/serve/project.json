@@ -1,155 +1,141 @@
 {
-  "name": "stbf-flutter",
+  "name": "serve",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/stbf-flutter/src",
+  "sourceRoot": "apps/serve/src",
   "projectType": "application",
   "targets": {
     "analyze": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter analyze",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter clean",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "format": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "flutter format apps/stbf-flutter/*",
-        "cwd": "apps/stbf-flutter"
+        "command": "flutter format apps/serve/*",
+        "cwd": "apps/serve"
       }
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter test",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "doctor": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter doctor",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "assemble": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter assemble",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "attach": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter attach",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "drive": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter drive",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "gen-l10n": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter gen-l10n",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "install": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter install",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
-    "run": {
+    "frun": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter run",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       }
     },
     "build-aar": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter build aar",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       },
-      "outputs": [
-        "{workspaceRoot}/apps/stbf-flutter/build"
-      ]
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     },
     "build-apk": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter build apk",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       },
-      "outputs": [
-        "{workspaceRoot}/apps/stbf-flutter/build"
-      ]
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     },
     "build-appbundle": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter build appbundle",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       },
-      "outputs": [
-        "{workspaceRoot}/apps/stbf-flutter/build"
-      ]
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     },
     "build-bundle": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter build bundle",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       },
-      "outputs": [
-        "{workspaceRoot}/apps/stbf-flutter/build"
-      ]
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     },
     "build-ios": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter build ios",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       },
-      "outputs": [
-        "{workspaceRoot}/apps/stbf-flutter/build"
-      ]
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     },
     "build-ios-framework": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter build ios-framework",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       },
-      "outputs": [
-        "{workspaceRoot}/apps/stbf-flutter/build"
-      ]
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     },
     "build-ipa": {
       "executor": "nx:run-commands",
       "options": {
         "command": "flutter build ipa",
-        "cwd": "apps/stbf-flutter"
+        "cwd": "apps/serve"
       },
-      "outputs": [
-        "{workspaceRoot}/apps/stbf-flutter/build"
-      ]
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     }
   },
   "tags": []
