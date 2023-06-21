@@ -13,6 +13,12 @@ import 'package:serve_to_be_free/screens/createAccount.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/amplifyconfiguration.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 //import '../utilities/user_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,6 +27,95 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  var data;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void getUser() async {
+    print('x');
+    try {
+      final request = ModelQueries.list(UUser.classType);
+      final response = await Amplify.API.query(request: request).response;
+      print(response);
+      if (response.hasErrors) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+    } on Exception catch (e) {
+      safePrint('Query failed: $e');
+    }
+  }
+
+  Future<void> createComment() async {
+    print("in createComment");
+    try {
+      UUser user = UUser(
+          password: 'password123',
+          email: 'exampxample.com',
+          firstName: 'John',
+          lastName: 'Doe',
+          profilePictureUrl: 'https://examcom/profile.jpg',
+          coverPictureUrl: 'https://example.com/cover.jpg',
+          projects: [],
+          friends: [],
+          posts: [],
+          sponsors: [],
+          uUserFriendsId: '3');
+
+      // final todo = Todo(name: 'my first todo', description: 'todo description');
+      final request = ModelMutations.create(user);
+      final response = await Amplify.API.mutate(request: request).response;
+      print('x');
+
+      final createdTodo = response.data;
+      if (createdTodo == null) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+      safePrint('Mutation result: ${createdTodo.email}');
+    } on Exception catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+  Future<String> queryData() async {
+    try {
+      // Query data using Amplify
+      final response = await Amplify.API
+          .query(
+            request: GraphQLRequest<String>(
+              document: '''
+          listUUsers {
+            items {
+            id
+            email
+            firstName
+            }
+          }
+        ''',
+            ),
+          )
+          .response;
+
+      // Handle the response
+      if (response.data != null) {
+        final items = response.data!;
+        // Process the queried items as needed
+        print(items);
+        return items;
+      } else {
+        print('No data returned');
+        return "";
+      }
+    } catch (e) {
+      print('Error: $e');
+      return "";
+    }
+  }
+
   bool? _rememberMe = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -142,7 +237,12 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () => {tryLogin()},
+        onPressed: () => {
+          createComment()
+          // getUser()
+
+          // tryLogin()
+        },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(15.0),
           shape: RoundedRectangleBorder(

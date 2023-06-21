@@ -19,7 +19,6 @@ class UserProvider extends ChangeNotifier {
   late String coverPictureUrl;
   late bool isLeader;
   late List<String> friends;
-  late List<String> friendRequests;
 
   // void updateUser({
   //   required String id,
