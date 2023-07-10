@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -14,6 +16,8 @@ import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 import 'package:serve_to_be_free/widgets/post_dialogue.dart';
 
+import '../../../models/ModelProvider.dart';
+
 class ProjectDetails extends StatefulWidget {
   final String? id;
 
@@ -28,12 +32,24 @@ class _ProjectDetailsState extends State<ProjectDetails> {
   var sponsor = 0.0;
 
   Future<Map<String, dynamic>> getProjects() async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects/${widget.id}');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
+    final queryPredicate = UProject.ID.eq(widget.id);
+    print(widget.id);
+
+    final request = ModelQueries.list<UProject>(
+      UProject.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+
+    if (response.data!.items.isNotEmpty) {
+      // var url = Uri.parse('http://44.203.120.103:3000/projects/${widget.id}');
+      // var response = await http.get(url);
+      // if (response.statusCode == 200) {
+      var jsonResponse = response.data!.items[0]!.toJson();
+
       // print(jsonResponse['sponsors']);
-      if (jsonResponse.containsKey('sponsors')) {
+      if (jsonResponse.containsKey('sponsors') &&
+          jsonResponse['sponsors'] != null) {
         if (jsonResponse['sponsors'].length > 0) {
           for (var sponsorId in jsonResponse['sponsors']) {
             var sponsorObj = await getSponsor(sponsorId);
@@ -42,9 +58,10 @@ class _ProjectDetailsState extends State<ProjectDetails> {
           }
         }
       }
-
-      for (var post in jsonResponse['posts']) {
-        post['date'] = convertDate(post['date']);
+      if (jsonResponse.containsKey('posts') && jsonResponse['posts'] != null) {
+        for (var post in jsonResponse['posts']) {
+          post['date'] = convertDate(post['date']);
+        }
       }
       return jsonResponse;
     } else {
@@ -82,6 +99,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     getProjects().then((data) {
       setState(() {
         projectData = data;
+        // print(projectData);
       });
     });
   }
@@ -138,7 +156,8 @@ class _ProjectDetailsState extends State<ProjectDetails> {
               onPressed: () {
                 // navigate to about page
                 context.pushNamed("projectabout",
-                    params: {'id': projectData['_id']});
+                    queryParameters: {'id': projectData['id']},
+                    pathParameters: {'id': projectData['id']});
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(

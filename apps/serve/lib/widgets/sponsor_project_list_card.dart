@@ -40,7 +40,7 @@ class _SponsorProjectListCardState extends State<SponsorProjectListCard> {
             // Do something when the container is clicked
             context.pushNamed(
               "sponsorprojectform",
-              params: {'id': widget.project['_id']},
+              queryParameters: {'id': widget.project['_id']},
             );
           },
           child: Card(

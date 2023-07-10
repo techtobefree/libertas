@@ -24,8 +24,8 @@ Future<String> uploadProfileImageToS3(
   String userId, {
   String region = 'us-east-1',
 }) async {
-  final key = 'ServeToBeFree/profilePictures/$userId/ProfilePicture';
-  final url = 'https://servetobefree-images.s3.amazonaws.com/$key'
+  final key = 'ProfileImages/$userId/ProfilePicture';
+  final url = 'https://servetobefree-images-dev.s3.amazonaws.com/$key'
       .replaceAll('+', '%20');
   final response = await http.put(
     Uri.parse(url),
@@ -35,7 +35,7 @@ Future<String> uploadProfileImageToS3(
   if (response.statusCode != 200) {
     throw Exception('Failed to upload image to S3');
   }
-  final s3Url = 'https://servetobefree-images.s3.amazonaws.com/$key';
+  final s3Url = 'https://servetobefree-images-dev.s3.amazonaws.com/$key';
   return s3Url;
 }
 
@@ -46,7 +46,7 @@ Future<void> uploadProjectImageToS3(
   String imageFileName, {
   String region = 'us-east-1',
 }) async {
-  final key = 'ServeToBeFree/ProjectPictures/$projectId/$imageFileName';
+  final key = 'ProjectImages/$projectId/$imageFileName';
   final url =
       'https://$bucketName.s3.amazonaws.com/$key'.replaceAll('+', '%20');
   final response = await http.put(

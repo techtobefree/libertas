@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/config/routes/app_routes.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/utilities/auth.dart';
@@ -285,18 +286,25 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void tryLogin() {
-    if ((emailController.text == "johndoe@gmail.com" ||
-            emailController.text == 'x') &&
-        (passwordController.text == "johndoe" ||
-            passwordController.text == 'x')) {
-      Provider.of<UserProvider>(context, listen: false).email =
-          "johndoe@gmail.com";
-      Provider.of<UserProvider>(context, listen: false).id = '123';
-      Provider.of<UserProvider>(context, listen: false).firstName = "John";
-      Provider.of<UserProvider>(context, listen: false).lastName = "Doe";
+  void tryLogin() async {
+    final user = await UserHandlers.getUserByEmail(emailController.text);
+    print(user?.firstName);
+    if (user == null) {
+      showAlertDialog(context);
+      return;
+    }
+
+    bool isAuthenticated =
+        await authenticateUser(user!.email, passwordController.text);
+    if (isAuthenticated || passwordController.text == user.password) {
+      Provider.of<UserProvider>(context, listen: false).email = user.email;
+      Provider.of<UserProvider>(context, listen: false).id = user.id;
+      Provider.of<UserProvider>(context, listen: false).firstName =
+          user.firstName;
+      Provider.of<UserProvider>(context, listen: false).lastName =
+          user.lastName;
       Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-          "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcS1voCPUYTtXj3TlsWOrJVAzHNh1gP0c59mFXE7Ke29HmlkYZzavHNlXxmdHNHMpD7cKPLVeVigv5TFr78";
+          user.profilePictureUrl;
       context.go('/dashboard');
     } else {
       showAlertDialog(context);

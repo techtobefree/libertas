@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
@@ -7,20 +9,53 @@ import 'package:provider/provider.dart';
 
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
+import '../../models/ModelProvider.dart';
+
 class ProjectHandlers {
   //static const String _baseUrl = 'http://localhost:3000/projects';
   static const String _baseUrl = 'http://44.203.120.103:3000/projects';
 
-  static Future<List<dynamic>> getProjects() async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      // print(jsonResponse);
-      return jsonResponse;
-    } else {
-      throw Exception('Failed to load projects');
+  static Future<UProject?> getUUserById(String id) async {
+    final queryPredicate = UProject.ID.eq(id);
+
+    final request = ModelQueries.list<UProject>(
+      UProject.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+
+    if (response.data!.items.isNotEmpty) {
+      return response.data!.items[0];
     }
+
+    return null;
+  }
+
+  static Future<List<UProject?>> getUProjects() async {
+    try {
+      final request = ModelQueries.list(UProject.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final uprojects = response.data?.items;
+      if (uprojects == null) {
+        safePrint('errors: ${response.errors}');
+        return const [];
+      }
+      return uprojects;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
+  }
+
+  static Future<List<dynamic>> getProjects() async {
+    var jsonResponse = await getUProjects();
+    var projects = [];
+    for (var uproject in jsonResponse) {
+      projects.add(uproject!.toJson());
+    }
+    // print(jsonResponse);
+    return projects;
   }
 
   static Future<Map<String, dynamic>> getProjectById(projectId) async {
@@ -35,7 +70,19 @@ class ProjectHandlers {
   }
 
   static Future<List<dynamic>> getProjectsIncomplete() async {
-    return [];
+    var projects = await ProjectHandlers.getProjects();
+    var incompleteProjs = [];
+    for (var project in projects) {
+      print(project.toString());
+      if (project["isCompleted"] == false) {
+        if (project["sponsors"] == null) {
+          project["sponsors"] = [];
+        }
+        incompleteProjs.add(project);
+      }
+    }
+    print(incompleteProjs.toString());
+    return incompleteProjs;
     // var url = Uri.parse('$_baseUrl/incomplete'); // Use the new endpoint
     // var response = await http.get(url);
     // if (response.statusCode == 200) {

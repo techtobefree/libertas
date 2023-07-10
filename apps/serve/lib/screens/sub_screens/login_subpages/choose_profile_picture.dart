@@ -58,7 +58,7 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
       // Do something with the created user
       print('User created: ${createdUser.toJson()}');
 
-      final s3url = uploadProfileImageToS3(_image!, createdUser.id);
+      final s3url = await uploadProfileImageToS3(_image!, createdUser.id);
 
       final updatedUser = await UserHandlers.updateUser(createdUser.id, {
         'profilePictureUrl': s3url,

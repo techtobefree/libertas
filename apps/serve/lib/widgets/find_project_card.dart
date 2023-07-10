@@ -33,7 +33,9 @@ class ProjectCard extends StatelessWidget {
           onTap: () {
             print(project['projectPicture']);
             // Do something when the container is clicked
-            context.pushNamed("projectdetails", params: {'id': project['_id']});
+            context.pushNamed("projectdetails",
+                queryParameters: {'id': project['id']},
+                pathParameters: {'id': project['id']});
           },
           child: Card(
             color: Colors.white,

@@ -129,8 +129,8 @@ final goRouter = GoRouter(
                   GoRoute(
                     path: 'sponsorprojectform:id',
                     name: 'sponsorprojectform',
-                    builder: (context, state) =>
-                        SponsorProjectForm(projectId: state.params['id']),
+                    builder: (context, state) => SponsorProjectForm(
+                        projectId: state.queryParameters['id']),
                   ),
                 ]),
             GoRoute(
@@ -141,12 +141,13 @@ final goRouter = GoRouter(
               path: 'projectdetails/:id',
               name: 'projectdetails',
               builder: (context, state) =>
-                  ProjectDetails(id: state.params['id']),
+                  ProjectDetails(id: state.queryParameters['id']),
             ),
             GoRoute(
               path: 'projectabout/:id',
               name: 'projectabout',
-              builder: (context, state) => AboutProject(id: state.params['id']),
+              builder: (context, state) =>
+                  AboutProject(id: state.queryParameters['id']),
             ),
           ],
         ),

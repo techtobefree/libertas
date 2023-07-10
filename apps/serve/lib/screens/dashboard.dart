@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
@@ -52,7 +55,21 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<List<dynamic>> getUsers() async {
-    return jsonDecode('[]');
+    try {
+      final request = ModelQueries.list(UUser.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final uusers = response.data?.items;
+      if (uusers == null) {
+        safePrint('errors: ${response.errors}');
+        return const [];
+      }
+      uusers.shuffle();
+      return uusers;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
     // var url = Uri.parse('http://44.203.120.103:3000/users');
     // var response = await http.get(url);
     // if (response.statusCode == 200) {
@@ -69,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
     var profPicsUrls = [];
 
     for (var user in users) {
-      var url = user['profilePictureUrl'];
+      var url = user.profilePictureUrl;
       if (url != null && url != "") {
         profPicsUrls.add(url);
       }
@@ -86,9 +103,9 @@ class _DashboardPageState extends State<DashboardPage> {
   List<dynamic> setNames(users) {
     var namesStr = [];
     for (var user in users) {
-      var url = user['profilePictureUrl'];
+      var url = user.profilePictureUrl;
       if (url != null && url != "") {
-        namesStr.add(user['firstName']);
+        namesStr.add(user.firstName);
       }
       if (namesStr.length == 5) {
         return namesStr;
@@ -114,6 +131,7 @@ class _DashboardPageState extends State<DashboardPage> {
           setState(() {
             profPics = getProfPics(data);
             names = setNames(data);
+            print(data);
           })
         });
   }

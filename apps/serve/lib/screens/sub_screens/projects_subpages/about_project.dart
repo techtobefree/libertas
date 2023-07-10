@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
@@ -10,6 +12,8 @@ import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 import 'package:serve_to_be_free/widgets/post_dialogue.dart';
+
+import '../../../models/ModelProvider.dart';
 
 class AboutProject extends StatefulWidget {
   final String? id;
@@ -24,10 +28,18 @@ class _AboutProjectState extends State<AboutProject> {
   Map<String, dynamic> projectData = {};
 
   Future<Map<String, dynamic>> getProject() async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects/${widget.id}');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
+    final queryPredicate = UProject.ID.eq(widget.id);
+    print(widget.id);
+
+    final request = ModelQueries.list<UProject>(
+      UProject.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+
+    if (response.data!.items.isNotEmpty) {
+      var jsonResponse = response.data!.items[0]!.toJson();
+
       return jsonResponse;
     } else {
       throw Exception('Failed to load projects');

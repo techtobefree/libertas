@@ -41,7 +41,7 @@ class MyProjectCard extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             // Do something when the container is clicked
-            context.goNamed("projectdetails", params: {'id': id});
+            context.goNamed("projectdetails", queryParameters: {'id': id});
           },
           child: Card(
             child: Row(
