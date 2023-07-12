@@ -16,6 +16,7 @@ import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 import 'package:serve_to_be_free/widgets/post_dialogue.dart';
 
+import '../../../data/projects/project_handlers.dart';
 import '../../../models/ModelProvider.dart';
 
 class ProjectDetails extends StatefulWidget {
@@ -33,7 +34,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
 
   Future<Map<String, dynamic>> getProjects() async {
     final queryPredicate = UProject.ID.eq(widget.id);
-    print(widget.id);
+    print("id = ${widget.id}");
 
     final request = ModelQueries.list<UProject>(
       UProject.classType,
@@ -48,21 +49,43 @@ class _ProjectDetailsState extends State<ProjectDetails> {
       var jsonResponse = response.data!.items[0]!.toJson();
 
       // print(jsonResponse['sponsors']);
-      if (jsonResponse.containsKey('sponsors') &&
-          jsonResponse['sponsors'] != null) {
-        if (jsonResponse['sponsors'].length > 0) {
-          for (var sponsorId in jsonResponse['sponsors']) {
-            var sponsorObj = await getSponsor(sponsorId);
+      // if (jsonResponse.containsKey('sponsors') &&
+      //     jsonResponse['sponsors'] != null) {
+      //   if (jsonResponse['sponsors'].length > 0) {
+      //     for (var sponsorId in jsonResponse['sponsors']) {
+      //       var sponsorObj = await getSponsor(sponsorId);
 
-            sponsor += sponsorObj['amount'];
+      //       sponsor += sponsorObj['amount'];
+      //     }
+      //   }
+      // }
+      if (jsonResponse.containsKey('posts') && jsonResponse['posts'] != null) {
+        var newPosts = [];
+        for (var post in jsonResponse['posts']) {
+          final queryPredicate = UPost.ID.eq(post);
+          final request = ModelQueries.list<UPost>(
+            UPost.classType,
+            where: queryPredicate,
+          );
+          final response = await Amplify.API.query(request: request).response;
+
+          if (response.data!.items.isNotEmpty) {
+            newPosts.add(response.data!.items[0]!.toJson());
+            newPosts[newPosts.length - 1]['name'] =
+                newPosts[newPosts.length - 1]['user']['firstName'] +
+                    newPosts[newPosts.length - 1]['user']['lastName'];
+            newPosts[newPosts.length - 1]['text'] =
+                newPosts[newPosts.length - 1]['content'];
+            newPosts[newPosts.length - 1]['imageUrl'] =
+                newPosts[newPosts.length - 1]['user']['profilePictureUrl'];
+
+            // newPosts[newPosts.length - 1] =
+            //     convertDate(newPosts[newPosts.length - 1]['date']);
           }
         }
+        jsonResponse['posts'] = newPosts;
       }
-      if (jsonResponse.containsKey('posts') && jsonResponse['posts'] != null) {
-        for (var post in jsonResponse['posts']) {
-          post['date'] = convertDate(post['date']);
-        }
-      }
+      print(jsonResponse);
       return jsonResponse;
     } else {
       throw Exception('Failed to load projects');
@@ -217,7 +240,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
         context: context,
         builder: (BuildContext context) {
           return JoinProjectDialog(
-            projectId: projectData['_id'],
+            projectId: projectData['id'],
           );
         },
       ).then((value) => setState(() {}));
@@ -244,29 +267,55 @@ class _ProjectDetailsState extends State<ProjectDetails> {
   }
 
   Future<void> addMember() async {
-    final url = Uri.parse(
-        'http://44.203.120.103:3000/projects/${projectData['_id']}/member');
-    final Map<String, dynamic> data = {
-      'memberId': Provider.of<UserProvider>(context, listen: false).id
-    };
-    final response = await http.put(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(data),
-    );
-
-    if (response.statusCode == 200) {
-      // API call successful\
-      setState(() {
-        projectData['members'] = projectData['members'] != null
-            ? [...projectData['members'], data['memberId']]
-            : [data['memberId']];
-      });
-    } else {
-      // API call unsuccessful
-      print('Failed to fetch data ${response.body}');
+    UProject? uproject =
+        await ProjectHandlers.getUProjectById(projectData['id']);
+    var uprojectMems = uproject!.members;
+    var memID = Provider.of<UserProvider>(context, listen: false).id;
+    if (uprojectMems != null) {
+      uprojectMems.add(memID);
     }
+
+    final addedMemUProj = uproject.copyWith(members: uprojectMems);
+
+    try {
+      final request = ModelMutations.update(addedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+      if (response.data!.members!.isNotEmpty) {
+        setState(() {
+          projectData['members'] = projectData['members'] != null
+              ? [...projectData['members'], memID]
+              : [memID];
+        });
+      }
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+
+    return null;
+    // final url = Uri.parse(
+    //     'http://44.203.120.103:3000/projects/${projectData['_id']}/member');
+    // final Map<String, dynamic> data = {
+    //   'memberId': Provider.of<UserProvider>(context, listen: false).id
+    // };
+    // final response = await http.put(
+    //   url,
+    //   headers: <String, String>{
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: jsonEncode(data),
+    // );
+
+    // if (response.statusCode == 200) {
+    //   // API call successful\
+    // setState(() {
+    //   projectData['members'] = projectData['members'] != null
+    //       ? [...projectData['members'], data['memberId']]
+    //       : [data['memberId']];
+    //   });
+    // } else {
+    //   // API call unsuccessful
+    //   print('Failed to fetch data ${response.body}');
+    // }
   }
 }

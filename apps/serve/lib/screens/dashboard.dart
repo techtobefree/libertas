@@ -5,6 +5,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
@@ -39,7 +40,34 @@ class _DashboardPageState extends State<DashboardPage> {
   List<dynamic> names = ["", "", "", "", ""];
 
   Future<List<dynamic>> getPosts() async {
-    return [];
+    var posts = [];
+    var projs = await ProjectHandlers.getMyProjects(
+        Provider.of<UserProvider>(context, listen: false).id);
+    for (var proj in projs) {
+      if (proj.containsKey('posts') && proj['posts'] != null) {
+        for (var post in proj['posts']) {
+          final queryPredicate = UPost.ID.eq(post);
+
+          final request = ModelQueries.list<UPost>(
+            UPost.classType,
+            where: queryPredicate,
+          );
+          final response = await Amplify.API.query(request: request).response;
+
+          if (response.data!.items.isNotEmpty) {
+            posts.add(response.data!.items[0]!.toJson());
+            posts[posts.length - 1]['name'] = posts[posts.length - 1]['user']
+                    ['firstName'] +
+                posts[posts.length - 1]['user']['lastName'];
+            posts[posts.length - 1]['text'] =
+                posts[posts.length - 1]['content'];
+            posts[posts.length - 1]['imageUrl'] =
+                posts[posts.length - 1]['user']['profilePictureUrl'];
+          }
+        }
+      }
+    }
+    return posts;
     //final userId = Provider.of<UserProvider>(context, listen: false).id;
     // final url = Uri.parse(
     //     'http://44.203.120.103:3000/users/${Provider.of<UserProvider>(context, listen: false).id}/myPosts');
@@ -122,8 +150,6 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
     getPosts().then((data) {
       setState(() {
-        print("this is the new data $data");
-
         posts = data;
       });
     });
@@ -131,7 +157,6 @@ class _DashboardPageState extends State<DashboardPage> {
           setState(() {
             profPics = getProfPics(data);
             names = setNames(data);
-            print(data);
           })
         });
   }
@@ -299,7 +324,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   // compute the index of the reversed list
                   //print(posts[index]['_id']);
                   return ProjectPost(
-                      id: posts[index]['_id'],
+                      id: posts[index]['id'],
                       name: posts[index]['name'],
                       postText: posts[index]['text'],
                       profURL: posts[index]['imageUrl'] ?? '',

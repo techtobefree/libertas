@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
 import 'package:flutter/material.dart';
@@ -38,30 +39,32 @@ class _ProjectsPageState extends State<ProjectsPage> {
   int numMembers = 0;
 
   Future<List<dynamic>> getProjects() async {
-    return [];
+    var projs = await ProjectHandlers.getProjects();
+
+    // return [];
     // var url = Uri.parse('http://44.203.120.103:3000/projects');
     // var response = await http.get(url);
     // if (response.statusCode == 200) {
     //   var jsonResponse = jsonDecode(response.body);
-    //   numProjs = jsonResponse.length;
-    //   var myProjs = [];
-    //   var counter = 0;
-    //   for (var proj in jsonResponse) {
-    //     if (proj.containsKey('hoursSpent')) {
-    //       int projHours = proj['hoursSpent'].toInt();
-    //       hoursSpent += projHours;
-    //     }
-    //     for (var member in proj['members']) {
-    //       if (Provider.of<UserProvider>(context, listen: false).id == member) {
-    //         if (counter <= 2) {
-    //           myProjs.add(proj);
-    //           counter++;
-    //         }
-    //       }
-    //     }
-    //     counter = 2;
-    //   }
-    //   return myProjs;
+    numProjs = projs.length;
+    var myProjs = [];
+    var counter = 0;
+    for (var proj in projs) {
+      if (proj['hoursSpent'] != null) {
+        int projHours = proj['hoursSpent'].toInt();
+        hoursSpent += projHours;
+      }
+      for (var member in proj['members']) {
+        if (Provider.of<UserProvider>(context, listen: false).id == member) {
+          if (counter <= 2) {
+            myProjs.add(proj);
+            counter++;
+          }
+        }
+      }
+      counter = 2;
+    }
+    return myProjs;
     // } else {
     //   throw Exception('Failed to load projects');
     // }
@@ -266,12 +269,12 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       children: [
                         MyProjectCard(
                             projectName: projectData[0]['name'] ?? '',
-                            id: projectData[0]['_id'],
+                            id: projectData[0]['id'],
                             projectPhoto:
                                 projectData[0]['projectPicture'] ?? ''),
                         MyProjectCard(
                             projectName: projectData[1]['name'] ?? '',
-                            id: projectData[1]['_id'],
+                            id: projectData[1]['id'],
                             projectPhoto:
                                 projectData[1]['projectPicture'] ?? '')
                       ],

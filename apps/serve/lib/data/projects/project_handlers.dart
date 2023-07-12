@@ -15,7 +15,7 @@ class ProjectHandlers {
   //static const String _baseUrl = 'http://localhost:3000/projects';
   static const String _baseUrl = 'http://44.203.120.103:3000/projects';
 
-  static Future<UProject?> getUUserById(String id) async {
+  static Future<UProject?> getUProjectById(String id) async {
     final queryPredicate = UProject.ID.eq(id);
 
     final request = ModelQueries.list<UProject>(
@@ -69,11 +69,23 @@ class ProjectHandlers {
     }
   }
 
+  static Future<List<dynamic>> getMyProjects(id) async {
+    var projects = await ProjectHandlers.getProjectsIncomplete();
+    var myprojs = [];
+    for (var project in projects) {
+      for (var member in project['members']) {
+        if (id == member) {
+          myprojs.add(project);
+        }
+      }
+    }
+    return myprojs;
+  }
+
   static Future<List<dynamic>> getProjectsIncomplete() async {
     var projects = await ProjectHandlers.getProjects();
     var incompleteProjs = [];
     for (var project in projects) {
-      print(project.toString());
       if (project["isCompleted"] == false) {
         if (project["sponsors"] == null) {
           project["sponsors"] = [];
@@ -81,7 +93,6 @@ class ProjectHandlers {
         incompleteProjs.add(project);
       }
     }
-    print(incompleteProjs.toString());
     return incompleteProjs;
     // var url = Uri.parse('$_baseUrl/incomplete'); // Use the new endpoint
     // var response = await http.get(url);
@@ -116,7 +127,6 @@ class ProjectHandlers {
   // }
 
   static Future<void> addSponsor(projId, sponsorData) async {
-    print(sponsorData);
     final url =
         Uri.parse('http://44.203.120.103:3000/projects/$projId/sponsors');
     //final Map<String, dynamic> data = {'amount': '', 'user': userId};

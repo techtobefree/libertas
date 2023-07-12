@@ -10,22 +10,14 @@ import '../../../models/ModelProvider.dart';
 
 class UserHandlers {
   //static const String _baseUrl = 'http://localhost:3000/users';
-  static const String _baseUrl = 'http://44.203.120.103:3000/users';
 
   static Future<UserClass?> createUser(UserClass user) async {
-    // final _baseUrl = Uri.parse('http://44.203.120.103:3000/users');
-    // final headers = <String, String>{
-    //   'Content-Type': 'application/json; charset=UTF-8',
-    // };
-    // final body = jsonEncode(user.toJson());
-
     try {
       // Check if an account with the provided email already exists
       final existingUser = await getUserByEmail(user.email);
       if (existingUser != null) {
         return null;
       }
-      print('before');
       UUser uuser = UUser(
         password: user.password,
         email: user.email,
@@ -37,7 +29,6 @@ class UserHandlers {
         posts: const [], // Provide an empty list or add actual UPost instances
         sponsors: const [], // Provide an empty list or add actual USponsor instances
       );
-      print('after');
       final request = ModelMutations.create(uuser);
       final response = await Amplify.API.mutate(request: request).response;
 
@@ -75,10 +66,8 @@ class UserHandlers {
   static Future<UserClass?> updateUser(
       String id, Map<String, dynamic> updatedFields) async {
     UUser? uuser = await getUUserById(id);
-    print(uuser!.email);
-    print(updatedFields.toString());
     final uuserWithNewProfPic =
-        uuser.copyWith(profilePictureUrl: updatedFields['profilePictureUrl']);
+        uuser!.copyWith(profilePictureUrl: updatedFields['profilePictureUrl']);
     // uuser.profilePictureUrl = updatedFields['profilePictureUrl'];
 
     // Wait for any Future values in updatedFields to complete
@@ -140,7 +129,8 @@ class UserHandlers {
     if (response.data!.items.isNotEmpty) {
       final uuser = response.data?.items[0];
       final user = UserClass(
-          email: uuser!.email,
+          id: uuser!.id,
+          email: uuser.email,
           password: uuser.password,
           firstName: uuser.firstName,
           lastName: uuser.lastName,

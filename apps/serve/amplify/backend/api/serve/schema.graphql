@@ -28,7 +28,7 @@ type UProject @model {
   hoursSpent: Float
   date: String
   members: [String]
-  posts: [UPost] @hasMany
+  posts: [String]
   projectPicture: String!
   sponsors: [USponsor] @hasMany
   isCompleted: Boolean!
@@ -46,7 +46,7 @@ type UPost @model {
   content: String!
   date: String!
   comments: [UComment] @hasMany
-  project: UProject @belongsTo
+  # project: UProject @belongsTo
 }
 
 type UComment @model {

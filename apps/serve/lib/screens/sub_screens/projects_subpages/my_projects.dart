@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -22,7 +23,9 @@ class _MyProjectsState extends State<MyProjects> {
   @override
   void initState() {
     super.initState();
-    _futureProjects = getMyProjects();
+    // _futureProjects = getMyProjects();
+    _futureProjects = ProjectHandlers.getMyProjects(
+        Provider.of<UserProvider>(context, listen: false).id);
   }
 
   @override

@@ -1,14 +1,20 @@
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
 //import 'package:serve_to_be_free/utilities/user_model.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
+
+import '../data/projects/project_handlers.dart';
 
 class JoinProjectDialog extends StatefulWidget {
   final String projectId;
@@ -58,48 +64,29 @@ class _JoinProjectDialogState extends State<JoinProjectDialog> {
   }
 
   Future<void> addPost(text) async {
-    final url = Uri.parse(
-        // 'http://44.203.120.103:3000/projects/${widget.projectId}/post');
-        'http://44.203.120.103:3000/projects/${widget.projectId}/post');
-    final Map<String, dynamic> data;
-    print(Provider.of<UserProvider>(context, listen: false).profilePictureUrl);
-    if (Provider.of<UserProvider>(context, listen: false).profilePictureUrl !=
-        '') {
-      data = {
-        'member': Provider.of<UserProvider>(context, listen: false).id,
-        'name':
-            "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
-        'text': text,
-        'imageUrl':
-            Provider.of<UserProvider>(context, listen: false).profilePictureUrl
-      };
-    } else {
-      data = {
-        'member': Provider.of<UserProvider>(context, listen: false).id,
-        'name':
-            "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
-        'text': text
-      };
-    }
-    final response = await http.put(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(data),
-    );
-    print(response.toString());
+    UProject? uproject =
+        await ProjectHandlers.getUProjectById(widget.projectId);
+    var uprojectPosts = uproject!.posts;
+    var uuser = await UserHandlers.getUUserById(
+        Provider.of<UserProvider>(context, listen: false).id);
+    var upost = UPost(user: uuser!, content: text, date: "");
+    final request = ModelMutations.create(upost);
+    final response = await Amplify.API.mutate(request: request).response;
 
-    if (response.statusCode == 200) {
-      // API call successful\
-      // setState(() {
-      //   projectData['members'] = projectData['members'] != null
-      //       ? [...projectData['members'], data['memberId']]
-      //       : [data['memberId']];
-      // });
+    if (uprojectPosts == null) {
+      uprojectPosts = [response.data!.id];
     } else {
-      // API call unsuccessful
-      print('Failed to fetch data');
+      uprojectPosts.add(response.data!.id);
+    }
+
+    final addedPostUProj = uproject.copyWith(posts: uprojectPosts);
+
+    try {
+      final request = ModelMutations.update(addedPostUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update user: $e');
     }
   }
 }

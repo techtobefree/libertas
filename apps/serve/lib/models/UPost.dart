@@ -34,7 +34,6 @@ class UPost extends Model {
   final String? _content;
   final String? _date;
   final List<UComment>? _comments;
-  final UProject? _project;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -94,10 +93,6 @@ class UPost extends Model {
     return _comments;
   }
   
-  UProject? get project {
-    return _project;
-  }
-  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -106,16 +101,15 @@ class UPost extends Model {
     return _updatedAt;
   }
   
-  const UPost._internal({required this.id, required user, required content, required date, comments, project, createdAt, updatedAt}): _user = user, _content = content, _date = date, _comments = comments, _project = project, _createdAt = createdAt, _updatedAt = updatedAt;
+  const UPost._internal({required this.id, required user, required content, required date, comments, createdAt, updatedAt}): _user = user, _content = content, _date = date, _comments = comments, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory UPost({String? id, required UUser user, required String content, required String date, List<UComment>? comments, UProject? project}) {
+  factory UPost({String? id, required UUser user, required String content, required String date, List<UComment>? comments}) {
     return UPost._internal(
       id: id == null ? UUID.getUUID() : id,
       user: user,
       content: content,
       date: date,
-      comments: comments != null ? List<UComment>.unmodifiable(comments) : comments,
-      project: project);
+      comments: comments != null ? List<UComment>.unmodifiable(comments) : comments);
   }
   
   bool equals(Object other) {
@@ -130,8 +124,7 @@ class UPost extends Model {
       _user == other._user &&
       _content == other._content &&
       _date == other._date &&
-      DeepCollectionEquality().equals(_comments, other._comments) &&
-      _project == other._project;
+      DeepCollectionEquality().equals(_comments, other._comments);
   }
   
   @override
@@ -146,7 +139,6 @@ class UPost extends Model {
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("content=" + "$_content" + ", ");
     buffer.write("date=" + "$_date" + ", ");
-    buffer.write("project=" + (_project != null ? _project!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -154,14 +146,13 @@ class UPost extends Model {
     return buffer.toString();
   }
   
-  UPost copyWith({UUser? user, String? content, String? date, List<UComment>? comments, UProject? project}) {
+  UPost copyWith({UUser? user, String? content, String? date, List<UComment>? comments}) {
     return UPost._internal(
       id: id,
       user: user ?? this.user,
       content: content ?? this.content,
       date: date ?? this.date,
-      comments: comments ?? this.comments,
-      project: project ?? this.project);
+      comments: comments ?? this.comments);
   }
   
   UPost.fromJson(Map<String, dynamic> json)  
@@ -177,18 +168,15 @@ class UPost extends Model {
           .map((e) => UComment.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
-      _project = json['project']?['serializedData'] != null
-        ? UProject.fromJson(new Map<String, dynamic>.from(json['project']['serializedData']))
-        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user': _user?.toJson(), 'content': _content, 'date': _date, 'comments': _comments?.map((UComment? e) => e?.toJson()).toList(), 'project': _project?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user': _user?.toJson(), 'content': _content, 'date': _date, 'comments': _comments?.map((UComment? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'user': _user, 'content': _content, 'date': _date, 'comments': _comments, 'project': _project, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'user': _user, 'content': _content, 'date': _date, 'comments': _comments, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<UPostModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<UPostModelIdentifier>();
@@ -201,9 +189,6 @@ class UPost extends Model {
   static final QueryField COMMENTS = QueryField(
     fieldName: "comments",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UComment'));
-  static final QueryField PROJECT = QueryField(
-    fieldName: "project",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UProject'));
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UPost";
     modelSchemaDefinition.pluralName = "UPosts";
@@ -234,13 +219,6 @@ class UPost extends Model {
       isRequired: false,
       ofModelName: 'UComment',
       associatedKey: UComment.POST
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
-      key: UPost.PROJECT,
-      isRequired: false,
-      targetNames: ['uProjectPostsId'],
-      ofModelName: 'UProject'
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

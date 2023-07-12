@@ -39,7 +39,7 @@ class UProject extends Model {
   final double? _hoursSpent;
   final String? _date;
   final List<String>? _members;
-  final List<UPost>? _posts;
+  final List<String>? _posts;
   final String? _projectPicture;
   final List<USponsor>? _sponsors;
   final bool? _isCompleted;
@@ -123,7 +123,7 @@ class UProject extends Model {
     return _members;
   }
   
-  List<UPost>? get posts {
+  List<String>? get posts {
     return _posts;
   }
   
@@ -171,7 +171,7 @@ class UProject extends Model {
   
   const UProject._internal({required this.id, required name, required privacy, bio, required description, city, state, hoursSpent, date, members, posts, required projectPicture, sponsors, required isCompleted, createdAt, updatedAt, uUserProjectsId}): _name = name, _privacy = privacy, _bio = bio, _description = description, _city = city, _state = state, _hoursSpent = hoursSpent, _date = date, _members = members, _posts = posts, _projectPicture = projectPicture, _sponsors = sponsors, _isCompleted = isCompleted, _createdAt = createdAt, _updatedAt = updatedAt, _uUserProjectsId = uUserProjectsId;
   
-  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? date, List<String>? members, List<UPost>? posts, required String projectPicture, List<USponsor>? sponsors, required bool isCompleted, String? uUserProjectsId}) {
+  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? date, List<String>? members, List<String>? posts, required String projectPicture, List<USponsor>? sponsors, required bool isCompleted, String? uUserProjectsId}) {
     return UProject._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
@@ -183,7 +183,7 @@ class UProject extends Model {
       hoursSpent: hoursSpent,
       date: date,
       members: members != null ? List<String>.unmodifiable(members) : members,
-      posts: posts != null ? List<UPost>.unmodifiable(posts) : posts,
+      posts: posts != null ? List<String>.unmodifiable(posts) : posts,
       projectPicture: projectPicture,
       sponsors: sponsors != null ? List<USponsor>.unmodifiable(sponsors) : sponsors,
       isCompleted: isCompleted,
@@ -233,6 +233,7 @@ class UProject extends Model {
     buffer.write("hoursSpent=" + (_hoursSpent != null ? _hoursSpent!.toString() : "null") + ", ");
     buffer.write("date=" + "$_date" + ", ");
     buffer.write("members=" + (_members != null ? _members!.toString() : "null") + ", ");
+    buffer.write("posts=" + (_posts != null ? _posts!.toString() : "null") + ", ");
     buffer.write("projectPicture=" + "$_projectPicture" + ", ");
     buffer.write("isCompleted=" + (_isCompleted != null ? _isCompleted!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -243,7 +244,7 @@ class UProject extends Model {
     return buffer.toString();
   }
   
-  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? date, List<String>? members, List<UPost>? posts, String? projectPicture, List<USponsor>? sponsors, bool? isCompleted, String? uUserProjectsId}) {
+  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? date, List<String>? members, List<String>? posts, String? projectPicture, List<USponsor>? sponsors, bool? isCompleted, String? uUserProjectsId}) {
     return UProject._internal(
       id: id,
       name: name ?? this.name,
@@ -273,12 +274,7 @@ class UProject extends Model {
       _hoursSpent = (json['hoursSpent'] as num?)?.toDouble(),
       _date = json['date'],
       _members = json['members']?.cast<String>(),
-      _posts = json['posts'] is List
-        ? (json['posts'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UPost.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
+      _posts = json['posts']?.cast<String>(),
       _projectPicture = json['projectPicture'],
       _sponsors = json['sponsors'] is List
         ? (json['sponsors'] as List)
@@ -292,7 +288,7 @@ class UProject extends Model {
       _uUserProjectsId = json['uUserProjectsId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'date': _date, 'members': _members, 'posts': _posts?.map((UPost? e) => e?.toJson()).toList(), 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
+    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'date': _date, 'members': _members, 'posts': _posts, 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
   };
   
   Map<String, Object?> toMap() => {
@@ -310,9 +306,7 @@ class UProject extends Model {
   static final QueryField HOURSSPENT = QueryField(fieldName: "hoursSpent");
   static final QueryField DATE = QueryField(fieldName: "date");
   static final QueryField MEMBERS = QueryField(fieldName: "members");
-  static final QueryField POSTS = QueryField(
-    fieldName: "posts",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UPost'));
+  static final QueryField POSTS = QueryField(fieldName: "posts");
   static final QueryField PROJECTPICTURE = QueryField(fieldName: "projectPicture");
   static final QueryField SPONSORS = QueryField(
     fieldName: "sponsors",
@@ -380,11 +374,11 @@ class UProject extends Model {
       ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: UProject.POSTS,
       isRequired: false,
-      ofModelName: 'UPost',
-      associatedKey: UPost.PROJECT
+      isArray: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
