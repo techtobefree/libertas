@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 
 import '../data/users/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
@@ -34,7 +35,7 @@ class FinishProjectCard extends StatelessWidget {
 
   Future<void> putHoursSpent(int hours) async {
     final url = Uri.parse(
-        'http://44.203.120.103:3000/projects/${project['_id']}/hours-spent');
+        'http://44.203.120.103:3000/projects/${project['id']}/hours-spent');
     final body = json.encode({'hoursSpent': hours});
     final headers = {'Content-Type': 'application/json'};
     final response = await http.put(url, headers: headers, body: body);
@@ -125,7 +126,7 @@ class FinishProjectCard extends StatelessWidget {
                                           print(textController.text);
                                           int hours =
                                               int.parse(textController.text);
-                                          putHoursSpent(hours);
+                                          ProjectHandlers.addHours(project['id'], hours);
 
                                           Navigator.of(context).pop();
                                         },

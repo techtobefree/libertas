@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
@@ -19,7 +20,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     _tabController = new TabController(length: 1, vsync: this);
-    _futureProjects = getMyProjects();
+    _futureProjects = ProjectHandlers.getMyProjects(Provider.of<UserProvider>(context, listen: false).id);
 
     super.initState();
   }

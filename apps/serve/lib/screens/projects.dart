@@ -255,7 +255,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       children: [
                         MyProjectCard(
                           projectName: projectData[0]['name'] ?? '',
-                          id: projectData[0]['_id'],
+                          id: projectData[0]['id'],
                           projectPhoto: projectData[0]['projectPicture'],
                         ),
                       ],

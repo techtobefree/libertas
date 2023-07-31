@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 
 import '../../../data/users/providers/user_provider.dart';
 import '../../../widgets/finish_project_card.dart';
@@ -26,18 +27,18 @@ class _FinishProjectState extends State<FinishProject> {
     _futureProjects = getProjects();
   }
 
-  Future<bool> _finishProject(String projId, context) async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects/$projId/complete');
-    var response = await http.put(url);
-    if (response.statusCode == 200) {
-      setState(() {
-        _futureProjects = getProjects();
-      });
-      return true;
-    } else {
-      throw Exception('Failed to load projects');
-    }
-  }
+  // Future<bool> _finishProject(String projId, context) async {
+  //   // var url = Uri.parse('http://44.203.120.103:3000/projects/$projId/complete');
+  //   // var response = await http.put(url);
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       _futureProjects = getProjects();
+  //     });
+  //     return true;
+  //   } else {
+  //     throw Exception('Failed to load projects');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +77,11 @@ class _FinishProjectState extends State<FinishProject> {
             return ListView.builder(
               itemCount: projects.length,
               itemBuilder: (context, index) {
+
                 return FinishProjectCard.fromJson(
                   projects[index],
-                  () => _finishProject(projects[index]['_id'], context),
+                  () => 
+                  ProjectHandlers.finishProject(projects[index]['id']),
                 );
               },
             );
@@ -97,14 +100,16 @@ class _FinishProjectState extends State<FinishProject> {
   }
 
   Future<List<dynamic>> getProjects() async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      // print(jsonResponse);
+    // var url = Uri.parse('http://44.203.120.103:3000/projects');
+    // var response = await http.get(url);
+    var userId = Provider.of<UserProvider>(context, listen: false).id;
+    var projs = await ProjectHandlers.getMyProjects(userId);
+    if (projs.isNotEmpty) {
+      // var jsonResponse = jsonDecode(response.body);
+      // // print(jsonResponse);
       var projects = [];
-      for (var project in jsonResponse) {
-        if (Provider.of<UserProvider>(context, listen: false).id ==
+      for (var project in projs) {
+        if (userId ==
                 project['members'][0] &&
             project['isCompleted'] == false) {
           projects.add(project);
