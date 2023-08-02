@@ -31,7 +31,6 @@ class ProjectCard extends StatelessWidget {
         // height: 140.0,
         child: GestureDetector(
           onTap: () {
-            print(project['projectPicture']);
             // Do something when the container is clicked
             context.pushNamed("projectdetails",
                 queryParameters: {'id': project['id']},

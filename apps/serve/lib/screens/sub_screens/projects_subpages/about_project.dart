@@ -29,7 +29,6 @@ class _AboutProjectState extends State<AboutProject> {
 
   Future<Map<String, dynamic>> getProject() async {
     final queryPredicate = UProject.ID.eq(widget.id);
-    print(widget.id);
 
     final request = ModelQueries.list<UProject>(
       UProject.classType,

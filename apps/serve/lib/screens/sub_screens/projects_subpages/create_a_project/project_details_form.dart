@@ -105,7 +105,6 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
       //   body: body,
       // );
       final createdUser = response.data;
-      print(createdUser!.posts);
       if (createdUser == null) {
         safePrint('errors: ${response.errors}');
         return null;

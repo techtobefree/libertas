@@ -95,7 +95,6 @@ class _FindAProjectState extends State<FindAProject> {
               itemCount: projects!.length,
               itemBuilder: (context, index) {
                 // print(_searchQuery.toLowerCase());
-                print(projects[index]['city'].toLowerCase());
                 if (_searchQuery.length < 2) {
                   return ProjectCard.fromJson(projects[index]);
                 } else {
