@@ -57,7 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
           if (response.data!.items.isNotEmpty) {
             posts.add(response.data!.items[0]!.toJson());
             posts[posts.length - 1]['name'] = posts[posts.length - 1]['user']
-                    ['firstName'] +
+                    ['firstName'] + ' ' +
                 posts[posts.length - 1]['user']['lastName'];
             posts[posts.length - 1]['text'] =
                 posts[posts.length - 1]['content'];

@@ -34,7 +34,6 @@ class _ProjectDetailsState extends State<ProjectDetails> {
 
   Future<Map<String, dynamic>> getProjects() async {
     final queryPredicate = UProject.ID.eq(widget.id);
-    print("id = ${widget.id}");
 
     final request = ModelQueries.list<UProject>(
       UProject.classType,
@@ -85,7 +84,6 @@ class _ProjectDetailsState extends State<ProjectDetails> {
         }
         jsonResponse['posts'] = newPosts;
       }
-      print(jsonResponse);
       return jsonResponse;
     } else {
       throw Exception('Failed to load projects');
@@ -212,7 +210,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                       1; // compute the index of the reversed list
                   return ProjectPost(
                     id: '',
-                    name: projectData['posts'][reversedIndex]['name'],
+                    name: '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
                     postText: projectData['posts'][reversedIndex]['text'],
                     profURL:
                         projectData['posts'][reversedIndex]['imageUrl'] ?? '',

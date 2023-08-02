@@ -51,7 +51,6 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
   }
 
   Future<void> tryCreateAccount(UserClass user) async {
-    print(user.toJson());
 
     final createdUser = await UserHandlers.createUser(user);
     if (createdUser != null) {

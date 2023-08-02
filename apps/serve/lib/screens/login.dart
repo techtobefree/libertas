@@ -295,7 +295,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     bool isAuthenticated =
         await authenticateUser(user!.email, passwordController.text);
-    print(user.id);
     if (isAuthenticated || passwordController.text == user.password) {
       Provider.of<UserProvider>(context, listen: false).email = user.email;
       Provider.of<UserProvider>(context, listen: false).id = user.id;
