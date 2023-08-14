@@ -210,7 +210,8 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                       1; // compute the index of the reversed list
                   return ProjectPost(
                     id: '',
-                    name: '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
+                    name:
+                        '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
                     postText: projectData['posts'][reversedIndex]['text'],
                     profURL:
                         projectData['posts'][reversedIndex]['imageUrl'] ?? '',

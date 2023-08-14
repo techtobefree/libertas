@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,9 +52,41 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
     });
   }
 
+  Future<void> _signUp({
+    required String password,
+    required String email,
+  }) async {
+    final result = await Amplify.Auth.signUp(
+      username: email,
+      password: password,
+    );
+    await _handleSignUpResult(result);
+  }
+
+  Future<void> _handleSignUpResult(SignUpResult result) async {
+    switch (result.nextStep.signUpStep) {
+      case AuthSignUpStep.confirmSignUp:
+        final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
+        _handleCodeDelivery(codeDeliveryDetails);
+        break;
+      case AuthSignUpStep.done:
+        safePrint('Sign up is complete');
+        break;
+    }
+  }
+
+  void _handleCodeDelivery(AuthCodeDeliveryDetails codeDeliveryDetails) {
+    safePrint(
+      'A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
+      'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
+    );
+  }
+
   Future<void> tryCreateAccount(UserClass user) async {
+    await _signUp(password: user.password, email: user.email);
 
     final createdUser = await UserHandlers.createUser(user);
+
     if (createdUser != null) {
       // Do something with the created user
       print('User created: ${createdUser.toJson()}');
@@ -76,7 +110,7 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
           Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
               updatedUser.profilePictureUrl;
         }
-        context.go('/projects');
+        context.goNamed('confirmemail', queryParameters: {'email': user.email});
       } else {
         // Failed to update user
         throw Exception("failed to update profile picture of user.");
@@ -197,180 +231,3 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
     );
   }
 }
-
-
-
-
-// Future<void> createUser(UserClass user) async {
-  //   if (_image == null) {
-  //     setState(() {
-  //       errorText =
-  //           'Error creating an account. Please select an image for your profile.';
-  //     });
-  //     return;
-  //   }
-
-  //   // Access the existing UserProvider instance using Provider.of<UserProvider>(context)
-  //   final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-  //   //authenticateUser(user.email, user.password);
-  //   final url = Uri.parse('http://44.203.120.103:3000/users');
-  //   final headers = <String, String>{
-  //     'Content-Type': 'application/json; charset=UTF-8',
-  //   };
-  //   var response = null; // initialize to null
-  //   try {
-  //     response = await http.post(
-  //       url,
-  //       headers: headers,
-  //       body: jsonEncode(<String, dynamic>{
-  //         'email': user.email,
-  //         'password': user.password,
-  //         'firstName': user.firstName,
-  //         'lastName': user.lastName,
-  //         'projects': user.projects,
-  //         'bio': user.bio,
-  //         'profilePictureUrl': user.profilePictureUrl,
-  //         'coverPictureUrl': user.coverPictureUrl,
-  //         'isLeader': user.isLeader,
-  //         'friends': user.friends,
-  //         'friendRequests': user.friendRequests,
-  //       }),
-  //     );
-  //   } catch (e) {
-  //     // handle error
-  //     // Failure
-  //     throw Exception('Failed to create user: $response');
-  //   }
-
-  //   //   // Check if response is not null before using it
-  //   if (response != null && response.statusCode == 201) {
-  //     final res = json.decode(response.body);
-  //     // Success
-
-  //     print(res);
-  //     // Update the UserProvider instance with the new user details
-  //     userProvider.email = res['email'];
-  //     userProvider.password = res['password'];
-  //     userProvider.id = res['_id'];
-  //     userProvider.firstName = res['firstName'];
-  //     userProvider.lastName = res['lastName'];
-  //     userProvider.profilePictureUrl = res['profilePictureUrl'];
-  //     userProvider.bio = res['bio'];
-  //     userProvider.coverPictureUrl = res['coverPictureUrl'];
-  //     userProvider.isLeader = res['isLeader'];
-  //     userProvider.friends = res['friends'];
-  //     userProvider.friendRequests = res['friendRequests'];
-
-  //     print('User created successfully');
-
-  //     // Authenticate the user using the existing UserProvider instance
-  //     final authenticated =
-  //         authenticateUser(userProvider.email, userProvider.password);
-
-  //     if (authenticated != null) {
-  //       print("Authenticated");
-  //       await userProvider.uploadImageToS3(
-  //           _image!, 'servetobefree-images', userProvider.id, 'profilePicture');
-  //       context.go('/dashboard');
-  //     }
-  //   } else {
-  //     throw Exception('Something went wrong');
-  //   }
-  // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Access the existing UserProvider instance using Provider.of<UserProvider>(context)
-      // final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-      // //authenticateUser(user.email, user.password);
-      // final url = Uri.parse('http://44.203.120.103:3000/users');
-      // // final url = Uri.parse('http://10.0.2.2:3000/users');
-
-      // final headers = <String, String>{
-      //   'Content-Type': 'application/json; charset=UTF-8',
-      // };
-      // var response = null; // initialize to null
-      // try {
-      //   response = await http.post(
-      //     url,
-      //     headers: headers,
-      //     body: jsonEncode(<String, dynamic>{
-      //       'email': user.email,
-      //       'password': user.password,
-      //       'firstName': user.firstName,
-      //       'lastName': user.lastName,
-      //       'projects': user.projects,
-      //       'bio': user.bio,
-      //       'profilePictureUrl': user.profilePictureUrl,
-      //       'coverPictureUrl': user.coverPictureUrl,
-      //       'isLeader': user.isLeader,
-      //       'friends': user.friends,
-      //       'friendRequests': user.friendRequests,
-      //     }),
-      //   );
-      // } catch (e) {
-      //   // handle error
-      //   // Failure
-      //   throw Exception('Failed to create user: $response');
-      // }
-
-      // //   // Check if response is not null before using it
-      // if (response != null && response.statusCode == 201) {
-      //   final res = json.decode(response.body);
-      //   // Success
-
-      //   print(res);
-      //   // Update the UserProvider instance with the new user details
-      //   userProvider.email = res['email'];
-      //   userProvider.password = res['password'];
-      //   userProvider.id = res['_id'];
-      //   userProvider.firstName = res['firstName'];
-      //   userProvider.lastName = res['lastName'];
-      //   userProvider.profilePictureUrl = res['profilePictureUrl'];
-      //   // userProvider.bio = res['bio'];
-      //   userProvider.coverPictureUrl = res['coverPictureUrl'];
-      //   // userProvider.isLeader = res['isLeader'];
-      //   // userProvider.friends = res['friends'];
-      //   // userProvider.friendRequests = res['friendRequests'];
-
-      //   print('User created successfully');
-
-      //   // Authenticate the user using the existing UserProvider instance
-      //   final authenticated =
-      //       authenticateUser(userProvider.email, userProvider.password);
-
-      //   if (authenticated != null) {
-      //     print("Authenticated");
-      //     await userProvider.uploadImageToS3(
-      //         _image!, 'servetobefree-images', userProvider.id, 'profilePicture');
-      //     final url = Uri.parse(
-      //         'http://44.203.120.103:3000/users/${userProvider.id}/updateProfilePic');
-      //     final response = await http.put(
-      //       url,
-      //       headers: <String, String>{
-      //         'Content-Type': 'application/json; charset=UTF-8',
-      //       },
-      //       body: jsonEncode(<String, String>{
-      //         'profilePictureUrl':
-      //             'https://servetobefree-images.s3.amazonaws.com/ServeToBeFree/ProfilePictures/${userProvider.id}/profilePicture',
-      //       }),
-      //     );
-      //     context.go('/dashboard');
-      //   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
@@ -69,6 +70,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
     //   throw Exception('Failed to load projects');
     // }
   }
+
 
   Future<int> getNumUsers() async {
     return 123;

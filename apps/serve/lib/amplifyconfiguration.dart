@@ -1,4 +1,4 @@
-const amplifyconfig = ''' {
+const amplifyconfig = '''{
     "UserAgent": "aws-amplify-cli/2.0",
     "Version": "1.0",
     "api": {
@@ -6,10 +6,10 @@ const amplifyconfig = ''' {
             "awsAPIPlugin": {
                 "serve": {
                     "endpointType": "GraphQL",
-                    "endpoint": "https://fwy7iy5idza7pm72yhljlcdco4.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "endpoint": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
                     "region": "us-east-1",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-l7hltoopzvfk5axsjwmpjbmvgu"
+                    "apiKey": "da2-36bf6u4lvjafdaifah2lwqsmyi"
                 }
             }
         }
@@ -22,27 +22,10 @@ const amplifyconfig = ''' {
                 "IdentityManager": {
                     "Default": {}
                 },
-                "AppSync": {
-                    "Default": {
-                        "ApiUrl": "https://fwy7iy5idza7pm72yhljlcdco4.appsync-api.us-east-1.amazonaws.com/graphql",
-                        "Region": "us-east-1",
-                        "AuthMode": "API_KEY",
-                        "ApiKey": "da2-l7hltoopzvfk5axsjwmpjbmvgu",
-                        "ClientDatabasePrefix": "serve_API_KEY"
-                    }
-                },
-                "CredentialsProvider": {
-                    "CognitoIdentity": {
-                        "Default": {
-                            "PoolId": "us-east-1:8acd347e-0c4b-4bd1-94e1-044a6e8320f7",
-                            "Region": "us-east-1"
-                        }
-                    }
-                },
                 "CognitoUserPool": {
                     "Default": {
-                        "PoolId": "us-east-1_f1FJgWAX1",
-                        "AppClientId": "5smf9oi16lkekmfsp169o6kpht",
+                        "PoolId": "us-east-1_QV4YRpmsp",
+                        "AppClientId": "19hb6hmcfdlka6e23o35prsjru",
                         "Region": "us-east-1"
                     }
                 },
@@ -50,7 +33,9 @@ const amplifyconfig = ''' {
                     "Default": {
                         "authenticationFlowType": "USER_SRP_AUTH",
                         "socialProviders": [],
-                        "usernameAttributes": [],
+                        "usernameAttributes": [
+                            "EMAIL"
+                        ],
                         "signupAttributes": [
                             "EMAIL"
                         ],
@@ -65,6 +50,15 @@ const amplifyconfig = ''' {
                         "verificationMechanisms": [
                             "EMAIL"
                         ]
+                    }
+                },
+                "AppSync": {
+                    "Default": {
+                        "ApiUrl": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
+                        "Region": "us-east-1",
+                        "AuthMode": "API_KEY",
+                        "ApiKey": "da2-36bf6u4lvjafdaifah2lwqsmyi",
+                        "ClientDatabasePrefix": "serve_API_KEY"
                     }
                 }
             }
