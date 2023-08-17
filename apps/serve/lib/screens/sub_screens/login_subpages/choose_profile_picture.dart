@@ -60,7 +60,8 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
       username: email,
       password: password,
     );
-    await _handleSignUpResult(result);
+    Provider.of<UserProvider>(context, listen: false).signUpResult = result;
+    // await _handleSignUpResult(result);
   }
 
   Future<void> _handleSignUpResult(SignUpResult result) async {

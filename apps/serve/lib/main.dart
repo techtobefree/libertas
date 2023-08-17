@@ -16,6 +16,7 @@ import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 void main() async {
   //GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await _configureAmplify();

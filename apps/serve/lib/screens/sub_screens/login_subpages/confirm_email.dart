@@ -2,7 +2,9 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../data/users/providers/user_provider.dart';
 import '../../../models/ModelProvider.dart';
+import 'package:provider/provider.dart';
 
 class ConfirmationCodePage extends StatefulWidget {
   final String email;
@@ -22,9 +24,14 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
     });
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
     if (_confirmationCode.length == 6) {
-      confirmUser(username: widget.email, confirmationCode: _confirmationCode);
+      var confirmed = await confirmUser(
+          username: widget.email, confirmationCode: _confirmationCode);
+      if (confirmed == false) {
+        _showErrorDialog("The code was wrong");
+        return;
+      }
       // Perform the necessary actions with the confirmation code
       // For example: validate the code and navigate to the next screen
       context.go('/projects'); // Replace with the actual route
@@ -33,7 +40,27 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
     }
   }
 
-  Future<void> confirmUser({
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> confirmUser({
     required String username,
     required String confirmationCode,
   }) async {
@@ -45,10 +72,33 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
       print(result);
       // Check if further confirmations are needed or if
       // the sign up is complete.
+      if (result.isSignUpComplete == false) {
+        return false;
+      }
       safePrint('sign up complete');
+      return true;
     } on AuthException catch (e) {
       safePrint('Error confirming user: ${e.message}');
+      return false;
     }
+  }
+
+  Future<void> _onResendCode() async {
+    try {
+      final resendResult = await Amplify.Auth.resendSignUpCode(
+        username: widget.email,
+      );
+      _handleCodeDelivery(resendResult.codeDeliveryDetails);
+    } on AuthException catch (e) {
+      safePrint('Error resending code: ${e.message}');
+    }
+  }
+
+  void _handleCodeDelivery(AuthCodeDeliveryDetails codeDeliveryDetails) {
+    safePrint(
+      'A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
+      'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
+    );
   }
 
   @override
@@ -110,6 +160,18 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'OpenSans',
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            TextButton(
+              onPressed: _onResendCode,
+              child: Text(
+                'Resend Code',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  decoration: TextDecoration.underline,
                 ),
               ),
             ),
