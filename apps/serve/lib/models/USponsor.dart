@@ -20,19 +20,17 @@
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
 import 'ModelProvider.dart';
-import 'package:amplify_core/amplify_core.dart';
-import 'package:flutter/foundation.dart';
+import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
 /** This is an auto generated class representing the USponsor type in your schema. */
-@immutable
-class USponsor extends Model {
+class USponsor extends amplify_core.Model {
   static const classType = const _USponsorModelType();
   final String id;
   final double? _amount;
   final UUser? _user;
-  final TemporalDateTime? _createdAt;
-  final TemporalDateTime? _updatedAt;
+  final amplify_core.TemporalDateTime? _createdAt;
+  final amplify_core.TemporalDateTime? _updatedAt;
   final String? _uProjectSponsorsId;
 
   @override
@@ -52,10 +50,10 @@ class USponsor extends Model {
     try {
       return _amount!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -65,11 +63,11 @@ class USponsor extends Model {
     return _user;
   }
   
-  TemporalDateTime? get createdAt {
+  amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
   
-  TemporalDateTime? get updatedAt {
+  amplify_core.TemporalDateTime? get updatedAt {
     return _updatedAt;
   }
   
@@ -81,7 +79,7 @@ class USponsor extends Model {
   
   factory USponsor({String? id, required double amount, UUser? user, String? uProjectSponsorsId}) {
     return USponsor._internal(
-      id: id == null ? UUID.getUUID() : id,
+      id: id == null ? amplify_core.UUID.getUUID() : id,
       amount: amount,
       user: user,
       uProjectSponsorsId: uProjectSponsorsId);
@@ -128,14 +126,27 @@ class USponsor extends Model {
       uProjectSponsorsId: uProjectSponsorsId ?? this.uProjectSponsorsId);
   }
   
+  USponsor copyWithModelFieldValues({
+    ModelFieldValue<double>? amount,
+    ModelFieldValue<UUser?>? user,
+    ModelFieldValue<String?>? uProjectSponsorsId
+  }) {
+    return USponsor._internal(
+      id: id,
+      amount: amount == null ? this.amount : amount.value,
+      user: user == null ? this.user : user.value,
+      uProjectSponsorsId: uProjectSponsorsId == null ? this.uProjectSponsorsId : uProjectSponsorsId.value
+    );
+  }
+  
   USponsor.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _amount = (json['amount'] as num?)?.toDouble(),
       _user = json['user']?['serializedData'] != null
         ? UUser.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
         : null,
-      _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
+      _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
       _uProjectSponsorsId = json['uProjectSponsorsId'];
   
   Map<String, dynamic> toJson() => {
@@ -143,58 +154,74 @@ class USponsor extends Model {
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'amount': _amount, 'user': _user, 'createdAt': _createdAt, 'updatedAt': _updatedAt, 'uProjectSponsorsId': _uProjectSponsorsId
+    'id': id,
+    'amount': _amount,
+    'user': _user,
+    'createdAt': _createdAt,
+    'updatedAt': _updatedAt,
+    'uProjectSponsorsId': _uProjectSponsorsId
   };
 
-  static final QueryModelIdentifier<USponsorModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<USponsorModelIdentifier>();
-  static final QueryField ID = QueryField(fieldName: "id");
-  static final QueryField AMOUNT = QueryField(fieldName: "amount");
-  static final QueryField USER = QueryField(
+  static final amplify_core.QueryModelIdentifier<USponsorModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<USponsorModelIdentifier>();
+  static final ID = amplify_core.QueryField(fieldName: "id");
+  static final AMOUNT = amplify_core.QueryField(fieldName: "amount");
+  static final USER = amplify_core.QueryField(
     fieldName: "user",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UUser'));
-  static final QueryField UPROJECTSPONSORSID = QueryField(fieldName: "uProjectSponsorsId");
-  static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UUser'));
+  static final UPROJECTSPONSORSID = amplify_core.QueryField(fieldName: "uProjectSponsorsId");
+  static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "USponsor";
     modelSchemaDefinition.pluralName = "USponsors";
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    modelSchemaDefinition.authRules = [
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PUBLIC,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ])
+    ];
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: USponsor.AMOUNT,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.double)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
       key: USponsor.USER,
       isRequired: false,
       targetNames: ['uUserSponsorsId'],
       ofModelName: 'UUser'
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'createdAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'updatedAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: USponsor.UPROJECTSPONSORSID,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }
 
-class _USponsorModelType extends ModelType<USponsor> {
+class _USponsorModelType extends amplify_core.ModelType<USponsor> {
   const _USponsorModelType();
   
   @override
@@ -212,8 +239,7 @@ class _USponsorModelType extends ModelType<USponsor> {
  * This is an auto generated class representing the model identifier
  * of [USponsor] in your schema.
  */
-@immutable
-class USponsorModelIdentifier implements ModelIdentifier<USponsor> {
+class USponsorModelIdentifier implements amplify_core.ModelIdentifier<USponsor> {
   final String id;
 
   /** Create an instance of USponsorModelIdentifier using [id] the primary key. */

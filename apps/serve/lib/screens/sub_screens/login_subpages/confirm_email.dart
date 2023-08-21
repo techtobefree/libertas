@@ -1,7 +1,10 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/data/users/models/user_class.dart';
 
+import '../../../data/users/handlers/user_handlers.dart';
 import '../../../data/users/providers/user_provider.dart';
 import '../../../models/ModelProvider.dart';
 import 'package:provider/provider.dart';
@@ -32,11 +35,34 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
         _showErrorDialog("The code was wrong");
         return;
       }
-      // Perform the necessary actions with the confirmation code
-      // For example: validate the code and navigate to the next screen
-      context.go('/projects'); // Replace with the actual route
-    } else {
-      // Show an error message or handle invalid code length
+      await UserHandlers.signInUser(
+          Provider.of<UserProvider>(context, listen: false).email,
+          Provider.of<UserProvider>(context, listen: false).password);
+      UserClass user = UserClass(
+          password: Provider.of<UserProvider>(context, listen: false).password,
+          email: Provider.of<UserProvider>(context, listen: false).email,
+          firstName:
+              Provider.of<UserProvider>(context, listen: false).firstName,
+          lastName: Provider.of<UserProvider>(context, listen: false).lastName,
+          friendRequests: [],
+          friends: [],
+          posts: [],
+          profilePictureUrl: Provider.of<UserProvider>(context, listen: false)
+              .profilePictureUrl,
+          projects: []);
+      final isSignedIn = await isUserSignedIn();
+      if (isSignedIn) {
+        final createdUser = await UserHandlers.createUser(user);
+
+        if (createdUser != null) {
+          // Do something with the created user
+          print('User created: ${createdUser.toJson()}');
+
+          context.go('/projects'); // Replace with the actual route
+        }
+      } else {
+        // Show an error message or handle invalid code length
+      }
     }
   }
 
@@ -81,6 +107,19 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
       safePrint('Error confirming user: ${e.message}');
       return false;
     }
+  }
+
+  Future<bool> isUserSignedIn() async {
+    final result = await Amplify.Auth.fetchAuthSession();
+    if (result.isSignedIn) {
+      var authUser = await Amplify.Auth.getCurrentUser();
+
+      if (authUser.signInDetails is CognitoSignInDetailsApiBased) {
+        var apiBasedSignInDetails =
+            authUser.signInDetails as CognitoSignInDetailsApiBased;
+      }
+    }
+    return result.isSignedIn;
   }
 
   Future<void> _onResendCode() async {

@@ -216,7 +216,7 @@ class _CreateAccountState extends State<CreateAccountScreen> {
     final lastName = lastNameController.text;
 
     try {
-      if (password.length > 8) {
+      if (password.length < 8) {
         throw (Exception('Passwords must be at least 8 digits long'));
       }
       if (password != confirmPass) {

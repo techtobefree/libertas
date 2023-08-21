@@ -61,7 +61,7 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
       password: password,
     );
     Provider.of<UserProvider>(context, listen: false).signUpResult = result;
-    // await _handleSignUpResult(result);
+    await _handleSignUpResult(result);
   }
 
   Future<void> _handleSignUpResult(SignUpResult result) async {
@@ -85,41 +85,20 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
 
   Future<void> tryCreateAccount(UserClass user) async {
     await _signUp(password: user.password, email: user.email);
+    final s3url = await uploadProfileImageToS3(_image!, user.id);
 
-    final createdUser = await UserHandlers.createUser(user);
+    Provider.of<UserProvider>(context, listen: false).password = user.password;
 
-    if (createdUser != null) {
-      // Do something with the created user
-      print('User created: ${createdUser.toJson()}');
-
-      final s3url = await uploadProfileImageToS3(_image!, createdUser.id);
-
-      final updatedUser = await UserHandlers.updateUser(createdUser.id, {
-        'profilePictureUrl': s3url,
-      });
-      if (updatedUser != null) {
-        // User was successfully updated
-        print('User created and updated: ${updatedUser.toJson()}');
-        Provider.of<UserProvider>(context, listen: false).email =
-            updatedUser.email;
-        Provider.of<UserProvider>(context, listen: false).id = updatedUser.id;
-        Provider.of<UserProvider>(context, listen: false).firstName =
-            updatedUser.firstName;
-        Provider.of<UserProvider>(context, listen: false).lastName =
-            updatedUser.lastName;
-        if (updatedUser.profilePictureUrl != null) {
-          Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-              updatedUser.profilePictureUrl;
-        }
-        context.goNamed('confirmemail', queryParameters: {'email': user.email});
-      } else {
-        // Failed to update user
-        throw Exception("failed to update profile picture of user.");
-      }
-    } else {
-      // Handle error
-      print('Failed to create user');
+    Provider.of<UserProvider>(context, listen: false).email = user.email;
+    Provider.of<UserProvider>(context, listen: false).id = user.id;
+    Provider.of<UserProvider>(context, listen: false).firstName =
+        user.firstName;
+    Provider.of<UserProvider>(context, listen: false).lastName = user.lastName;
+    if (user.profilePictureUrl != null) {
+      Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
+          s3url;
     }
+    context.goNamed('confirmemail', queryParameters: {'email': user.email});
   }
 
   Widget _buildCreateAccBtn() {

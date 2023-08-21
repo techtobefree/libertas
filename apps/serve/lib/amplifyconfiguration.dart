@@ -8,7 +8,7 @@ const amplifyconfig = '''{
                     "endpointType": "GraphQL",
                     "endpoint": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
                     "region": "us-east-1",
-                    "authorizationType": "API_KEY",
+                    "authorizationType": "AMAZON_COGNITO_USER_POOLS",
                     "apiKey": "da2-36bf6u4lvjafdaifah2lwqsmyi"
                 }
             }
@@ -54,6 +54,12 @@ const amplifyconfig = '''{
                 },
                 "AppSync": {
                     "Default": {
+                        "ApiUrl": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
+                        "Region": "us-east-1",
+                        "AuthMode": "AMAZON_COGNITO_USER_POOLS",
+                        "ClientDatabasePrefix": "serve_AMAZON_COGNITO_USER_POOLS"
+                    },
+                    "serve_API_KEY": {
                         "ApiUrl": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
                         "Region": "us-east-1",
                         "AuthMode": "API_KEY",
