@@ -1,32 +1,17 @@
 {
   "api": {
     "serve": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "servefe13658ffe13658f"
-        }
-      ],
+      "dependsOn": [],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "apiKeyConfig": {
-                "apiKeyExpirationDate": "2023-08-28T20:21:57.914Z",
-                "apiKeyExpirationDays": 7,
-                "description": ""
-              },
-              "authenticationType": "API_KEY"
-            }
-          ],
+          "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authservefe13658ffe13658f"
-            }
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2023-08-30T17:57:30.906Z",
+              "apiKeyExpirationDays": 7,
+              "description": ""
+            },
+            "authenticationType": "API_KEY"
           }
         }
       },
@@ -35,7 +20,7 @@
     }
   },
   "auth": {
-    "servefe13658ffe13658f": {
+    "servea132a049a132a049": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

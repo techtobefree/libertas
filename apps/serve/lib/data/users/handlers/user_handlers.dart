@@ -27,6 +27,7 @@ class UserHandlers {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        profilePictureUrl: user.profilePictureUrl,
         uUserFriendsId: "724a6ce3-47ed-402e-80c0-69e75601d2dd",
         projects: const [], // Provide an empty list or add actual UProject instances
         friends: const [], // Provide an empty list or add actual UUser instances
@@ -122,6 +123,22 @@ class UserHandlers {
     return null;
   }
 
+  static Future<UUser?> getUUserByEmail(String email) async {
+    final queryPredicate = UUser.EMAIL.eq(email);
+
+    final request = ModelQueries.list<UUser>(
+      UUser.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+
+    if (response.data!.items.isNotEmpty) {
+      return response.data!.items[0];
+    }
+
+    return null;
+  }
+
   static Future<void> signInUser(String username, String password) async {
     try {
       final result = await Amplify.Auth.signIn(
@@ -151,7 +168,7 @@ class UserHandlers {
           firstName: uuser.firstName,
           lastName: uuser.lastName,
           projects: [],
-          profilePictureUrl: '',
+          profilePictureUrl: uuser.profilePictureUrl!,
           friends: [],
           friendRequests: [],
           posts: []);

@@ -60,28 +60,25 @@ class ProjectHandlers {
 
   static void finishProject(projectId) async {
     UProject? uproject = await getUProjectById(projectId);
-    final uprojFinished =
-        uproject!.copyWith(isCompleted: true);
+    final uprojFinished = uproject!.copyWith(isCompleted: true);
     try {
       final request = ModelMutations.update(uprojFinished);
       final response = await Amplify.API.mutate(request: request).response;
-  }catch (e) {
+    } catch (e) {
       throw Exception('Failed to finish project: $e');
     }
-    
   }
+
   static void addHours(projectId, hours) async {
     UProject? uproject = await getUProjectById(projectId);
     double doubleHours = hours.toDouble();
-    final uprojFinished =
-        uproject!.copyWith(hoursSpent: doubleHours);
+    final uprojFinished = uproject!.copyWith(hoursSpent: doubleHours);
     try {
       final request = ModelMutations.update(uprojFinished);
       final response = await Amplify.API.mutate(request: request).response;
-  }catch (e) {
+    } catch (e) {
       throw Exception('Failed to add hours project: $e');
     }
-    
   }
 
   static Future<Map<String, dynamic>> getProjectById(projectId) async {
@@ -96,7 +93,7 @@ class ProjectHandlers {
   }
 
   static Future<List<dynamic>> getMyProjects(id) async {
-    var projects = await ProjectHandlers.getProjectsIncomplete();
+    var projects = await ProjectHandlers.getProjects();
     var myprojs = [];
     for (var project in projects) {
       for (var member in project['members']) {

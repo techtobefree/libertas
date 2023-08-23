@@ -59,6 +59,7 @@ class _CreateAccountState extends State<CreateAccountScreen> {
             child: TextField(
               controller: controller,
               keyboardType: TextInputType.text,
+              obscureText: field == 'Password' || field == 'Confirm Password',
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'OpenSans',

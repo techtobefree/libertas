@@ -1,8 +1,8 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "resourceNameTruncated": "servefe13658f",
-    "userPoolName": "servefe13658f_userpool_fe13658f",
+    "resourceNameTruncated": "servea132a049",
+    "userPoolName": "servea132a049_userpool_a132a049",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -29,10 +29,10 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "serveffe13658f_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "serveaa132a049_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": true,
-    "sharedId": "fe13658f",
-    "resourceName": "servefe13658ffe13658f",
+    "sharedId": "a132a049",
+    "resourceName": "servea132a049a132a049",
     "authSelections": "userPoolOnly",
     "useDefault": "manual",
     "usernameAttributes": [
@@ -45,25 +45,6 @@
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true,
-    "authRoleArn": {
-      "Fn::GetAtt": [
-        "AuthRole",
-        "Arn"
-      ]
-    },
-    "unauthRoleArn": {
-      "Fn::GetAtt": [
-        "UnauthRole",
-        "Arn"
-      ]
-    },
-    "breakCircularDependency": true,
-    "dependsOn": [],
-    "parentStack": {
-      "Ref": "AWS::StackId"
-    },
-    "permissions": [],
-    "authProviders": []
+    "useEnabledMfas": true
   }
 }

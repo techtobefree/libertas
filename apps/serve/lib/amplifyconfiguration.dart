@@ -6,10 +6,10 @@ const amplifyconfig = '''{
             "awsAPIPlugin": {
                 "serve": {
                     "endpointType": "GraphQL",
-                    "endpoint": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "endpoint": "https://wnypdj35uvgjtefrlibmxukcaq.appsync-api.us-east-1.amazonaws.com/graphql",
                     "region": "us-east-1",
-                    "authorizationType": "AMAZON_COGNITO_USER_POOLS",
-                    "apiKey": "da2-36bf6u4lvjafdaifah2lwqsmyi"
+                    "authorizationType": "API_KEY",
+                    "apiKey": "da2-qrrqlakhuzfqzj4p7gezx3y2h4"
                 }
             }
         }
@@ -24,8 +24,8 @@ const amplifyconfig = '''{
                 },
                 "CognitoUserPool": {
                     "Default": {
-                        "PoolId": "us-east-1_QV4YRpmsp",
-                        "AppClientId": "19hb6hmcfdlka6e23o35prsjru",
+                        "PoolId": "us-east-1_1VNBO79oF",
+                        "AppClientId": "2569ob8mibj481ch4270k5vmar",
                         "Region": "us-east-1"
                     }
                 },
@@ -54,16 +54,10 @@ const amplifyconfig = '''{
                 },
                 "AppSync": {
                     "Default": {
-                        "ApiUrl": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
-                        "Region": "us-east-1",
-                        "AuthMode": "AMAZON_COGNITO_USER_POOLS",
-                        "ClientDatabasePrefix": "serve_AMAZON_COGNITO_USER_POOLS"
-                    },
-                    "serve_API_KEY": {
-                        "ApiUrl": "https://lixsmr626nhgnh5fafoxb3lzo4.appsync-api.us-east-1.amazonaws.com/graphql",
+                        "ApiUrl": "https://wnypdj35uvgjtefrlibmxukcaq.appsync-api.us-east-1.amazonaws.com/graphql",
                         "Region": "us-east-1",
                         "AuthMode": "API_KEY",
-                        "ApiKey": "da2-36bf6u4lvjafdaifah2lwqsmyi",
+                        "ApiKey": "da2-qrrqlakhuzfqzj4p7gezx3y2h4",
                         "ClientDatabasePrefix": "serve_API_KEY"
                     }
                 }
