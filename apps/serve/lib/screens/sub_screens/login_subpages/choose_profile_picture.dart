@@ -85,7 +85,8 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
 
   Future<void> tryCreateAccount(UserClass user) async {
     await _signUp(password: user.password, email: user.email);
-    final s3url = await uploadProfileImageToS3(_image!, user.id);
+    final s3url = await uploadProfileImageToS3(
+        _image!, DateTime.now().millisecondsSinceEpoch.toString());
 
     Provider.of<UserProvider>(context, listen: false).password = user.password;
 
