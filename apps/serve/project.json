@@ -136,6 +136,14 @@
         "cwd": "apps/serve"
       },
       "outputs": ["{workspaceRoot}/apps/serve/build"]
+    },
+    "pub-get": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter pub get",
+        "cwd": "apps/serve"
+      },
+      "outputs": ["{workspaceRoot}/apps/serve/build"]
     }
   },
   "tags": []
