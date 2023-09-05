@@ -187,17 +187,21 @@ class _ProjectDetailsState extends State<ProjectDetails> {
               ),
               child: Text('About'),
             ),
-            ElevatedButton(
-              onPressed: () => {
-                if (!projectData['members'].contains(currentUserID))
-                  {addMember()}
-                else
-                  {onPostClick(currentUserID)}
-              },
-              child: Text(joinButtonText),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Color.fromARGB(255, 16, 34, 65),
+            Visibility(
+              visible: projectData
+                  .isNotEmpty, // Show the button when hasJoined is not null
+              child: ElevatedButton(
+                onPressed: () => {
+                  if (!projectData['members'].contains(currentUserID))
+                    {addMember()}
+                  else
+                    {onPostClick(currentUserID)}
+                },
+                child: Text(joinButtonText),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 16, 34, 65),
+                  ),
                 ),
               ),
             ),
