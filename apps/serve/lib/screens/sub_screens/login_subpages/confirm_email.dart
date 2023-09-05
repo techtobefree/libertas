@@ -57,6 +57,7 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
         if (createdUser != null) {
           // Do something with the created user
           print('User created: ${createdUser.toJson()}');
+          Provider.of<UserProvider>(context, listen: false).id = createdUser.id;
 
           context.go('/projects'); // Replace with the actual route
         }

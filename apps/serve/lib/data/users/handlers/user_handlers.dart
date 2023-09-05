@@ -123,6 +123,16 @@ class UserHandlers {
     return null;
   }
 
+  static Future<List<dynamic>> getUsers() async {
+    var jsonResponse = await getUUsers();
+    var projects = [];
+    for (var uproject in jsonResponse) {
+      projects.add(uproject!.toJson());
+    }
+    // print(jsonResponse);
+    return projects;
+  }
+
   static Future<UUser?> getUUserByEmail(String email) async {
     final queryPredicate = UUser.EMAIL.eq(email);
 
@@ -148,6 +158,23 @@ class UserHandlers {
       print('signed in auth');
     } on AuthException catch (e) {
       safePrint('Error signing in: ${e.message}');
+    }
+  }
+
+  static Future<List<UUser?>> getUUsers() async {
+    try {
+      final request = ModelQueries.list(UUser.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final uusers = response.data?.items;
+      if (uusers == null) {
+        safePrint('errors: ${response.errors}');
+        return const [];
+      }
+      return uusers;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
     }
   }
 

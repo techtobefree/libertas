@@ -27,6 +27,12 @@ class _FinishProjectState extends State<FinishProject> {
     _futureProjects = getProjects();
   }
 
+  void resetState() {
+    setState(() {
+      _futureProjects = getProjects();
+    });
+  }
+
   // Future<bool> _finishProject(String projId, context) async {
   //   // var url = Uri.parse('http://44.203.120.103:3000/projects/$projId/complete');
   //   // var response = await http.put(url);
@@ -77,11 +83,10 @@ class _FinishProjectState extends State<FinishProject> {
             return ListView.builder(
               itemCount: projects.length,
               itemBuilder: (context, index) {
-
                 return FinishProjectCard.fromJson(
                   projects[index],
-                  () => 
-                  ProjectHandlers.finishProject(projects[index]['id']),
+                  () => ProjectHandlers.finishProject(projects[index]['id']),
+                  () => resetState(),
                 );
               },
             );
@@ -109,8 +114,7 @@ class _FinishProjectState extends State<FinishProject> {
       // // print(jsonResponse);
       var projects = [];
       for (var project in projs) {
-        if (userId ==
-                project['members'][0] &&
+        if (userId == project['members'][0] &&
             project['isCompleted'] == false) {
           projects.add(project);
         }

@@ -4,6 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
 import 'package:flutter/material.dart';
@@ -71,18 +72,9 @@ class _ProjectsPageState extends State<ProjectsPage> {
     // }
   }
 
-
   Future<int> getNumUsers() async {
-    return 123;
-    // var url = Uri.parse('http://44.203.120.103:3000/users/numMembers');
-    // var response = await http.get(url);
-    // if (response.statusCode == 200) {
-    //   var jsonResponse = jsonDecode(response.body);
-
-    //   return jsonResponse['numUsers'];
-    // } else {
-    //   throw Exception('Failed to load projects');
-    // }
+    var uusers = await UserHandlers.getUUsers();
+    return uusers.length;
   }
 
   @override
@@ -164,8 +156,8 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 280,
-                    height: 100,
+                    width: MediaQuery.of(context).size.width - 10,
+                    height: (MediaQuery.of(context).size.width - 10) / 3.5,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(

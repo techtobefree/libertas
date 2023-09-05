@@ -15,23 +15,29 @@ class FinishProjectCard extends StatelessWidget {
   final String numMembers;
   final Map<String, dynamic> project;
   final void Function() onFinish;
+  final void Function() resetState;
+
   // final String thumbnailUrl;
 
-  FinishProjectCard({
-    required this.title,
-    required this.numMembers,
-    required this.project,
-    required this.onFinish,
-    // required this.thumbnailUrl,
-  });
+  FinishProjectCard(
+      {required this.title,
+      required this.numMembers,
+      required this.project,
+      required this.onFinish,
+      required this.resetState
+      // required this.thumbnailUrl,
+      });
 
   // Named constructor that accepts a JSON object
   FinishProjectCard.fromJson(
-      Map<String, dynamic> json, void Function() onFinishFun)
-      : title = json['name'],
+    Map<String, dynamic> json,
+    void Function() onFinishFun,
+    void Function() resState,
+  )   : title = json['name'],
         numMembers = json['members'].length.toString(),
         project = json,
-        onFinish = onFinishFun;
+        onFinish = onFinishFun,
+        resetState = resState;
 
   Future<void> putHoursSpent(int hours) async {
     final url = Uri.parse(
@@ -126,9 +132,12 @@ class FinishProjectCard extends StatelessWidget {
                                           print(textController.text);
                                           int hours =
                                               int.parse(textController.text);
-                                          ProjectHandlers.addHours(project['id'], hours);
-
+                                          ProjectHandlers.addHours(
+                                              project['id'], hours);
+                                          resetState();
                                           Navigator.of(context).pop();
+                                          resetState();
+                                          context.go("/menu/finishprojects");
                                         },
                                       ),
                                     ],
@@ -151,11 +160,32 @@ class FinishProjectCard extends StatelessWidget {
                         project['projectPicture'].isNotEmpty)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(5),
-                        child: Image.network(project['projectPicture'],
-                            fit: BoxFit
-                                .cover, // adjust the image to fit the widget
-                            height: 130, // set the height of the widget
-                            width: 150),
+                        child: Image.network(
+                          project['projectPicture'],
+                          fit: BoxFit
+                              .cover, // adjust the image to fit the widget
+                          height: 130, // set the height of the widget
+                          width: 150,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                                height: 130,
+                                width: 160,
+                                child: Padding(
+                                  padding: EdgeInsets.all(30),
+                                  child: CircularProgressIndicator(),
+                                ));
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey,
+                              child: Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                   ]),
             ),
