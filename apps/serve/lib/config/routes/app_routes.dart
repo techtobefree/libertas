@@ -210,7 +210,9 @@ final goRouter = GoRouter(
           routes: [
             GoRoute(
               path: 'myprofile',
-              builder: (context, state) => Profile(/*label: 'B'*/),
+              name: 'profile',
+              builder: (context, state) =>
+                  Profile(id: state.queryParameters['id']),
             ),
             GoRoute(
               path: 'finishprojects',

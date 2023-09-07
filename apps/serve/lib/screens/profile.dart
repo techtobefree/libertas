@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
@@ -9,18 +10,30 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../models/ModelProvider.dart';
 import '../widgets/find_project_card.dart';
 
 class Profile extends StatefulWidget {
+  final String? id; // Add this line
+
+  const Profile({super.key, this.id}); // Add this constructor
   @override
   ProfileState createState() => ProfileState();
 }
 
 class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
+  UUser user = UUser(email: "", password: "", firstName: "", lastName: "");
   @override
   void initState() {
     _tabController = new TabController(length: 1, vsync: this);
-    _futureProjects = ProjectHandlers.getMyProjects(Provider.of<UserProvider>(context, listen: false).id);
+    final userId =
+        widget.id ?? Provider.of<UserProvider>(context, listen: false).id;
+    _futureProjects = ProjectHandlers.getMyProjects(userId);
+    UserHandlers.getUUserById(userId).then((data) => {
+          setState(() {
+            user = data!;
+          })
+        });
 
     super.initState();
   }
@@ -106,8 +119,8 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     child: ProfilePicture(
                       Colors.pinkAccent,
                       120,
-                      Provider.of<UserProvider>(context).profilePictureUrl,
-                      '',
+                      user?.profilePictureUrl ?? "",
+                      user!.id,
                       borderRadius: 10,
                     ),
                   ),
@@ -116,7 +129,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       Container(
         padding: EdgeInsets.only(top: 10),
         child: Text(
-          "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
+          "${user?.firstName} ${user?.lastName}",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,

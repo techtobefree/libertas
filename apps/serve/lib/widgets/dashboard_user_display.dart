@@ -10,11 +10,13 @@ class DashboardUserDisplay extends StatelessWidget {
   final name;
   final dimension;
   final url;
+  final id;
   const DashboardUserDisplay(
       {super.key,
       required this.dimension,
       required this.name,
-      required this.url});
+      required this.url,
+      required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class DashboardUserDisplay extends StatelessWidget {
         // '',
 
         url,
-        '',
+        id,
 
         borderRadius: 7,
       ),
