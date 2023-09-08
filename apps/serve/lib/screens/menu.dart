@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:serve_to_be_free/widgets/buttons/menu_button.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
@@ -24,6 +27,15 @@ class MenuPage extends StatelessWidget {
     this.howItWorksPath,
     this.aboutPath,
   });
+
+  Future<void> signOutCurrentUser() async {
+    final result = await Amplify.Auth.signOut();
+    if (result is CognitoCompleteSignOut) {
+      safePrint('Sign out completed successfully');
+    } else if (result is CognitoFailedSignOut) {
+      safePrint('Error signing user out: ${result.exception.message}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +105,23 @@ class MenuPage extends StatelessWidget {
                     ),
                     "About Serve To Be Free",
                     aboutPath),
+                SizedBox(
+                    height:
+                        20), // Add some space between the last item and the logout button
+                TextButton(
+                  onPressed: () {
+                    // Handle Logout action
+                    signOutCurrentUser();
+                    context.go("/login");
+                  },
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(
+                      color: Colors.red, // Change the text color as desired
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
               ],
             )));
   }

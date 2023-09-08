@@ -107,20 +107,24 @@ class _FinishProjectState extends State<FinishProject> {
   Future<List<dynamic>> getProjects() async {
     // var url = Uri.parse('http://44.203.120.103:3000/projects');
     // var response = await http.get(url);
-    var userId = Provider.of<UserProvider>(context, listen: false).id;
-    var projs = await ProjectHandlers.getMyProjects(userId);
-    if (projs.isNotEmpty) {
-      // var jsonResponse = jsonDecode(response.body);
-      // // print(jsonResponse);
-      var projects = [];
-      for (var project in projs) {
-        if (userId == project['members'][0] &&
-            project['isCompleted'] == false) {
-          projects.add(project);
+    try {
+      var userId = Provider.of<UserProvider>(context, listen: false).id;
+      var projs = await ProjectHandlers.getMyProjects(userId);
+      if (projs.isNotEmpty) {
+        // var jsonResponse = jsonDecode(response.body);
+        // // print(jsonResponse);
+        var projects = [];
+        for (var project in projs) {
+          if (userId == project['members'][0] &&
+              project['isCompleted'] == false) {
+            projects.add(project);
+          }
         }
+        return projects;
+      } else {
+        return [];
       }
-      return projects;
-    } else {
+    } catch (exp) {
       throw Exception('Failed to load projects');
     }
   }
