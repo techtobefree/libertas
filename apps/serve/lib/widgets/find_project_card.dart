@@ -20,7 +20,7 @@ class ProjectCard extends StatelessWidget {
   ProjectCard.fromJson(Map<String, dynamic> json)
       : title = json['name'],
         numMembers = json['members'].length.toString(),
-        sponsors = json['sponsors'],
+        sponsors = json['sponsors'] ?? [],
         project = json;
 
   @override

@@ -187,17 +187,21 @@ class _ProjectDetailsState extends State<ProjectDetails> {
               ),
               child: Text('About'),
             ),
-            ElevatedButton(
-              onPressed: () => {
-                if (!projectData['members'].contains(currentUserID))
-                  {addMember()}
-                else
-                  {onPostClick(currentUserID)}
-              },
-              child: Text(joinButtonText),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Color.fromARGB(255, 16, 34, 65),
+            Visibility(
+              visible: projectData
+                  .isNotEmpty, // Show the button when hasJoined is not null
+              child: ElevatedButton(
+                onPressed: () => {
+                  if (!projectData['members'].contains(currentUserID))
+                    {addMember()}
+                  else
+                    {onPostClick(currentUserID)}
+                },
+                child: Text(joinButtonText),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 16, 34, 65),
+                  ),
                 ),
               ),
             ),
@@ -210,7 +214,8 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                       1; // compute the index of the reversed list
                   return ProjectPost(
                     id: '',
-                    name: '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
+                    name:
+                        '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
                     postText: projectData['posts'][reversedIndex]['text'],
                     profURL:
                         projectData['posts'][reversedIndex]['imageUrl'] ?? '',

@@ -38,6 +38,7 @@ class _DashboardPageState extends State<DashboardPage> {
   List<dynamic> posts = [];
   List<dynamic> profPics = ["", "", "", "", ""];
   List<dynamic> names = ["", "", "", "", ""];
+  List<dynamic> ids = ["", "", "", "", ""];
 
   Future<List<dynamic>> getPosts() async {
     var posts = [];
@@ -57,7 +58,8 @@ class _DashboardPageState extends State<DashboardPage> {
           if (response.data!.items.isNotEmpty) {
             posts.add(response.data!.items[0]!.toJson());
             posts[posts.length - 1]['name'] = posts[posts.length - 1]['user']
-                    ['firstName'] + ' ' +
+                    ['firstName'] +
+                ' ' +
                 posts[posts.length - 1]['user']['lastName'];
             posts[posts.length - 1]['text'] =
                 posts[posts.length - 1]['content'];
@@ -110,22 +112,32 @@ class _DashboardPageState extends State<DashboardPage> {
     // }
   }
 
-  List<dynamic> getProfPics(users) {
+  Map<String, List<dynamic>> getProfPics(users) {
+    var profPicsAndIds = {"profPics": [], "ids": []};
     var profPicsUrls = [];
+    var ids = [];
 
     for (var user in users) {
       var url = user.profilePictureUrl;
       if (url != null && url != "") {
+        profPicsAndIds['profPics']?.add(url);
+        profPicsAndIds['ids']?.add(user.id);
         profPicsUrls.add(url);
+        ids.add(user.id);
       }
       if (profPicsUrls.length == 5) {
-        return profPicsUrls;
+        return profPicsAndIds;
       }
     }
     for (var i = profPicsUrls.length; i < 5; i++) {
+      profPicsAndIds['ids']?.add("");
+      profPicsAndIds['profPics']?.add("");
+
       profPicsUrls.add("");
+      ids.add("");
     }
-    return profPicsUrls;
+
+    return profPicsAndIds;
   }
 
   List<dynamic> setNames(users) {
@@ -155,7 +167,9 @@ class _DashboardPageState extends State<DashboardPage> {
     });
     getUsers().then((data) => {
           setState(() {
-            profPics = getProfPics(data);
+            var idsAndPics = getProfPics(data);
+            profPics = idsAndPics["profPics"]!;
+            ids = idsAndPics["ids"]!;
             names = setNames(data);
           })
         });
@@ -198,9 +212,11 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     ),
                     child: DashboardUserDisplay(
-                        dimension: 80.0,
-                        name: names[0] ?? "",
-                        url: profPics[0] ?? ""),
+                      dimension: 80.0,
+                      name: names[0] ?? "",
+                      url: profPics[0] ?? "",
+                      id: ids[0] ?? "",
+                    ),
                   ),
                   // Container(
                   //   padding: EdgeInsets.all(20),
@@ -216,21 +232,29 @@ class _DashboardPageState extends State<DashboardPage> {
                       children: [
                         // LIST OF USERS
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[1] ?? "",
-                            url: profPics[1] ?? ""),
+                          dimension: 60.0,
+                          name: names[1] ?? "",
+                          url: profPics[1] ?? "",
+                          id: ids[1] ?? "",
+                        ),
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[2] ?? "",
-                            url: profPics[2] ?? ""),
+                          dimension: 60.0,
+                          name: names[2] ?? "",
+                          url: profPics[2] ?? "",
+                          id: ids[2] ?? "",
+                        ),
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[3] ?? "",
-                            url: profPics[3] ?? ""),
+                          dimension: 60.0,
+                          name: names[3] ?? "",
+                          url: profPics[3] ?? "",
+                          id: ids[3] ?? "",
+                        ),
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[4] ?? "",
-                            url: profPics[4] ?? ""),
+                          dimension: 60.0,
+                          name: names[4] ?? "",
+                          url: profPics[4] ?? "",
+                          id: ids[4] ?? "",
+                        ),
                       ],
                     ),
                   ))),

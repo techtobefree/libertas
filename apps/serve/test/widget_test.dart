@@ -64,6 +64,7 @@ void main() {
     const String name = 'John Doe';
     const double dimension = 80.0;
     const String url = 'https://example.com/profile_picture.jpg';
+    const String id = "";
 
     await tester.pumpWidget(
       MaterialApp(
@@ -72,6 +73,7 @@ void main() {
             name: name,
             dimension: dimension,
             url: url,
+            id: id,
           ),
         ),
       ),

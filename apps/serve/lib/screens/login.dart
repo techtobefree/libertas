@@ -1,3 +1,5 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +27,44 @@ class _LoginScreenState extends State<LoginScreen> {
   bool? _rememberMe = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    isUserSignedIn();
+  }
+
+  Future<bool> isUserSignedIn() async {
+    final result = await Amplify.Auth.fetchAuthSession();
+    if (result.isSignedIn) {
+      var authUser = await getCurrentUser();
+
+      if (authUser.signInDetails is CognitoSignInDetailsApiBased) {
+        var apiBasedSignInDetails =
+            authUser.signInDetails as CognitoSignInDetailsApiBased;
+        String email = apiBasedSignInDetails.username;
+
+        final user = await UserHandlers.getUserByEmail(email);
+        if (user != null) {
+          Provider.of<UserProvider>(context, listen: false).email = user.email;
+          Provider.of<UserProvider>(context, listen: false).id = user.id;
+          Provider.of<UserProvider>(context, listen: false).firstName =
+              user.firstName;
+          Provider.of<UserProvider>(context, listen: false).lastName =
+              user.lastName;
+          Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
+              user.profilePictureUrl;
+        }
+        context.go('/dashboard');
+      }
+    }
+    return result.isSignedIn;
+  }
+
+  Future<AuthUser> getCurrentUser() async {
+    final user = await Amplify.Auth.getCurrentUser();
+    return user;
+  }
 
   Widget _buildUserNameTF() {
     return Column(
@@ -286,28 +326,74 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void tryLogin() async {
-    final user = await UserHandlers.getUserByEmail(emailController.text);
-    if (user == null) {
-      showAlertDialog(context);
-      return;
+  Future<void> signInUser(String username, String password) async {
+    try {
+      final result = await Amplify.Auth.signIn(
+        username: username,
+        password: password,
+      );
+      await _handleSignInResult(result);
+    } on AuthException catch (e) {
+      safePrint('Error signing in: ${e.message}');
     }
+  }
 
-    bool isAuthenticated =
-        await authenticateUser(user!.email, passwordController.text);
-    if (isAuthenticated || passwordController.text == user.password) {
-      Provider.of<UserProvider>(context, listen: false).email = user.email;
-      Provider.of<UserProvider>(context, listen: false).id = user.id;
-      Provider.of<UserProvider>(context, listen: false).firstName =
-          user.firstName;
-      Provider.of<UserProvider>(context, listen: false).lastName =
-          user.lastName;
-      Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-          user.profilePictureUrl;
-      context.go('/dashboard');
-    } else {
-      showAlertDialog(context);
+  Future<void> _handleSignInResult(SignInResult result) async {
+    switch (result.nextStep.signInStep) {
+      case AuthSignInStep.confirmSignInWithSmsMfaCode:
+        final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
+        _handleCodeDelivery(codeDeliveryDetails);
+        break;
+      case AuthSignInStep.confirmSignInWithNewPassword:
+        safePrint('Enter a new password to continue signing in');
+        break;
+      case AuthSignInStep.confirmSignInWithCustomChallenge:
+        final parameters = result.nextStep.additionalInfo;
+        final prompt = parameters['prompt']!;
+        safePrint(prompt);
+        break;
+
+      case AuthSignInStep.done:
+        safePrint('Sign in is complete');
+        break;
     }
+  }
+
+  void _handleCodeDelivery(AuthCodeDeliveryDetails codeDeliveryDetails) {
+    safePrint(
+      'A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
+      'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
+    );
+  }
+
+  void tryLogin() async {
+    print(emailController.text);
+    print(passwordController.text);
+
+    await signInUser(emailController.text, passwordController.text);
+    // final user = await UserHandlers.getUserByEmail(emailController.text);
+    await isUserSignedIn();
+
+    // if (user == null) {
+    //   showAlertDialog(context);
+    //   return;
+    // }
+
+    // // bool isAuthenticated =
+    // //     await authenticateUser(user!.email, passwordController.text);
+    // // if (isAuthenticated || passwordController.text == user.password) {
+    //   Provider.of<UserProvider>(context, listen: false).email = user.email;
+    //   Provider.of<UserProvider>(context, listen: false).id = user.id;
+    //   Provider.of<UserProvider>(context, listen: false).firstName =
+    //       user.firstName;
+    //   Provider.of<UserProvider>(context, listen: false).lastName =
+    //       user.lastName;
+    //   Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
+    //       user.profilePictureUrl;
+    //   context.go('/dashboard');
+    // } else {
+    //   showAlertDialog(context);
+    // }
   }
 //   Future<void> tryLogin() async {
 //     final url = Uri.parse(

@@ -70,14 +70,14 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
       // };
       // var members =
       //     jsonEncode([Provider.of<UserProvider>(context, listen: false).id]);
-      var user = await UserHandlers.getUUserById(
-          Provider.of<UserProvider>(context, listen: false).id);
-      final postRequest = ModelMutations.create(
-          UPost(content: "Welcome", date: "", user: user!));
-      final postResponse =
-          await Amplify.API.mutate(request: postRequest).response;
+      // var user = await UserHandlers.getUUserByEmail(
+      //     Provider.of<UserProvider>(context, listen: false).email);
+      // final postRequest = ModelMutations.create(
+      //     UPost(content: "Welcome", date: "", user: user));
+      // final postResponse =
+      //     await Amplify.API.mutate(request: postRequest).response;
 
-      List<UPost> list = [postResponse.data!];
+      // List<UPost> list = [postResponse.data!];
       UProject uproject = UProject(
           name: formData['projectName'],
           description: formData['projectDescription'],
@@ -91,6 +91,7 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
               imageURL,
           city: formData['city'],
           state: formData['state'],
+          sponsors: [],
           bio: formData['projectBio'],
           isCompleted: false,
           members: [Provider.of<UserProvider>(context, listen: false).id]);

@@ -20,14 +20,12 @@
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
 import 'ModelProvider.dart';
-import 'package:amplify_core/amplify_core.dart';
+import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 
 /** This is an auto generated class representing the UUser type in your schema. */
-@immutable
-class UUser extends Model {
+class UUser extends amplify_core.Model {
   static const classType = const _UUserModelType();
   final String id;
   final String? _password;
@@ -40,8 +38,8 @@ class UUser extends Model {
   final List<UUser>? _friends;
   final List<UPost>? _posts;
   final List<USponsor>? _sponsors;
-  final TemporalDateTime? _createdAt;
-  final TemporalDateTime? _updatedAt;
+  final amplify_core.TemporalDateTime? _createdAt;
+  final amplify_core.TemporalDateTime? _updatedAt;
   final String? _uUserFriendsId;
 
   @override
@@ -61,10 +59,10 @@ class UUser extends Model {
     try {
       return _password!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -74,10 +72,10 @@ class UUser extends Model {
     try {
       return _email!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -87,10 +85,10 @@ class UUser extends Model {
     try {
       return _firstName!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -100,10 +98,10 @@ class UUser extends Model {
     try {
       return _lastName!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -133,11 +131,11 @@ class UUser extends Model {
     return _sponsors;
   }
   
-  TemporalDateTime? get createdAt {
+  amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
   
-  TemporalDateTime? get updatedAt {
+  amplify_core.TemporalDateTime? get updatedAt {
     return _updatedAt;
   }
   
@@ -149,7 +147,7 @@ class UUser extends Model {
   
   factory UUser({String? id, required String password, required String email, required String firstName, required String lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<UUser>? friends, List<UPost>? posts, List<USponsor>? sponsors, String? uUserFriendsId}) {
     return UUser._internal(
-      id: id == null ? UUID.getUUID() : id,
+      id: id == null ? amplify_core.UUID.getUUID() : id,
       password: password,
       email: email,
       firstName: firstName,
@@ -224,6 +222,35 @@ class UUser extends Model {
       uUserFriendsId: uUserFriendsId ?? this.uUserFriendsId);
   }
   
+  UUser copyWithModelFieldValues({
+    ModelFieldValue<String>? password,
+    ModelFieldValue<String>? email,
+    ModelFieldValue<String>? firstName,
+    ModelFieldValue<String>? lastName,
+    ModelFieldValue<String?>? profilePictureUrl,
+    ModelFieldValue<String?>? coverPictureUrl,
+    ModelFieldValue<List<UProject>?>? projects,
+    ModelFieldValue<List<UUser>?>? friends,
+    ModelFieldValue<List<UPost>?>? posts,
+    ModelFieldValue<List<USponsor>?>? sponsors,
+    ModelFieldValue<String?>? uUserFriendsId
+  }) {
+    return UUser._internal(
+      id: id,
+      password: password == null ? this.password : password.value,
+      email: email == null ? this.email : email.value,
+      firstName: firstName == null ? this.firstName : firstName.value,
+      lastName: lastName == null ? this.lastName : lastName.value,
+      profilePictureUrl: profilePictureUrl == null ? this.profilePictureUrl : profilePictureUrl.value,
+      coverPictureUrl: coverPictureUrl == null ? this.coverPictureUrl : coverPictureUrl.value,
+      projects: projects == null ? this.projects : projects.value,
+      friends: friends == null ? this.friends : friends.value,
+      posts: posts == null ? this.posts : posts.value,
+      sponsors: sponsors == null ? this.sponsors : sponsors.value,
+      uUserFriendsId: uUserFriendsId == null ? this.uUserFriendsId : uUserFriendsId.value
+    );
+  }
+  
   UUser.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _password = json['password'],
@@ -256,8 +283,8 @@ class UUser extends Model {
           .map((e) => USponsor.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
-      _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
+      _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
       _uUserFriendsId = json['uUserFriendsId'];
   
   Map<String, dynamic> toJson() => {
@@ -265,123 +292,147 @@ class UUser extends Model {
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'password': _password, 'email': _email, 'firstName': _firstName, 'lastName': _lastName, 'profilePictureUrl': _profilePictureUrl, 'coverPictureUrl': _coverPictureUrl, 'projects': _projects, 'friends': _friends, 'posts': _posts, 'sponsors': _sponsors, 'createdAt': _createdAt, 'updatedAt': _updatedAt, 'uUserFriendsId': _uUserFriendsId
+    'id': id,
+    'password': _password,
+    'email': _email,
+    'firstName': _firstName,
+    'lastName': _lastName,
+    'profilePictureUrl': _profilePictureUrl,
+    'coverPictureUrl': _coverPictureUrl,
+    'projects': _projects,
+    'friends': _friends,
+    'posts': _posts,
+    'sponsors': _sponsors,
+    'createdAt': _createdAt,
+    'updatedAt': _updatedAt,
+    'uUserFriendsId': _uUserFriendsId
   };
 
-  static final QueryModelIdentifier<UUserModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<UUserModelIdentifier>();
-  static final QueryField ID = QueryField(fieldName: "id");
-  static final QueryField PASSWORD = QueryField(fieldName: "password");
-  static final QueryField EMAIL = QueryField(fieldName: "email");
-  static final QueryField FIRSTNAME = QueryField(fieldName: "firstName");
-  static final QueryField LASTNAME = QueryField(fieldName: "lastName");
-  static final QueryField PROFILEPICTUREURL = QueryField(fieldName: "profilePictureUrl");
-  static final QueryField COVERPICTUREURL = QueryField(fieldName: "coverPictureUrl");
-  static final QueryField PROJECTS = QueryField(
+  static final amplify_core.QueryModelIdentifier<UUserModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<UUserModelIdentifier>();
+  static final ID = amplify_core.QueryField(fieldName: "id");
+  static final PASSWORD = amplify_core.QueryField(fieldName: "password");
+  static final EMAIL = amplify_core.QueryField(fieldName: "email");
+  static final FIRSTNAME = amplify_core.QueryField(fieldName: "firstName");
+  static final LASTNAME = amplify_core.QueryField(fieldName: "lastName");
+  static final PROFILEPICTUREURL = amplify_core.QueryField(fieldName: "profilePictureUrl");
+  static final COVERPICTUREURL = amplify_core.QueryField(fieldName: "coverPictureUrl");
+  static final PROJECTS = amplify_core.QueryField(
     fieldName: "projects",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UProject'));
-  static final QueryField FRIENDS = QueryField(
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UProject'));
+  static final FRIENDS = amplify_core.QueryField(
     fieldName: "friends",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UUser'));
-  static final QueryField POSTS = QueryField(
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UUser'));
+  static final POSTS = amplify_core.QueryField(
     fieldName: "posts",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UPost'));
-  static final QueryField SPONSORS = QueryField(
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UPost'));
+  static final SPONSORS = amplify_core.QueryField(
     fieldName: "sponsors",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'USponsor'));
-  static final QueryField UUSERFRIENDSID = QueryField(fieldName: "uUserFriendsId");
-  static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'USponsor'));
+  static final UUSERFRIENDSID = amplify_core.QueryField(fieldName: "uUserFriendsId");
+  static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UUser";
     modelSchemaDefinition.pluralName = "UUsers";
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    modelSchemaDefinition.authRules = [
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PUBLIC,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ])
+    ];
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.PASSWORD,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.EMAIL,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.FIRSTNAME,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.LASTNAME,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.PROFILEPICTUREURL,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.COVERPICTUREURL,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: UUser.PROJECTS,
       isRequired: false,
       ofModelName: 'UProject',
       associatedKey: UProject.UUSERPROJECTSID
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: UUser.FRIENDS,
       isRequired: false,
       ofModelName: 'UUser',
       associatedKey: UUser.UUSERFRIENDSID
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: UUser.POSTS,
       isRequired: false,
       ofModelName: 'UPost',
       associatedKey: UPost.USER
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: UUser.SPONSORS,
       isRequired: false,
       ofModelName: 'USponsor',
       associatedKey: USponsor.USER
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'createdAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'updatedAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.UUSERFRIENDSID,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }
 
-class _UUserModelType extends ModelType<UUser> {
+class _UUserModelType extends amplify_core.ModelType<UUser> {
   const _UUserModelType();
   
   @override
@@ -399,8 +450,7 @@ class _UUserModelType extends ModelType<UUser> {
  * This is an auto generated class representing the model identifier
  * of [UUser] in your schema.
  */
-@immutable
-class UUserModelIdentifier implements ModelIdentifier<UUser> {
+class UUserModelIdentifier implements amplify_core.ModelIdentifier<UUser> {
   final String id;
 
   /** Create an instance of UUserModelIdentifier using [id] the primary key. */
