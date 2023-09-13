@@ -220,6 +220,8 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                     profURL:
                         projectData['posts'][reversedIndex]['imageUrl'] ?? '',
                     date: projectData['posts'][reversedIndex]['date'] ?? '',
+                    userId:
+                        projectData['posts'][reversedIndex]['user']['id'] ?? '',
                   );
                   // return DashboardUserDisplay(
                   //     dimension: 60.0,

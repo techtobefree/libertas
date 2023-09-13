@@ -348,11 +348,13 @@ class _DashboardPageState extends State<DashboardPage> {
                   // compute the index of the reversed list
                   //print(posts[index]['_id']);
                   return ProjectPost(
-                      id: posts[index]['id'],
-                      name: posts[index]['name'],
-                      postText: posts[index]['text'],
-                      profURL: posts[index]['imageUrl'] ?? '',
-                      date: posts[index]['date'] ?? '');
+                    id: posts[index]['id'],
+                    name: posts[index]['name'],
+                    postText: posts[index]['text'],
+                    profURL: posts[index]['imageUrl'] ?? '',
+                    date: posts[index]['date'] ?? '',
+                    userId: posts[index]['user']['id'],
+                  );
                   // return DashboardUserDisplay(
                   //     dimension: 60.0,
                   //     name: projectData['posts']?[index]['text']);
