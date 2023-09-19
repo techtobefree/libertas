@@ -29,6 +29,7 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_a_pr
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/about_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/my_projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members.dart';
 
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project.dart';
 import 'package:serve_to_be_free/widgets/ui/my_scaffold.dart';
@@ -156,6 +157,13 @@ final goRouter = GoRouter(
               name: 'projectabout',
               builder: (context, state) =>
                   AboutProject(id: state.queryParameters['id']),
+            ),
+            GoRoute(
+              path: 'showmembers',
+              name: 'showmembers',
+              builder: (context, state) => ShowMembers(
+                projectId: state.queryParameters['projectId'],
+              ),
             ),
           ],
         ),

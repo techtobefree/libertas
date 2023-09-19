@@ -168,9 +168,43 @@ class _ProjectDetailsState extends State<ProjectDetails> {
             if (projectData.containsKey('bio')) Text(projectData['bio']),
             SizedBox(height: 10),
             if (projectData.containsKey('date')) Text('${projectData['date']}'),
-            Text(
-              '${projectData['members']?.length ?? ''} Members',
-              style: TextStyle(fontSize: 12),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${projectData['members']?.length ?? ''} Members',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(width: 5),
+                  SizedBox(
+                      width:
+                          5), // Add spacing between the members count and the dot
+                  Text(
+                    '•', // Horizontal dot separator
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(
+                      width:
+                          5), // Add spacing between the "Members" text and the hyperlink
+                  GestureDetector(
+                    onTap: () {
+                      print("view members");
+                      context.pushNamed("showmembers", queryParameters: {
+                        'projectId': projectData['id'],
+                      });
+                    },
+                    child: Text(
+                      'View Members',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
