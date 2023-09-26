@@ -69,7 +69,12 @@ class _JoinProjectDialogState extends State<JoinProjectDialog> {
     var uprojectPosts = uproject!.posts;
     var uuser = await UserHandlers.getUUserById(
         Provider.of<UserProvider>(context, listen: false).id);
-    var upost = UPost(user: uuser!, content: text, date: "");
+    DateTime now = DateTime.now();
+    var upost = UPost(
+        user: uuser!,
+        content: text,
+        date:
+            '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}');
     final request = ModelMutations.create(upost);
     final response = await Amplify.API.mutate(request: request).response;
 

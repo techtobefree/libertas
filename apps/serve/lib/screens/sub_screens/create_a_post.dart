@@ -1,13 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../../data/users/handlers/user_handlers.dart';
 import '../../data/users/providers/user_provider.dart';
+import '../../models/ModelProvider.dart';
 
 class CreateAPost extends StatefulWidget {
   const CreateAPost({Key? key}) : super(key: key);
@@ -27,24 +32,19 @@ class _CreateAPostState extends State<CreateAPost> {
   List<Map<String, dynamic>>? _options;
 
   Future<List<Map<String, dynamic>>> _getOptions() async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
+    try {
+      var projs = await ProjectHandlers.getMyProjects(
+          Provider.of<UserProvider>(context, listen: false).id);
       List<Map<String, dynamic>> myprojs = [];
-      for (var proj in jsonResponse) {
-        for (var member in proj['members']) {
-          if (member == Provider.of<UserProvider>(context, listen: false).id) {
-            myprojs.add({
-              'name': proj['name'],
-              'url': proj['projectPicture'],
-              'id': proj['_id']
-            });
-          }
-        }
+      for (var proj in projs) {
+        myprojs.add({
+          'name': proj['name'],
+          'url': proj['projectPicture'],
+          'id': proj['id']
+        });
       }
       return myprojs;
-    } else {
+    } catch (exp) {
       throw Exception('Failed to load projects');
     }
   }
@@ -164,52 +164,84 @@ class _CreateAPostState extends State<CreateAPost> {
   }
 
   void _postToApi(projId) async {
-    // Get the text from the text field
     final text = _textEditingController.text;
 
     // Make sure the text field is not empty
     if (text.isEmpty) {
       return;
     }
+    UProject? uproject = await ProjectHandlers.getUProjectById(projId);
+    var uprojectPosts = uproject!.posts;
+    var uuser = await UserHandlers.getUUserById(
+        Provider.of<UserProvider>(context, listen: false).id);
+    DateTime now = DateTime.now();
+
+    var upost = UPost(
+        user: uuser!,
+        content: text,
+        date:
+            '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}');
+
+    final request = ModelMutations.create(upost);
+    final response = await Amplify.API.mutate(request: request).response;
+
+    if (uprojectPosts == null) {
+      uprojectPosts = [response.data!.id];
+    } else {
+      uprojectPosts.add(response.data!.id);
+    }
+
+    final addedPostUProj = uproject.copyWith(posts: uprojectPosts);
+
+    try {
+      final request = ModelMutations.update(addedPostUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+      context.go('/dashboard');
+    } catch (e) {
+      throw Exception('Failed to update user: $e');
+    }
+
+    // Get the text from the text field
 
     // Make the API request
-    final url = Uri.parse('http://44.203.120.103:3000/projects/$projId/post');
-    final Map<String, dynamic> data;
-    if (Provider.of<UserProvider>(context, listen: false).profilePictureUrl !=
-        '') {
-      data = {
-        'member': Provider.of<UserProvider>(context, listen: false).id,
-        'name':
-            "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
-        'text': text,
-        'imageUrl':
-            Provider.of<UserProvider>(context, listen: false).profilePictureUrl
-      };
-    } else {
-      data = {
-        'member': Provider.of<UserProvider>(context, listen: false).id,
-        'name':
-            "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
-        'text': text
-      };
-    }
-    final response = await http.put(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(data),
-    );
+    // final url = Uri.parse('http://44.203.120.103:3000/projects/$projId/post');
+    // final Map<String, dynamic> data;
+    // if (Provider.of<UserProvider>(context, listen: false).profilePictureUrl !=
+    //     '') {
+    //   data = {
+    //     'member': Provider.of<UserProvider>(context, listen: false).id,
+    //     'name':
+    //         "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
+    //     'text': text,
+    //     'imageUrl':
+    //         Provider.of<UserProvider>(context, listen: false).profilePictureUrl
+    //   };
+    // } else {
+    //   data = {
+    //     'member': Provider.of<UserProvider>(context, listen: false).id,
+    //     'name':
+    //         "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
+    //     'text': text
+    //   };
+    // }
+    // final response = await http.put(
+    //   url,
+    //   headers: <String, String>{
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: jsonEncode(data),
+    // );
 
-    // Check the response status code
-    if (response.statusCode == 200) {
-      // The API call was successful
-      // Do something here, such as show a success message
-      context.go('/dashboard');
-    } else {
-      // The API call failed
-      // Do something here, such as show an error message
-    }
+    // // Check the response status code
+    // if (response.statusCode == 200) {
+    //   // The API call was successful
+    //   // Do something here, such as show a success message
+    //   context.go('/dashboard');
+    // } else {
+    //   // The API call failed
+    //   // Do something here, such as show an error message
+    // }
   }
 
   void _showOptionsDialog() async {
