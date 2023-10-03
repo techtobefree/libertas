@@ -96,6 +96,11 @@ class _AboutProjectState extends State<AboutProject> {
                 Visibility(
                   visible: shouldDisplayEditButton,
                   child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(255, 16, 34, 65),
+                      ),
+                    ),
                     onPressed: () {
                       // Handle the edit button press here
                       context.goNamed(
