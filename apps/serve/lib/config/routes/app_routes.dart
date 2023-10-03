@@ -115,9 +115,11 @@ final goRouter = GoRouter(
                 routes: [
                   GoRoute(
                       path: 'projectdetailsform',
+                      name: 'projectdetailsform',
                       builder: (context, state) => ProjectDetailsForm(
                           path:
-                              '/projects/createprojects/projectdetailsform/invitealeader'),
+                              '/projects/createprojects/projectdetailsform/invitealeader',
+                          id: state.queryParameters['id']),
                       routes: [
                         GoRoute(
                             path: 'invitealeader',
