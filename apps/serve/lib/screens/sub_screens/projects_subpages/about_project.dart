@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
@@ -64,6 +65,12 @@ class _AboutProjectState extends State<AboutProject> {
     final hasJoined = members.contains(currentUserID);
 
     final joinButtonText = hasJoined ? 'Post' : 'Join';
+
+    bool shouldDisplayEditButton = false;
+
+    if (members.length > 0) {
+      shouldDisplayEditButton = ((members[0] ?? '') == currentUserID);
+    }
     return Scaffold(
       appBar: AppBar(
           title: Text('Project Dashboard'),
@@ -86,6 +93,26 @@ class _AboutProjectState extends State<AboutProject> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Visibility(
+                  visible: shouldDisplayEditButton,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(255, 16, 34, 65),
+                      ),
+                    ),
+                    onPressed: () {
+                      // Handle the edit button press here
+                      context.goNamed(
+                        'projectdetailsform',
+                        queryParameters: {
+                          'id': projectData['id'],
+                        },
+                      );
+                    },
+                    child: Text('Edit Project'),
+                  ),
+                ),
                 if (projectData.containsKey('projectPicture') &&
                     projectData['projectPicture'].isNotEmpty)
                   Image.network(

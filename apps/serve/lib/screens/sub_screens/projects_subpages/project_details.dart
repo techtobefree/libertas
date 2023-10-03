@@ -3,6 +3,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
 import 'package:flutter/material.dart';
@@ -30,6 +31,8 @@ class ProjectDetails extends StatefulWidget {
 
 class _ProjectDetailsState extends State<ProjectDetails> {
   Map<String, dynamic> projectData = {};
+  List<dynamic> users = [];
+
   var sponsor = 0.0;
 
   Future<Map<String, dynamic>> getProjects() async {
@@ -90,6 +93,17 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     }
   }
 
+  Future<List> getMembers(idArr) async {
+    var users = [];
+    for (int i = 0; i < 5; i++) {
+      if (idArr.length > i) {
+        var user = await UserHandlers.getUUserById(idArr[i]);
+        users.add(user);
+      }
+    }
+    return users;
+  }
+
   Future<Map<String, dynamic>> getSponsor(id) async {
     final response =
         await http.get(Uri.parse('http://44.203.120.103:3000/sponsors/$id'));
@@ -114,10 +128,30 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     return formattedDate;
   }
 
+  List<Widget> generateUserWidgets(List<dynamic> users) {
+    List<Widget> userWidgets = [];
+    for (var i = 1; i < 4 && i < users.length; i++) {
+      userWidgets.add(
+        DashboardUserDisplay(
+          dimension: 60.0,
+          name: users[i].firstName ?? "",
+          url: users[i].profilePictureUrl ?? "",
+          id: users[i].id ?? "",
+        ),
+      );
+    }
+    return userWidgets;
+  }
+
   @override
   void initState() {
     super.initState();
     getProjects().then((data) {
+      getMembers(data['members']).then((value) {
+        setState(() {
+          users = value;
+        });
+      });
       setState(() {
         projectData = data;
         // print(projectData);
@@ -148,120 +182,186 @@ class _ProjectDetailsState extends State<ProjectDetails> {
               ),
             ),
           )),
-      body: Center(
+      body: SingleChildScrollView(
+        // Wrap your Column with SingleChildScrollView
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20),
-            Text(
-              projectData['name'] ?? '',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 10),
-            if (sponsor > 0)
-              Text(
-                  'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}'),
-            SizedBox(height: 10),
-            if (projectData.containsKey('city'))
-              Text('${projectData['city']}, ${projectData['state']}'),
-            SizedBox(height: 10),
-            if (projectData.containsKey('bio')) Text(projectData['bio']),
-            SizedBox(height: 10),
-            if (projectData.containsKey('date')) Text('${projectData['date']}'),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
                 children: [
+                  // Add horizontal margins
+                  SizedBox(height: 20),
                   Text(
-                    '${projectData['members']?.length ?? ''} Members',
-                    style: TextStyle(fontSize: 12),
+                    projectData['name'] ?? '',
+                    style: TextStyle(fontSize: 20),
                   ),
-                  SizedBox(width: 5),
-                  SizedBox(
-                      width:
-                          5), // Add spacing between the members count and the dot
-                  Text(
-                    '•', // Horizontal dot separator
-                    style: TextStyle(fontSize: 12),
+                  SizedBox(height: 5),
+
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${projectData['members']?.length ?? ''} Members',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        SizedBox(width: 5),
+                        SizedBox(
+                            width:
+                                5), // Add spacing between the members count and the dot
+                        Text(
+                          '•', // Horizontal dot separator
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        SizedBox(
+                            width:
+                                5), // Add spacing between the "Members" text and the hyperlink
+                        GestureDetector(
+                          onTap: () {
+                            print("view members");
+                            context.pushNamed("showmembers", queryParameters: {
+                              'projectId': projectData['id'],
+                            });
+                          },
+                          child: Text(
+                            'View Members',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                      width:
-                          5), // Add spacing between the "Members" text and the hyperlink
-                  GestureDetector(
-                    onTap: () {
-                      print("view members");
-                      context.pushNamed("showmembers", queryParameters: {
-                        'projectId': projectData['id'],
-                      });
-                    },
-                    child: Text(
-                      'View Members',
+                  SizedBox(height: 10),
+                  if (projectData.containsKey('date'))
+                    Text(
+                      '${projectData['date']}',
                       style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
                         fontSize: 12,
+                      ),
+                    ),
+                  Container(
+                    padding: EdgeInsets.only(top: 20, bottom: 10),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(right: 10, left: 10),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                right: BorderSide(
+                                  width: 3.0,
+                                  color: Colors.grey.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
+                            child: DashboardUserDisplay(
+                              dimension: 80.0,
+                              name: users.isNotEmpty
+                                  ? users[0].firstName ?? ""
+                                  : "",
+                              url: users.isNotEmpty
+                                  ? users[0].profilePictureUrl ?? ""
+                                  : "",
+                              id: users.isNotEmpty ? users[0].id ?? "" : "",
+                            ),
+                          ),
+                          // Container(
+                          //   padding: EdgeInsets.all(20),
+                          //   width: 1, // Set the width of the divider
+                          //   height: 90, // Set the height of the divider
+                          //   color: Colors.grey,
+                          // ),
+                          Container(
+                              child: Expanded(
+                                  child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: generateUserWidgets(users),
+                            ),
+                          ))),
+                        ]),
+                  ),
+                  SizedBox(height: 10),
+                  if (sponsor > 0)
+                    Text(
+                        'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}'),
+                  SizedBox(height: 10),
+                  if (projectData.containsKey('city'))
+                    Text('${projectData['city']}, ${projectData['state']}'),
+                  SizedBox(height: 10),
+                  if (projectData.containsKey('bio')) Text(projectData['bio']),
+
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      // navigate to about page
+                      context.pushNamed("projectabout",
+                          queryParameters: {'id': projectData['id']},
+                          pathParameters: {'id': projectData['id']});
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(255, 16, 34, 65),
+                      ),
+                    ),
+                    child: Text('About'),
+                  ),
+                  Visibility(
+                    visible: projectData
+                        .isNotEmpty, // Show the button when hasJoined is not null
+                    child: ElevatedButton(
+                      onPressed: () => {
+                        if (!projectData['members'].contains(currentUserID))
+                          {addMember()}
+                        else
+                          {onPostClick(currentUserID)}
+                      },
+                      child: Text(joinButtonText),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(255, 16, 34, 65),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // navigate to about page
-                context.pushNamed("projectabout",
-                    queryParameters: {'id': projectData['id']},
-                    pathParameters: {'id': projectData['id']});
+            // Expanded(
+            // child:
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: projectData['posts']?.length ?? 0,
+              itemBuilder: (context, index) {
+                final reversedIndex = projectData['posts'].length -
+                    index -
+                    1; // compute the index of the reversed list
+                return ProjectPost(
+                  id: '',
+                  name:
+                      '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
+                  postText: projectData['posts'][reversedIndex]['text'],
+                  profURL:
+                      projectData['posts'][reversedIndex]['imageUrl'] ?? '',
+                  date: projectData['posts'][reversedIndex]['date'] ?? '',
+                  userId:
+                      projectData['posts'][reversedIndex]['user']['id'] ?? '',
+                );
+                // return DashboardUserDisplay(
+                //     dimension: 60.0,
+                //     name: projectData['posts']?[index]['text']);
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Color.fromARGB(255, 16, 34, 65),
-                ),
-              ),
-              child: Text('About'),
-            ),
-            Visibility(
-              visible: projectData
-                  .isNotEmpty, // Show the button when hasJoined is not null
-              child: ElevatedButton(
-                onPressed: () => {
-                  if (!projectData['members'].contains(currentUserID))
-                    {addMember()}
-                  else
-                    {onPostClick(currentUserID)}
-                },
-                child: Text(joinButtonText),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromARGB(255, 16, 34, 65),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: projectData['posts']?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final reversedIndex = projectData['posts'].length -
-                      index -
-                      1; // compute the index of the reversed list
-                  return ProjectPost(
-                    id: '',
-                    name:
-                        '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
-                    postText: projectData['posts'][reversedIndex]['text'],
-                    profURL:
-                        projectData['posts'][reversedIndex]['imageUrl'] ?? '',
-                    date: projectData['posts'][reversedIndex]['date'] ?? '',
-                    userId:
-                        projectData['posts'][reversedIndex]['user']['id'] ?? '',
-                  );
-                  // return DashboardUserDisplay(
-                  //     dimension: 60.0,
-                  //     name: projectData['posts']?[index]['text']);
-                },
-              ),
+              // ),
             ),
           ],
         ),
