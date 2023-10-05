@@ -110,6 +110,35 @@ class _DashboardPageState extends State<DashboardPage> {
     return [...postsWithDate, ...postsWithoutDate];
   }
 
+  List<dynamic> sortPosts(List<dynamic> posts) {
+    List<dynamic> postsWithDate = [];
+    List<dynamic> postsWithoutDate = [];
+
+    // Separate posts with and without dates
+    for (var post in posts) {
+      if (post['date'] != null && post['date'] != "") {
+        try {
+          DateTime.parse(post['date']);
+          postsWithDate.add(post);
+        } catch (e) {
+          // Handle the case of invalid date formats
+        }
+      } else {
+        postsWithoutDate.add(post);
+      }
+    }
+
+    // Sort posts with dates
+    postsWithDate.sort((a, b) {
+      DateTime dateTimeA = DateTime.parse(a['date']);
+      DateTime dateTimeB = DateTime.parse(b['date']);
+      return dateTimeB.compareTo(dateTimeA);
+    });
+
+    // Concatenate the sorted posts with dates and posts without dates
+    return [...postsWithDate, ...postsWithoutDate];
+  }
+
   Future<List<dynamic>> getUsers() async {
     try {
       final request = ModelQueries.list(UUser.classType);

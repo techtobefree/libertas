@@ -182,6 +182,7 @@ class _CreateAPostState extends State<CreateAPost> {
         date:
             '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}');
 
+
     final request = ModelMutations.create(upost);
     final response = await Amplify.API.mutate(request: request).response;
 
@@ -201,6 +202,47 @@ class _CreateAPostState extends State<CreateAPost> {
     } catch (e) {
       throw Exception('Failed to update user: $e');
     }
+
+    // Get the text from the text field
+
+    // Make the API request
+    // final url = Uri.parse('http://44.203.120.103:3000/projects/$projId/post');
+    // final Map<String, dynamic> data;
+    // if (Provider.of<UserProvider>(context, listen: false).profilePictureUrl !=
+    //     '') {
+    //   data = {
+    //     'member': Provider.of<UserProvider>(context, listen: false).id,
+    //     'name':
+    //         "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
+    //     'text': text,
+    //     'imageUrl':
+    //         Provider.of<UserProvider>(context, listen: false).profilePictureUrl
+    //   };
+    // } else {
+    //   data = {
+    //     'member': Provider.of<UserProvider>(context, listen: false).id,
+    //     'name':
+    //         "${Provider.of<UserProvider>(context, listen: false).firstName} ${Provider.of<UserProvider>(context, listen: false).lastName}",
+    //     'text': text
+    //   };
+    // }
+    // final response = await http.put(
+    //   url,
+    //   headers: <String, String>{
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: jsonEncode(data),
+    // );
+
+    // // Check the response status code
+    // if (response.statusCode == 200) {
+    //   // The API call was successful
+    //   // Do something here, such as show a success message
+    //   context.go('/dashboard');
+    // } else {
+    //   // The API call failed
+    //   // Do something here, such as show an error message
+    // }
   }
 
   void _showOptionsDialog() async {
