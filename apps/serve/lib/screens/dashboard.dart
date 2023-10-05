@@ -38,11 +38,21 @@ class _DashboardPageState extends State<DashboardPage> {
   List<dynamic> posts = [];
   List<dynamic> profPics = ["", "", "", "", ""];
   List<dynamic> names = ["", "", "", "", ""];
+  List<dynamic> ids = ["", "", "", "", ""];
 
-  Future<List<dynamic>> getPosts() async {
+  String selectedValue = 'All Posts';
+  List<Map<String, dynamic>> dropdownOptions = [];
+
+  Future<List<dynamic>> getPosts(String? projId) async {
     var posts = [];
-    var projs = await ProjectHandlers.getMyProjects(
-        Provider.of<UserProvider>(context, listen: false).id);
+    var projs = [];
+    if (projId == "All Posts" || projId == null || projId == "") {
+      projs = await ProjectHandlers.getMyProjects(
+          Provider.of<UserProvider>(context, listen: false).id);
+    } else {
+      var proj = await ProjectHandlers.getUProjectById(projId);
+      projs.add(proj!.toJson());
+    }
     for (var proj in projs) {
       if (proj.containsKey('posts') && proj['posts'] != null) {
         for (var post in proj['posts']) {
@@ -57,7 +67,8 @@ class _DashboardPageState extends State<DashboardPage> {
           if (response.data!.items.isNotEmpty) {
             posts.add(response.data!.items[0]!.toJson());
             posts[posts.length - 1]['name'] = posts[posts.length - 1]['user']
-                    ['firstName'] + ' ' +
+                    ['firstName'] +
+                ' ' +
                 posts[posts.length - 1]['user']['lastName'];
             posts[posts.length - 1]['text'] =
                 posts[posts.length - 1]['content'];
@@ -68,18 +79,35 @@ class _DashboardPageState extends State<DashboardPage> {
       }
     }
     return posts;
-    //final userId = Provider.of<UserProvider>(context, listen: false).id;
-    // final url = Uri.parse(
-    //     'http://44.203.120.103:3000/users/${Provider.of<UserProvider>(context, listen: false).id}/myPosts');
-    // //'http://10.0.2.2:3000/users/${userId}/myPosts');
+  }
 
-    // var response = await http.get(url);
-    // if (response.statusCode == 200) {
-    //   var jsonResponse = jsonDecode(response.body);
-    //   return jsonResponse;
-    // } else {
-    //   throw Exception('Failed to load projects');
-    // }
+  List<dynamic> sortPosts(List<dynamic> posts) {
+    List<dynamic> postsWithDate = [];
+    List<dynamic> postsWithoutDate = [];
+
+    // Separate posts with and without dates
+    for (var post in posts) {
+      if (post['date'] != null && post['date'] != "") {
+        try {
+          DateTime.parse(post['date']);
+          postsWithDate.add(post);
+        } catch (e) {
+          // Handle the case of invalid date formats
+        }
+      } else {
+        postsWithoutDate.add(post);
+      }
+    }
+
+    // Sort posts with dates
+    postsWithDate.sort((a, b) {
+      DateTime dateTimeA = DateTime.parse(a['date']);
+      DateTime dateTimeB = DateTime.parse(b['date']);
+      return dateTimeB.compareTo(dateTimeA);
+    });
+
+    // Concatenate the sorted posts with dates and posts without dates
+    return [...postsWithDate, ...postsWithoutDate];
   }
 
   Future<List<dynamic>> getUsers() async {
@@ -98,34 +126,34 @@ class _DashboardPageState extends State<DashboardPage> {
       safePrint('Query failed: $e');
       return const [];
     }
-    // var url = Uri.parse('http://44.203.120.103:3000/users');
-    // var response = await http.get(url);
-    // if (response.statusCode == 200) {
-    //   var jsonResponse = jsonDecode(response.body);
-    //   jsonResponse.shuffle();
-
-    //   return jsonResponse;
-    // } else {
-    //   throw Exception('Failed to load projects');
-    // }
   }
 
-  List<dynamic> getProfPics(users) {
+  Map<String, List<dynamic>> getProfPics(users) {
+    var profPicsAndIds = {"profPics": [], "ids": []};
     var profPicsUrls = [];
+    var ids = [];
 
     for (var user in users) {
       var url = user.profilePictureUrl;
       if (url != null && url != "") {
+        profPicsAndIds['profPics']?.add(url);
+        profPicsAndIds['ids']?.add(user.id);
         profPicsUrls.add(url);
+        ids.add(user.id);
       }
       if (profPicsUrls.length == 5) {
-        return profPicsUrls;
+        return profPicsAndIds;
       }
     }
     for (var i = profPicsUrls.length; i < 5; i++) {
+      profPicsAndIds['ids']?.add("");
+      profPicsAndIds['profPics']?.add("");
+
       profPicsUrls.add("");
+      ids.add("");
     }
-    return profPicsUrls;
+
+    return profPicsAndIds;
   }
 
   List<dynamic> setNames(users) {
@@ -148,17 +176,52 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    getPosts().then((data) {
+    _loadDropdownOptions();
+    getPosts("All Posts").then((data) {
       setState(() {
-        posts = data;
+        posts = sortPosts(data);
       });
     });
     getUsers().then((data) => {
           setState(() {
-            profPics = getProfPics(data);
+            var idsAndPics = getProfPics(data);
+            profPics = idsAndPics["profPics"]!;
+            ids = idsAndPics["ids"]!;
             names = setNames(data);
           })
         });
+  }
+
+  Future<void> _loadDropdownOptions() async {
+    try {
+      var options = await _getOptions();
+      setState(() {
+        dropdownOptions = options;
+      });
+    } catch (exp) {
+      // Handle the exception
+      print('Failed to load options: $exp');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _getOptions() async {
+    try {
+      var projs = await ProjectHandlers.getMyProjects(
+          Provider.of<UserProvider>(context, listen: false).id);
+      List<Map<String, dynamic>> myprojs = [
+        {'name': "All Posts"}
+      ];
+      for (var proj in projs) {
+        myprojs.add({
+          'name': proj['name'],
+          'url': proj['projectPicture'],
+          'id': proj['id']
+        });
+      }
+      return myprojs;
+    } catch (exp) {
+      throw Exception('Failed to load projects');
+    }
   }
 
   @override
@@ -198,9 +261,11 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     ),
                     child: DashboardUserDisplay(
-                        dimension: 80.0,
-                        name: names[0] ?? "",
-                        url: profPics[0] ?? ""),
+                      dimension: 80.0,
+                      name: names[0] ?? "",
+                      url: profPics[0] ?? "",
+                      id: ids[0] ?? "",
+                    ),
                   ),
                   // Container(
                   //   padding: EdgeInsets.all(20),
@@ -216,21 +281,29 @@ class _DashboardPageState extends State<DashboardPage> {
                       children: [
                         // LIST OF USERS
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[1] ?? "",
-                            url: profPics[1] ?? ""),
+                          dimension: 60.0,
+                          name: names[1] ?? "",
+                          url: profPics[1] ?? "",
+                          id: ids[1] ?? "",
+                        ),
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[2] ?? "",
-                            url: profPics[2] ?? ""),
+                          dimension: 60.0,
+                          name: names[2] ?? "",
+                          url: profPics[2] ?? "",
+                          id: ids[2] ?? "",
+                        ),
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[3] ?? "",
-                            url: profPics[3] ?? ""),
+                          dimension: 60.0,
+                          name: names[3] ?? "",
+                          url: profPics[3] ?? "",
+                          id: ids[3] ?? "",
+                        ),
                         DashboardUserDisplay(
-                            dimension: 60.0,
-                            name: names[4] ?? "",
-                            url: profPics[4] ?? ""),
+                          dimension: 60.0,
+                          name: names[4] ?? "",
+                          url: profPics[4] ?? "",
+                          id: ids[4] ?? "",
+                        ),
                       ],
                     ),
                   ))),
@@ -255,24 +328,38 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   //Inkwell
                   Container(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        // Icon(Icons.menu_open_rounded, color: Colors.white),
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                            "All Posts",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                letterSpacing: -.5),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                      padding: EdgeInsets.all(10),
+                      child: GestureDetector(
+                        onTap: () {
+                          _showDropdown(context);
+                          // Add your click action here
+                          // For example, you can show a dialog, navigate to a new screen, etc.
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.sort,
+                              color: Colors.white,
+                              size: 24, // Adjust the size as needed
+                            ),
+                            SizedBox(width: 5),
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              child: Text(
+                                selectedValue,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  letterSpacing: -0.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
                   //Inkewell
                   Container(
                     padding: EdgeInsets.all(12),
@@ -324,11 +411,13 @@ class _DashboardPageState extends State<DashboardPage> {
                   // compute the index of the reversed list
                   //print(posts[index]['_id']);
                   return ProjectPost(
-                      id: posts[index]['id'],
-                      name: posts[index]['name'],
-                      postText: posts[index]['text'],
-                      profURL: posts[index]['imageUrl'] ?? '',
-                      date: posts[index]['date'] ?? '');
+                    id: posts[index]['id'],
+                    name: posts[index]['name'],
+                    postText: posts[index]['text'],
+                    profURL: posts[index]['imageUrl'] ?? '',
+                    date: posts[index]['date'] ?? '',
+                    userId: posts[index]['user']['id'],
+                  );
                   // return DashboardUserDisplay(
                   //     dimension: 60.0,
                   //     name: projectData['posts']?[index]['text']);
@@ -338,6 +427,36 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ]),
       ),
+    );
+  }
+
+  void _showDropdown(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          // Wrap the Column with SingleChildScrollView
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              for (var option in dropdownOptions)
+                ListTile(
+                  title: Text(option['name']),
+                  onTap: () {
+                    getPosts(option['id']).then((data) {
+                      setState(() {
+                        posts = sortPosts(data);
+                        selectedValue = option['name'];
+                      });
+                    });
+
+                    Navigator.pop(context); // Close the bottom sheet
+                  },
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

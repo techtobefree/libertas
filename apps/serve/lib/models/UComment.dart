@@ -20,22 +20,20 @@
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
 import 'ModelProvider.dart';
-import 'package:amplify_core/amplify_core.dart';
+import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 
 /** This is an auto generated class representing the UComment type in your schema. */
-@immutable
-class UComment extends Model {
+class UComment extends amplify_core.Model {
   static const classType = const _UCommentModelType();
   final String id;
   final String? _content;
   final int? _likes;
   final List<UComment>? _comments;
   final UPost? _post;
-  final TemporalDateTime? _createdAt;
-  final TemporalDateTime? _updatedAt;
+  final amplify_core.TemporalDateTime? _createdAt;
+  final amplify_core.TemporalDateTime? _updatedAt;
   final String? _uCommentCommentsId;
 
   @override
@@ -55,10 +53,10 @@ class UComment extends Model {
     try {
       return _content!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -68,10 +66,10 @@ class UComment extends Model {
     try {
       return _likes!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -85,11 +83,11 @@ class UComment extends Model {
     return _post;
   }
   
-  TemporalDateTime? get createdAt {
+  amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
   
-  TemporalDateTime? get updatedAt {
+  amplify_core.TemporalDateTime? get updatedAt {
     return _updatedAt;
   }
   
@@ -101,7 +99,7 @@ class UComment extends Model {
   
   factory UComment({String? id, required String content, required int likes, List<UComment>? comments, UPost? post, String? uCommentCommentsId}) {
     return UComment._internal(
-      id: id == null ? UUID.getUUID() : id,
+      id: id == null ? amplify_core.UUID.getUUID() : id,
       content: content,
       likes: likes,
       comments: comments != null ? List<UComment>.unmodifiable(comments) : comments,
@@ -155,6 +153,23 @@ class UComment extends Model {
       uCommentCommentsId: uCommentCommentsId ?? this.uCommentCommentsId);
   }
   
+  UComment copyWithModelFieldValues({
+    ModelFieldValue<String>? content,
+    ModelFieldValue<int>? likes,
+    ModelFieldValue<List<UComment>?>? comments,
+    ModelFieldValue<UPost?>? post,
+    ModelFieldValue<String?>? uCommentCommentsId
+  }) {
+    return UComment._internal(
+      id: id,
+      content: content == null ? this.content : content.value,
+      likes: likes == null ? this.likes : likes.value,
+      comments: comments == null ? this.comments : comments.value,
+      post: post == null ? this.post : post.value,
+      uCommentCommentsId: uCommentCommentsId == null ? this.uCommentCommentsId : uCommentCommentsId.value
+    );
+  }
+  
   UComment.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _content = json['content'],
@@ -168,8 +183,8 @@ class UComment extends Model {
       _post = json['post']?['serializedData'] != null
         ? UPost.fromJson(new Map<String, dynamic>.from(json['post']['serializedData']))
         : null,
-      _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
+      _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
       _uCommentCommentsId = json['uCommentCommentsId'];
   
   Map<String, dynamic> toJson() => {
@@ -177,75 +192,93 @@ class UComment extends Model {
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'content': _content, 'likes': _likes, 'comments': _comments, 'post': _post, 'createdAt': _createdAt, 'updatedAt': _updatedAt, 'uCommentCommentsId': _uCommentCommentsId
+    'id': id,
+    'content': _content,
+    'likes': _likes,
+    'comments': _comments,
+    'post': _post,
+    'createdAt': _createdAt,
+    'updatedAt': _updatedAt,
+    'uCommentCommentsId': _uCommentCommentsId
   };
 
-  static final QueryModelIdentifier<UCommentModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<UCommentModelIdentifier>();
-  static final QueryField ID = QueryField(fieldName: "id");
-  static final QueryField CONTENT = QueryField(fieldName: "content");
-  static final QueryField LIKES = QueryField(fieldName: "likes");
-  static final QueryField COMMENTS = QueryField(
+  static final amplify_core.QueryModelIdentifier<UCommentModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<UCommentModelIdentifier>();
+  static final ID = amplify_core.QueryField(fieldName: "id");
+  static final CONTENT = amplify_core.QueryField(fieldName: "content");
+  static final LIKES = amplify_core.QueryField(fieldName: "likes");
+  static final COMMENTS = amplify_core.QueryField(
     fieldName: "comments",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UComment'));
-  static final QueryField POST = QueryField(
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UComment'));
+  static final POST = amplify_core.QueryField(
     fieldName: "post",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'UPost'));
-  static final QueryField UCOMMENTCOMMENTSID = QueryField(fieldName: "uCommentCommentsId");
-  static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UPost'));
+  static final UCOMMENTCOMMENTSID = amplify_core.QueryField(fieldName: "uCommentCommentsId");
+  static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UComment";
     modelSchemaDefinition.pluralName = "UComments";
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    modelSchemaDefinition.authRules = [
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PUBLIC,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ])
+    ];
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UComment.CONTENT,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UComment.LIKES,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: UComment.COMMENTS,
       isRequired: false,
       ofModelName: 'UComment',
       associatedKey: UComment.UCOMMENTCOMMENTSID
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
       key: UComment.POST,
       isRequired: false,
       targetNames: ['uPostCommentsId'],
       ofModelName: 'UPost'
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'createdAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'updatedAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UComment.UCOMMENTCOMMENTSID,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }
 
-class _UCommentModelType extends ModelType<UComment> {
+class _UCommentModelType extends amplify_core.ModelType<UComment> {
   const _UCommentModelType();
   
   @override
@@ -263,8 +296,7 @@ class _UCommentModelType extends ModelType<UComment> {
  * This is an auto generated class representing the model identifier
  * of [UComment] in your schema.
  */
-@immutable
-class UCommentModelIdentifier implements ModelIdentifier<UComment> {
+class UCommentModelIdentifier implements amplify_core.ModelIdentifier<UComment> {
   final String id;
 
   /** Create an instance of UCommentModelIdentifier using [id] the primary key. */

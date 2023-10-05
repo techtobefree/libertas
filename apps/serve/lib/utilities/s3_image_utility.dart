@@ -21,10 +21,10 @@ import 'package:http/http.dart' as http;
 
 Future<String> uploadProfileImageToS3(
   File imageFile,
-  String userId, {
+  String timestamp, {
   String region = 'us-east-1',
 }) async {
-  final key = 'ProfileImages/$userId/ProfilePicture';
+  final key = 'ProfileImages/$timestamp/ProfilePicture';
   final url = 'https://servetobefree-images-dev.s3.amazonaws.com/$key'
       .replaceAll('+', '%20');
   final response = await http.put(

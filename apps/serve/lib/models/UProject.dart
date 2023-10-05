@@ -20,14 +20,12 @@
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
 import 'ModelProvider.dart';
-import 'package:amplify_core/amplify_core.dart';
+import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 
 /** This is an auto generated class representing the UProject type in your schema. */
-@immutable
-class UProject extends Model {
+class UProject extends amplify_core.Model {
   static const classType = const _UProjectModelType();
   final String id;
   final String? _name;
@@ -43,8 +41,8 @@ class UProject extends Model {
   final String? _projectPicture;
   final List<USponsor>? _sponsors;
   final bool? _isCompleted;
-  final TemporalDateTime? _createdAt;
-  final TemporalDateTime? _updatedAt;
+  final amplify_core.TemporalDateTime? _createdAt;
+  final amplify_core.TemporalDateTime? _updatedAt;
   final String? _uUserProjectsId;
 
   @override
@@ -64,10 +62,10 @@ class UProject extends Model {
     try {
       return _name!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -77,10 +75,10 @@ class UProject extends Model {
     try {
       return _privacy!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -94,10 +92,10 @@ class UProject extends Model {
     try {
       return _description!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -131,10 +129,10 @@ class UProject extends Model {
     try {
       return _projectPicture!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
@@ -148,20 +146,20 @@ class UProject extends Model {
     try {
       return _isCompleted!;
     } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
           recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
           underlyingException: e.toString()
           );
     }
   }
   
-  TemporalDateTime? get createdAt {
+  amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
   
-  TemporalDateTime? get updatedAt {
+  amplify_core.TemporalDateTime? get updatedAt {
     return _updatedAt;
   }
   
@@ -173,7 +171,7 @@ class UProject extends Model {
   
   factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? date, List<String>? members, List<String>? posts, required String projectPicture, List<USponsor>? sponsors, required bool isCompleted, String? uUserProjectsId}) {
     return UProject._internal(
-      id: id == null ? UUID.getUUID() : id,
+      id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
       privacy: privacy,
       bio: bio,
@@ -263,6 +261,41 @@ class UProject extends Model {
       uUserProjectsId: uUserProjectsId ?? this.uUserProjectsId);
   }
   
+  UProject copyWithModelFieldValues({
+    ModelFieldValue<String>? name,
+    ModelFieldValue<String>? privacy,
+    ModelFieldValue<String?>? bio,
+    ModelFieldValue<String>? description,
+    ModelFieldValue<String?>? city,
+    ModelFieldValue<String?>? state,
+    ModelFieldValue<double?>? hoursSpent,
+    ModelFieldValue<String?>? date,
+    ModelFieldValue<List<String>?>? members,
+    ModelFieldValue<List<String>?>? posts,
+    ModelFieldValue<String>? projectPicture,
+    ModelFieldValue<List<USponsor>?>? sponsors,
+    ModelFieldValue<bool>? isCompleted,
+    ModelFieldValue<String?>? uUserProjectsId
+  }) {
+    return UProject._internal(
+      id: id,
+      name: name == null ? this.name : name.value,
+      privacy: privacy == null ? this.privacy : privacy.value,
+      bio: bio == null ? this.bio : bio.value,
+      description: description == null ? this.description : description.value,
+      city: city == null ? this.city : city.value,
+      state: state == null ? this.state : state.value,
+      hoursSpent: hoursSpent == null ? this.hoursSpent : hoursSpent.value,
+      date: date == null ? this.date : date.value,
+      members: members == null ? this.members : members.value,
+      posts: posts == null ? this.posts : posts.value,
+      projectPicture: projectPicture == null ? this.projectPicture : projectPicture.value,
+      sponsors: sponsors == null ? this.sponsors : sponsors.value,
+      isCompleted: isCompleted == null ? this.isCompleted : isCompleted.value,
+      uUserProjectsId: uUserProjectsId == null ? this.uUserProjectsId : uUserProjectsId.value
+    );
+  }
+  
   UProject.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _name = json['name'],
@@ -283,8 +316,8 @@ class UProject extends Model {
           .toList()
         : null,
       _isCompleted = json['isCompleted'],
-      _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
+      _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
       _uUserProjectsId = json['uUserProjectsId'];
   
   Map<String, dynamic> toJson() => {
@@ -292,137 +325,164 @@ class UProject extends Model {
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'date': _date, 'members': _members, 'posts': _posts, 'projectPicture': _projectPicture, 'sponsors': _sponsors, 'isCompleted': _isCompleted, 'createdAt': _createdAt, 'updatedAt': _updatedAt, 'uUserProjectsId': _uUserProjectsId
+    'id': id,
+    'name': _name,
+    'privacy': _privacy,
+    'bio': _bio,
+    'description': _description,
+    'city': _city,
+    'state': _state,
+    'hoursSpent': _hoursSpent,
+    'date': _date,
+    'members': _members,
+    'posts': _posts,
+    'projectPicture': _projectPicture,
+    'sponsors': _sponsors,
+    'isCompleted': _isCompleted,
+    'createdAt': _createdAt,
+    'updatedAt': _updatedAt,
+    'uUserProjectsId': _uUserProjectsId
   };
 
-  static final QueryModelIdentifier<UProjectModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<UProjectModelIdentifier>();
-  static final QueryField ID = QueryField(fieldName: "id");
-  static final QueryField NAME = QueryField(fieldName: "name");
-  static final QueryField PRIVACY = QueryField(fieldName: "privacy");
-  static final QueryField BIO = QueryField(fieldName: "bio");
-  static final QueryField DESCRIPTION = QueryField(fieldName: "description");
-  static final QueryField CITY = QueryField(fieldName: "city");
-  static final QueryField STATE = QueryField(fieldName: "state");
-  static final QueryField HOURSSPENT = QueryField(fieldName: "hoursSpent");
-  static final QueryField DATE = QueryField(fieldName: "date");
-  static final QueryField MEMBERS = QueryField(fieldName: "members");
-  static final QueryField POSTS = QueryField(fieldName: "posts");
-  static final QueryField PROJECTPICTURE = QueryField(fieldName: "projectPicture");
-  static final QueryField SPONSORS = QueryField(
+  static final amplify_core.QueryModelIdentifier<UProjectModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<UProjectModelIdentifier>();
+  static final ID = amplify_core.QueryField(fieldName: "id");
+  static final NAME = amplify_core.QueryField(fieldName: "name");
+  static final PRIVACY = amplify_core.QueryField(fieldName: "privacy");
+  static final BIO = amplify_core.QueryField(fieldName: "bio");
+  static final DESCRIPTION = amplify_core.QueryField(fieldName: "description");
+  static final CITY = amplify_core.QueryField(fieldName: "city");
+  static final STATE = amplify_core.QueryField(fieldName: "state");
+  static final HOURSSPENT = amplify_core.QueryField(fieldName: "hoursSpent");
+  static final DATE = amplify_core.QueryField(fieldName: "date");
+  static final MEMBERS = amplify_core.QueryField(fieldName: "members");
+  static final POSTS = amplify_core.QueryField(fieldName: "posts");
+  static final PROJECTPICTURE = amplify_core.QueryField(fieldName: "projectPicture");
+  static final SPONSORS = amplify_core.QueryField(
     fieldName: "sponsors",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'USponsor'));
-  static final QueryField ISCOMPLETED = QueryField(fieldName: "isCompleted");
-  static final QueryField UUSERPROJECTSID = QueryField(fieldName: "uUserProjectsId");
-  static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'USponsor'));
+  static final ISCOMPLETED = amplify_core.QueryField(fieldName: "isCompleted");
+  static final UUSERPROJECTSID = amplify_core.QueryField(fieldName: "uUserProjectsId");
+  static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UProject";
     modelSchemaDefinition.pluralName = "UProjects";
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    modelSchemaDefinition.authRules = [
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PUBLIC,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ])
+    ];
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.NAME,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.PRIVACY,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.BIO,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.DESCRIPTION,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.CITY,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.STATE,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.HOURSSPENT,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.double)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.DATE,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.MEMBERS,
       isRequired: false,
       isArray: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.POSTS,
       isRequired: false,
       isArray: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.PROJECTPICTURE,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: UProject.SPONSORS,
       isRequired: false,
       ofModelName: 'USponsor',
       associatedKey: USponsor.UPROJECTSPONSORSID
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.ISCOMPLETED,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.bool)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'createdAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'updatedAt',
       isRequired: false,
       isReadOnly: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UProject.UUSERPROJECTSID,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }
 
-class _UProjectModelType extends ModelType<UProject> {
+class _UProjectModelType extends amplify_core.ModelType<UProject> {
   const _UProjectModelType();
   
   @override
@@ -440,8 +500,7 @@ class _UProjectModelType extends ModelType<UProject> {
  * This is an auto generated class representing the model identifier
  * of [UProject] in your schema.
  */
-@immutable
-class UProjectModelIdentifier implements ModelIdentifier<UProject> {
+class UProjectModelIdentifier implements amplify_core.ModelIdentifier<UProject> {
   final String id;
 
   /** Create an instance of UProjectModelIdentifier using [id] the primary key. */

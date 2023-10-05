@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePicture extends StatelessWidget {
   final MaterialAccentColor borderColor;
@@ -16,14 +17,14 @@ class ProfilePicture extends StatelessWidget {
   });
 
   void _handleTap() {
-    print('Profile picture tapped');
     // Add your desired functionality here
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _handleTap,
+      onTap: () =>
+          context.pushNamed("profile", queryParameters: {'id': userId}),
       child: Container(
         width: dimension,
         height: dimension,

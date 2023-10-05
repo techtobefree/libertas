@@ -11,6 +11,7 @@ import 'package:serve_to_be_free/screens/messages.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
 import 'package:serve_to_be_free/screens/sub_screens/login_subpages/choose_profile_picture.dart';
+import 'package:serve_to_be_free/screens/sub_screens/login_subpages/confirm_email.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/how_it_works.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/my_account_subpages/my_account_contact_info.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/my_account_subpages/my_account_emergency_info.dart';
@@ -28,6 +29,7 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_a_pr
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/about_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/my_projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members.dart';
 
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project.dart';
 import 'package:serve_to_be_free/widgets/ui/my_scaffold.dart';
@@ -53,9 +55,16 @@ final goRouter = GoRouter(
           builder: (context, state) => const CreateAccountScreen(),
           routes: [
             GoRoute(
-              path: 'chooseprofilepicture',
-              builder: (context, state) => ChooseProfilePicture(),
-            ),
+                path: 'chooseprofilepicture',
+                builder: (context, state) => ChooseProfilePicture(),
+                routes: [
+                  GoRoute(
+                    path: 'confirmemail',
+                    name: 'confirmemail',
+                    builder: (context, state) => ConfirmationCodePage(
+                        email: state.queryParameters['email']!),
+                  ),
+                ]),
           ],
         ),
       ],
@@ -106,9 +115,11 @@ final goRouter = GoRouter(
                 routes: [
                   GoRoute(
                       path: 'projectdetailsform',
+                      name: 'projectdetailsform',
                       builder: (context, state) => ProjectDetailsForm(
                           path:
-                              '/projects/createprojects/projectdetailsform/invitealeader'),
+                              '/projects/createprojects/projectdetailsform/invitealeader',
+                          id: state.queryParameters['id']),
                       routes: [
                         GoRoute(
                             path: 'invitealeader',
@@ -148,6 +159,13 @@ final goRouter = GoRouter(
               name: 'projectabout',
               builder: (context, state) =>
                   AboutProject(id: state.queryParameters['id']),
+            ),
+            GoRoute(
+              path: 'showmembers',
+              name: 'showmembers',
+              builder: (context, state) => ShowMembers(
+                projectId: state.queryParameters['projectId'],
+              ),
             ),
           ],
         ),
@@ -202,7 +220,9 @@ final goRouter = GoRouter(
           routes: [
             GoRoute(
               path: 'myprofile',
-              builder: (context, state) => Profile(/*label: 'B'*/),
+              name: 'profile',
+              builder: (context, state) =>
+                  Profile(id: state.queryParameters['id']),
             ),
             GoRoute(
               path: 'finishprojects',

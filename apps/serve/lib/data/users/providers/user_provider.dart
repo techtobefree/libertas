@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class UserProvider extends ChangeNotifier {
   late bool isLeader;
   late List<String> friends;
   late List<String> friendRequests;
+  late SignUpResult signUpResult;
 
   // void updateUser({
   //   required String id,

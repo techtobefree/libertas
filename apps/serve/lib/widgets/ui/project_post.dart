@@ -12,15 +12,17 @@ class ProjectPost extends StatefulWidget {
   final String postText;
   final String profURL;
   final String date;
+  final String userId;
 
-  const ProjectPost({
-    Key? key,
-    required this.id,
-    required this.name,
-    required this.postText,
-    required this.profURL,
-    required this.date,
-  }) : super(key: key);
+  const ProjectPost(
+      {Key? key,
+      required this.id,
+      required this.name,
+      required this.postText,
+      required this.profURL,
+      required this.date,
+      required this.userId})
+      : super(key: key);
 
   @override
   State<ProjectPost> createState() => _ProjectPostState();
@@ -78,8 +80,8 @@ class _ProjectPostState extends State<ProjectPost> {
                 Container(
                     margin: EdgeInsets.only(right: 15),
                     padding: EdgeInsets.only(),
-                    child: ProfilePicture(
-                        getRandomAccentColor(), 60, widget.profURL, widget.id)),
+                    child: ProfilePicture(getRandomAccentColor(), 60,
+                        widget.profURL, widget.userId)),
 
               Expanded(
                   child: Container(
