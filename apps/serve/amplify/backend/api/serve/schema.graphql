@@ -23,6 +23,7 @@ type UProject @model @auth(rules: [{ allow: public }]){
   city: String
   state: String
   hoursSpent: Float
+  leader: String
   date: String
   members: [String]
   posts: [String]

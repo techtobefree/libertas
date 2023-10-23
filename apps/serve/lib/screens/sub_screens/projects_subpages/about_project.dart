@@ -61,6 +61,7 @@ class _AboutProjectState extends State<AboutProject> {
     // UserProvider or UserClass?
     final currentUserID = Provider.of<UserProvider>(context, listen: false).id;
     final members = projectData['members'] ?? [];
+    final leader = projectData['leader'];
 
     final hasJoined = members.contains(currentUserID);
 
@@ -69,7 +70,8 @@ class _AboutProjectState extends State<AboutProject> {
     bool shouldDisplayEditButton = false;
 
     if (members.length > 0) {
-      shouldDisplayEditButton = ((members[0] ?? '') == currentUserID);
+      shouldDisplayEditButton =
+          (((members[0] ?? '') == currentUserID) || leader == currentUserID);
     }
     return Scaffold(
       appBar: AppBar(

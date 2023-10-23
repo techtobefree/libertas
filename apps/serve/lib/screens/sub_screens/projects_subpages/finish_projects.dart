@@ -115,8 +115,9 @@ class _FinishProjectState extends State<FinishProject> {
         // // print(jsonResponse);
         var projects = [];
         for (var project in projs) {
-          if (userId == project['members'][0] &&
-              project['isCompleted'] == false) {
+          if ((userId == project['members'][0] ||
+                  userId == project['leader']) &&
+              !project['isCompleted']) {
             projects.add(project);
           }
         }
