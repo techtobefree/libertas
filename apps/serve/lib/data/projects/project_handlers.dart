@@ -117,14 +117,38 @@ class ProjectHandlers {
       }
     }
     return incompleteProjs;
-    // var url = Uri.parse('$_baseUrl/incomplete'); // Use the new endpoint
-    // var response = await http.get(url);
-    // if (response.statusCode == 200) {
-    //   var jsonResponse = jsonDecode(response.body);
-    //   return jsonResponse;
-    // } else {
-    //   throw Exception('Failed to load projects');
-    // }
+  }
+
+  static Future<List<dynamic>> getProjectsWithLeader() async {
+    var projects = await ProjectHandlers.getProjects();
+    var projsWithLeader = [];
+    for (var project in projects) {
+      if (project["isCompleted"] == false) {
+        if (project["leader"] != null && project["leader"].isNotEmpty) {
+          if (project["sponsors"] == null) {
+            project["sponsors"] = [];
+          }
+          projsWithLeader.add(project);
+        }
+      }
+    }
+    return projsWithLeader;
+  }
+
+  static Future<List<dynamic>> getProjectsWithoutLeader() async {
+    var projects = await ProjectHandlers.getProjects();
+    var projsWithLeader = [];
+    for (var project in projects) {
+      if (project["isCompleted"] == false) {
+        if (project["leader"] == null || project["leader"].isEmpty) {
+          if (project["sponsors"] == null) {
+            project["sponsors"] = [];
+          }
+          projsWithLeader.add(project);
+        }
+      }
+    }
+    return projsWithLeader;
   }
 
   // Future<void> addMember(projId) async {

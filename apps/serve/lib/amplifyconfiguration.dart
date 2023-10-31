@@ -22,6 +22,15 @@ const amplifyconfig = '''{
                 "IdentityManager": {
                     "Default": {}
                 },
+                "AppSync": {
+                    "Default": {
+                        "ApiUrl": "https://wnypdj35uvgjtefrlibmxukcaq.appsync-api.us-east-1.amazonaws.com/graphql",
+                        "Region": "us-east-1",
+                        "AuthMode": "API_KEY",
+                        "ApiKey": "da2-qrrqlakhuzfqzj4p7gezx3y2h4",
+                        "ClientDatabasePrefix": "serve_API_KEY"
+                    }
+                },
                 "CognitoUserPool": {
                     "Default": {
                         "PoolId": "us-east-1_1VNBO79oF",
@@ -32,33 +41,24 @@ const amplifyconfig = '''{
                 "Auth": {
                     "Default": {
                         "authenticationFlowType": "USER_SRP_AUTH",
-                        "socialProviders": [],
-                        "usernameAttributes": [
-                            "EMAIL"
-                        ],
-                        "signupAttributes": [
-                            "EMAIL"
+                        "mfaConfiguration": "OFF",
+                        "mfaTypes": [
+                            "SMS"
                         ],
                         "passwordProtectionSettings": {
                             "passwordPolicyMinLength": 8,
                             "passwordPolicyCharacters": []
                         },
-                        "mfaConfiguration": "OFF",
-                        "mfaTypes": [
-                            "SMS"
+                        "signupAttributes": [
+                            "EMAIL"
+                        ],
+                        "socialProviders": [],
+                        "usernameAttributes": [
+                            "EMAIL"
                         ],
                         "verificationMechanisms": [
                             "EMAIL"
                         ]
-                    }
-                },
-                "AppSync": {
-                    "Default": {
-                        "ApiUrl": "https://wnypdj35uvgjtefrlibmxukcaq.appsync-api.us-east-1.amazonaws.com/graphql",
-                        "Region": "us-east-1",
-                        "AuthMode": "API_KEY",
-                        "ApiKey": "da2-qrrqlakhuzfqzj4p7gezx3y2h4",
-                        "ClientDatabasePrefix": "serve_API_KEY"
                     }
                 }
             }

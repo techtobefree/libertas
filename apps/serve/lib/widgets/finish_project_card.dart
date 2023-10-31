@@ -66,7 +66,8 @@ class FinishProjectCard extends StatelessWidget {
             print(project['projectPicture']);
             // Do something when the container is clicked
             context.pushNamed("projectdetails",
-                queryParameters: {'id': project['_id']});
+                queryParameters: {'id': project['id']},
+                pathParameters: {'id': project['id']});
           },
           child: Card(
             color: Colors.white,
