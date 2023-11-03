@@ -43,11 +43,6 @@ class _ProjectsPageState extends State<ProjectsPage> {
   Future<List<dynamic>> getProjects() async {
     var projs = await ProjectHandlers.getProjects();
 
-    // return [];
-    // var url = Uri.parse('http://44.203.120.103:3000/projects');
-    // var response = await http.get(url);
-    // if (response.statusCode == 200) {
-    //   var jsonResponse = jsonDecode(response.body);
     numProjs = projs.length;
     var myProjs = [];
     var counter = 0;
@@ -204,14 +199,14 @@ class _ProjectsPageState extends State<ProjectsPage> {
                     size: 28.0,
                   ),
                   widget.createProjectsPath),
-              // wideBorderButton(
-              //     "Lead a Project",
-              //     Icon(
-              //       Icons.star_border_rounded,
-              //       color: Colors.amberAccent[400],
-              //       size: 28.0,
-              //     ),
-              //     widget.leadProjectsPath),
+              wideBorderButton(
+                  "Lead a Project",
+                  Icon(
+                    Icons.star_border_rounded,
+                    color: Colors.amberAccent[400],
+                    size: 28.0,
+                  ),
+                  widget.leadProjectsPath),
               wideBorderButton(
                   "Sponsor a Project",
                   Icon(

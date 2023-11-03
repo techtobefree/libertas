@@ -22,7 +22,7 @@ class _FindAProjectState extends State<FindAProject> {
   @override
   void initState() {
     super.initState();
-    _futureProjects = ProjectHandlers.getProjectsIncomplete();
+    _futureProjects = ProjectHandlers.getProjectsWithLeader();
   }
 
   @override

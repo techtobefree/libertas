@@ -35,6 +35,7 @@ class UProject extends amplify_core.Model {
   final String? _city;
   final String? _state;
   final double? _hoursSpent;
+  final String? _leader;
   final String? _date;
   final List<String>? _members;
   final List<String>? _posts;
@@ -113,6 +114,10 @@ class UProject extends amplify_core.Model {
     return _hoursSpent;
   }
   
+  String? get leader {
+    return _leader;
+  }
+  
   String? get date {
     return _date;
   }
@@ -167,9 +172,9 @@ class UProject extends amplify_core.Model {
     return _uUserProjectsId;
   }
   
-  const UProject._internal({required this.id, required name, required privacy, bio, required description, city, state, hoursSpent, date, members, posts, required projectPicture, sponsors, required isCompleted, createdAt, updatedAt, uUserProjectsId}): _name = name, _privacy = privacy, _bio = bio, _description = description, _city = city, _state = state, _hoursSpent = hoursSpent, _date = date, _members = members, _posts = posts, _projectPicture = projectPicture, _sponsors = sponsors, _isCompleted = isCompleted, _createdAt = createdAt, _updatedAt = updatedAt, _uUserProjectsId = uUserProjectsId;
+  const UProject._internal({required this.id, required name, required privacy, bio, required description, city, state, hoursSpent, leader, date, members, posts, required projectPicture, sponsors, required isCompleted, createdAt, updatedAt, uUserProjectsId}): _name = name, _privacy = privacy, _bio = bio, _description = description, _city = city, _state = state, _hoursSpent = hoursSpent, _leader = leader, _date = date, _members = members, _posts = posts, _projectPicture = projectPicture, _sponsors = sponsors, _isCompleted = isCompleted, _createdAt = createdAt, _updatedAt = updatedAt, _uUserProjectsId = uUserProjectsId;
   
-  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? date, List<String>? members, List<String>? posts, required String projectPicture, List<USponsor>? sponsors, required bool isCompleted, String? uUserProjectsId}) {
+  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, required String projectPicture, List<USponsor>? sponsors, required bool isCompleted, String? uUserProjectsId}) {
     return UProject._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
@@ -179,6 +184,7 @@ class UProject extends amplify_core.Model {
       city: city,
       state: state,
       hoursSpent: hoursSpent,
+      leader: leader,
       date: date,
       members: members != null ? List<String>.unmodifiable(members) : members,
       posts: posts != null ? List<String>.unmodifiable(posts) : posts,
@@ -204,6 +210,7 @@ class UProject extends amplify_core.Model {
       _city == other._city &&
       _state == other._state &&
       _hoursSpent == other._hoursSpent &&
+      _leader == other._leader &&
       _date == other._date &&
       DeepCollectionEquality().equals(_members, other._members) &&
       DeepCollectionEquality().equals(_posts, other._posts) &&
@@ -229,6 +236,7 @@ class UProject extends amplify_core.Model {
     buffer.write("city=" + "$_city" + ", ");
     buffer.write("state=" + "$_state" + ", ");
     buffer.write("hoursSpent=" + (_hoursSpent != null ? _hoursSpent!.toString() : "null") + ", ");
+    buffer.write("leader=" + "$_leader" + ", ");
     buffer.write("date=" + "$_date" + ", ");
     buffer.write("members=" + (_members != null ? _members!.toString() : "null") + ", ");
     buffer.write("posts=" + (_posts != null ? _posts!.toString() : "null") + ", ");
@@ -242,7 +250,7 @@ class UProject extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? date, List<String>? members, List<String>? posts, String? projectPicture, List<USponsor>? sponsors, bool? isCompleted, String? uUserProjectsId}) {
+  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, String? projectPicture, List<USponsor>? sponsors, bool? isCompleted, String? uUserProjectsId}) {
     return UProject._internal(
       id: id,
       name: name ?? this.name,
@@ -252,6 +260,7 @@ class UProject extends amplify_core.Model {
       city: city ?? this.city,
       state: state ?? this.state,
       hoursSpent: hoursSpent ?? this.hoursSpent,
+      leader: leader ?? this.leader,
       date: date ?? this.date,
       members: members ?? this.members,
       posts: posts ?? this.posts,
@@ -269,6 +278,7 @@ class UProject extends amplify_core.Model {
     ModelFieldValue<String?>? city,
     ModelFieldValue<String?>? state,
     ModelFieldValue<double?>? hoursSpent,
+    ModelFieldValue<String?>? leader,
     ModelFieldValue<String?>? date,
     ModelFieldValue<List<String>?>? members,
     ModelFieldValue<List<String>?>? posts,
@@ -286,6 +296,7 @@ class UProject extends amplify_core.Model {
       city: city == null ? this.city : city.value,
       state: state == null ? this.state : state.value,
       hoursSpent: hoursSpent == null ? this.hoursSpent : hoursSpent.value,
+      leader: leader == null ? this.leader : leader.value,
       date: date == null ? this.date : date.value,
       members: members == null ? this.members : members.value,
       posts: posts == null ? this.posts : posts.value,
@@ -305,6 +316,7 @@ class UProject extends amplify_core.Model {
       _city = json['city'],
       _state = json['state'],
       _hoursSpent = (json['hoursSpent'] as num?)?.toDouble(),
+      _leader = json['leader'],
       _date = json['date'],
       _members = json['members']?.cast<String>(),
       _posts = json['posts']?.cast<String>(),
@@ -321,7 +333,7 @@ class UProject extends amplify_core.Model {
       _uUserProjectsId = json['uUserProjectsId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'date': _date, 'members': _members, 'posts': _posts, 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
+    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'leader': _leader, 'date': _date, 'members': _members, 'posts': _posts, 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
   };
   
   Map<String, Object?> toMap() => {
@@ -333,6 +345,7 @@ class UProject extends amplify_core.Model {
     'city': _city,
     'state': _state,
     'hoursSpent': _hoursSpent,
+    'leader': _leader,
     'date': _date,
     'members': _members,
     'posts': _posts,
@@ -353,6 +366,7 @@ class UProject extends amplify_core.Model {
   static final CITY = amplify_core.QueryField(fieldName: "city");
   static final STATE = amplify_core.QueryField(fieldName: "state");
   static final HOURSSPENT = amplify_core.QueryField(fieldName: "hoursSpent");
+  static final LEADER = amplify_core.QueryField(fieldName: "leader");
   static final DATE = amplify_core.QueryField(fieldName: "date");
   static final MEMBERS = amplify_core.QueryField(fieldName: "members");
   static final POSTS = amplify_core.QueryField(fieldName: "posts");
@@ -419,6 +433,12 @@ class UProject extends amplify_core.Model {
       key: UProject.HOURSSPENT,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UProject.LEADER,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

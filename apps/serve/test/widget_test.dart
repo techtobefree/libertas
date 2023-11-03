@@ -22,7 +22,7 @@ import 'package:serve_to_be_free/screens/tasks.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 import 'package:serve_to_be_free/widgets/project_preview.dart';
-import 'package:serve_to_be_free/widgets/sponsor_Card.dart';
+import 'package:serve_to_be_free/widgets/sponsor_card.dart';
 
 void main() {
   testWidgets('Verify LoginScreen renders properly',

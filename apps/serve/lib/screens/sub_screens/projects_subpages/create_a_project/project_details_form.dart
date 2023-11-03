@@ -50,7 +50,7 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
 
   String _selectedState = '';
 
-  late XFile imageCache;
+  late XFile? imageCache = null;
 
   @override
   void initState() {
@@ -123,6 +123,10 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
       final imageURL = 'https://servetobefree-images-dev.s3.amazonaws.com/$key';
 
       if (widget.id == null || widget.id!.isEmpty) {
+        var leaderStr = "";
+        if (formData['leadership'] == 'Same as owner') {
+          leaderStr = Provider.of<UserProvider>(context, listen: false).id;
+        }
         UProject uproject = UProject(
             name: formData['projectName'],
             description: formData['projectDescription'],
@@ -136,6 +140,7 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
             sponsors: [],
             bio: formData['projectBio'],
             isCompleted: false,
+            leader: leaderStr,
             members: [Provider.of<UserProvider>(context, listen: false).id]);
 
         final request = ModelMutations.create(uproject);
@@ -389,7 +394,53 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                                 ))
                             .toList(),
                       ),
-                    )
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                //height: 1,
+                color: Colors.grey,
+                thickness: 0.5,
+              ),
+              Container(
+                padding: EdgeInsets.all(30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Leadership",
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 12),
+                      // decoration: BoxDecoration(
+                      //   color: Colors.grey[200],
+                      //   borderRadius: BorderRadius.circular(10),
+                      // ),
+                      child: FormBuilderDropdown<String>(
+                        name: 'leadership',
+                        decoration: _fieldDecoration("Leadership Option"),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                        ]),
+                        initialValue: projectData.leader,
+                        elevation: 2,
+                        iconSize: 30,
+                        isExpanded: true,
+                        items: [
+                          'Same as owner',
+                          'Recruit leadership',
+                        ]
+                            .map((option) => DropdownMenuItem(
+                                  alignment: AlignmentDirectional.center,
+                                  value: option,
+                                  child: Text(option),
+                                ))
+                            .toList(),
+                      ),
+                    ),
                   ],
                 ),
               ),

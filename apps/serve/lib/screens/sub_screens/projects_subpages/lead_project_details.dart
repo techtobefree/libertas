@@ -20,20 +20,21 @@ import 'package:serve_to_be_free/widgets/post_dialogue.dart';
 import '../../../data/projects/project_handlers.dart';
 import '../../../models/ModelProvider.dart';
 
-class ProjectDetails extends StatefulWidget {
+class LeadProjectDetails extends StatefulWidget {
   final String? id;
 
-  const ProjectDetails({Key? key, required this.id}) : super(key: key);
+  const LeadProjectDetails({Key? key, required this.id}) : super(key: key);
 
   @override
-  _ProjectDetailsState createState() => _ProjectDetailsState();
+  _LeadProjectDetailsState createState() => _LeadProjectDetailsState();
 }
 
-class _ProjectDetailsState extends State<ProjectDetails> {
+class _LeadProjectDetailsState extends State<LeadProjectDetails> {
   Map<String, dynamic> projectData = {};
   List<dynamic> users = [];
 
   var sponsor = 0.0;
+  String buttonText = 'Lead Project';
 
   Future<Map<String, dynamic>> getProjects() async {
     final queryPredicate = UProject.ID.eq(widget.id);
@@ -45,22 +46,8 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     final response = await Amplify.API.query(request: request).response;
 
     if (response.data!.items.isNotEmpty) {
-      // var url = Uri.parse('http://44.203.120.103:3000/projects/${widget.id}');
-      // var response = await http.get(url);
-      // if (response.statusCode == 200) {
       var jsonResponse = response.data!.items[0]!.toJson();
 
-      // print(jsonResponse['sponsors']);
-      // if (jsonResponse.containsKey('sponsors') &&
-      //     jsonResponse['sponsors'] != null) {
-      //   if (jsonResponse['sponsors'].length > 0) {
-      //     for (var sponsorId in jsonResponse['sponsors']) {
-      //       var sponsorObj = await getSponsor(sponsorId);
-
-      //       sponsor += sponsorObj['amount'];
-      //     }
-      //   }
-      // }
       if (jsonResponse.containsKey('posts') && jsonResponse['posts'] != null) {
         var newPosts = [];
         for (var post in jsonResponse['posts']) {
@@ -95,17 +82,10 @@ class _ProjectDetailsState extends State<ProjectDetails> {
 
   Future<List> getMembers(idArr) async {
     var users = [];
-    String? leaderId = projectData['leader'];
-    if (leaderId != null && leaderId != "") {
-      var user = await UserHandlers.getUUserById(projectData['leader']);
-      users.add(user);
-    }
     for (int i = 0; i < 5; i++) {
       if (idArr.length > i) {
-        if (idArr[i] != projectData['leader']) {
-          var user = await UserHandlers.getUUserById(idArr[i]);
-          users.add(user);
-        }
+        var user = await UserHandlers.getUUserById(idArr[i]);
+        users.add(user);
       }
     }
     return users;
@@ -154,14 +134,14 @@ class _ProjectDetailsState extends State<ProjectDetails> {
   void initState() {
     super.initState();
     getProjects().then((data) {
-      setState(() {
-        projectData = data;
-        // print(projectData);
-      });
       getMembers(data['members']).then((value) {
         setState(() {
           users = value;
         });
+      });
+      setState(() {
+        projectData = data;
+        // print(projectData);
       });
     });
   }
@@ -171,9 +151,9 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     final currentUserID = Provider.of<UserProvider>(context, listen: false).id;
     final members = projectData['members'] ?? [];
 
-    final hasJoined = members.contains(currentUserID);
+    final hasLeader =
+        projectData['leader'] != null && projectData['leader'].isNotEmpty;
 
-    final joinButtonText = hasJoined ? 'Post' : 'Join';
     return Scaffold(
       appBar: AppBar(
           title: Text('Project Dashboard'),
@@ -327,12 +307,12 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                         .isNotEmpty, // Show the button when hasJoined is not null
                     child: ElevatedButton(
                       onPressed: () => {
-                        if (!projectData['members'].contains(currentUserID))
-                          {addMember()}
+                        if (buttonText != "Post")
+                          {addLeader()}
                         else
                           {onPostClick(currentUserID)}
                       },
-                      child: Text(joinButtonText),
+                      child: Text(buttonText),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                           Color.fromARGB(255, 16, 34, 65),
@@ -439,29 +419,38 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     }
 
     return null;
-    // final url = Uri.parse(
-    //     'http://44.203.120.103:3000/projects/${projectData['_id']}/member');
-    // final Map<String, dynamic> data = {
-    //   'memberId': Provider.of<UserProvider>(context, listen: false).id
-    // };
-    // final response = await http.put(
-    //   url,
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: jsonEncode(data),
-    // );
+  }
 
-    // if (response.statusCode == 200) {
-    //   // API call successful\
-    // setState(() {
-    //   projectData['members'] = projectData['members'] != null
-    //       ? [...projectData['members'], data['memberId']]
-    //       : [data['memberId']];
-    //   });
-    // } else {
-    //   // API call unsuccessful
-    //   print('Failed to fetch data ${response.body}');
-    // }
+  Future<void> addLeader() async {
+    UProject? uproject =
+        await ProjectHandlers.getUProjectById(projectData['id']);
+    var uprojectMems = uproject!.members;
+    var memID = Provider.of<UserProvider>(context, listen: false).id;
+    if (uprojectMems != null) {
+      if (!uprojectMems.contains(memID)) {
+        uprojectMems.add(memID);
+      }
+    }
+
+    final addedMemUProj =
+        uproject.copyWith(members: uprojectMems, leader: memID);
+
+    try {
+      final request = ModelMutations.update(addedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+      if (response.data!.members!.isNotEmpty) {
+        setState(() {
+          projectData['members'] = projectData['members'] != null
+              ? [...projectData['members'], memID]
+              : [memID];
+          buttonText = "Post"; // Update the button text
+        });
+      }
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+
+    return null;
   }
 }

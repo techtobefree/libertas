@@ -8,20 +8,23 @@ class ProjectCard extends StatelessWidget {
   final String numMembers;
   final Map<String, dynamic> project;
   final List<dynamic> sponsors;
+  final bool lead; // Add the 'lead' parameter
 
   ProjectCard({
     required this.title,
     required this.numMembers,
     required this.project,
     required this.sponsors,
+    required this.lead, // Initialize 'lead' with a default value of false
   });
 
   // Named constructor that accepts a JSON object
-  ProjectCard.fromJson(Map<String, dynamic> json)
+  ProjectCard.fromJson(Map<String, dynamic> json, {bool lead = false})
       : title = json['name'],
         numMembers = json['members'].length.toString(),
         sponsors = json['sponsors'] ?? [],
-        project = json;
+        project = json,
+        this.lead = lead; // Initialize 'lead' with the provided value
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +35,16 @@ class ProjectCard extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             // Do something when the container is clicked
-            context.pushNamed("projectdetails",
-                queryParameters: {'id': project['id']},
-                pathParameters: {'id': project['id']});
+            if (lead == false) {
+              context.pushNamed("projectdetails",
+                  queryParameters: {'id': project['id']},
+                  pathParameters: {'id': project['id']});
+            }
+            if (lead == true) {
+              context.pushNamed("leadprojectdetails",
+                  queryParameters: {'id': project['id']},
+                  pathParameters: {'id': project['id']});
+            }
           },
           child: Card(
             color: Colors.white,
