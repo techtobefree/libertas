@@ -1,12 +1,6 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-
-import '../../../widgets/find_project_card.dart';
+import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class LeadAProject extends StatefulWidget {
   const LeadAProject({super.key});

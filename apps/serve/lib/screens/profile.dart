@@ -1,10 +1,9 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+//import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+//import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
@@ -35,16 +34,17 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     super.initState();
   }
 
-  Future<UserClass> fetchUser(String userId) async {
-    final response =
-        await http.get(Uri.parse('<YOUR_MONGODB_API_URL>/users/$userId'));
+  // unused
+  // Future<UserClass> fetchUser(String userId) async {
+  //   final response =
+  //       await http.get(Uri.parse('<YOUR_MONGODB_API_URL>/users/$userId'));
 
-    if (response.statusCode == 200) {
-      return UserClass.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load user data from MongoDB');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     return UserClass.fromJson(jsonDecode(response.body));
+  //   } else {
+  //     throw Exception('Failed to load user data from MongoDB');
+  //   }
+  // }
 
   late TabController _tabController;
   late Future<List<dynamic>> _futureProjects = Future.value([]);
@@ -84,8 +84,13 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(children: [
+    return
+        // TODO: convert to stateless widget and use Bloc:
+        //BlocBuilder<UserCubit, UserCubitState>(
+        //  //buildWhen: (previous, current) => previous.status != current.status,
+        //  builder: (context, state) => state.busy ?const SizedBox.shrink():
+        Scaffold(
+            body: Column(children: [
       Stack(
           //crossAxisAlignment: CrossAxisAlignment.center,
 
@@ -115,8 +120,9 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     child: ProfilePicture(
                       Colors.pinkAccent,
                       120,
-                      user.profilePictureUrl ?? "",
-                      user.id,
+                      user.profilePictureUrl ??
+                          "", // state.user.profilePictureUrl,
+                      user.id, // state.user.id,
                       borderRadius: 10,
                     ),
                   ),

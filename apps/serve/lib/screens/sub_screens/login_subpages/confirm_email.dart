@@ -148,7 +148,7 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Confirmation Code',
           style: TextStyle(
             color: Colors.white,

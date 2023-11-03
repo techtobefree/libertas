@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:http/http.dart' as http;
@@ -111,7 +113,9 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
         onPressed: () {
           UserClass? user = ChooseProfilePicture._user;
           if (user != null) {
-            tryCreateAccount(user);
+            tryCreateAccount(user); // TODO: use the cubit:
+            //BlocProvider.of<UserCubit>(context).tryCreateAccount(user, _image);
+
             //createUser(user);
           }
         },
