@@ -1,24 +1,19 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
-import 'package:intl/intl.dart';
-
-import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 import 'package:serve_to_be_free/widgets/post_dialogue.dart';
-
-import '../../../data/projects/project_handlers.dart';
-import '../../../models/ModelProvider.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class ProjectDetails extends StatefulWidget {
   final String? id;
@@ -26,10 +21,10 @@ class ProjectDetails extends StatefulWidget {
   const ProjectDetails({Key? key, required this.id}) : super(key: key);
 
   @override
-  _ProjectDetailsState createState() => _ProjectDetailsState();
+  ProjectDetailsState createState() => ProjectDetailsState();
 }
 
-class _ProjectDetailsState extends State<ProjectDetails> {
+class ProjectDetailsState extends State<ProjectDetails> {
   Map<String, dynamic> projectData = {};
   List<dynamic> users = [];
 
@@ -176,9 +171,9 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     final joinButtonText = hasJoined ? 'Post' : 'Join';
     return Scaffold(
       appBar: AppBar(
-          title: Text('Project Dashboard'),
+          title: const Text('Project Dashboard'),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -196,16 +191,16 @@ class _ProjectDetailsState extends State<ProjectDetails> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   // Add horizontal margins
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     projectData['name'] ?? '',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
 
                   Center(
                     child: Row(
@@ -213,17 +208,17 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                       children: [
                         Text(
                           '${projectData['members']?.length ?? ''} Members',
-                          style: TextStyle(fontSize: 12),
+                          style: const TextStyle(fontSize: 12),
                         ),
-                        SizedBox(width: 5),
-                        SizedBox(
+                        const SizedBox(width: 5),
+                        const SizedBox(
                             width:
                                 5), // Add spacing between the members count and the dot
-                        Text(
+                        const Text(
                           '•', // Horizontal dot separator
                           style: TextStyle(fontSize: 12),
                         ),
-                        SizedBox(
+                        const SizedBox(
                             width:
                                 5), // Add spacing between the "Members" text and the hyperlink
                         GestureDetector(
@@ -233,7 +228,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                               'projectId': projectData['id'],
                             });
                           },
-                          child: Text(
+                          child: const Text(
                             'View Members',
                             style: TextStyle(
                               color: Colors.blue,
@@ -245,22 +240,22 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (projectData.containsKey('date'))
                     Text(
                       '${projectData['date']}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                       ),
                     ),
                   Container(
-                    padding: EdgeInsets.only(top: 20, bottom: 10),
+                    padding: const EdgeInsets.only(top: 20, bottom: 10),
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            padding: EdgeInsets.only(right: 10, left: 10),
+                            padding: const EdgeInsets.only(right: 10, left: 10),
                             decoration: BoxDecoration(
                               border: Border(
                                 right: BorderSide(
@@ -286,28 +281,27 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                           //   height: 90, // Set the height of the divider
                           //   color: Colors.grey,
                           // ),
-                          Container(
-                              child: Expanded(
-                                  child: Container(
-                            padding: EdgeInsets.all(10),
+                          Expanded(
+                              child: Container(
+                            padding: const EdgeInsets.all(10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: generateUserWidgets(users),
                             ),
-                          ))),
+                          )),
                         ]),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (sponsor > 0)
                     Text(
                         'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (projectData.containsKey('city'))
                     Text('${projectData['city']}, ${projectData['state']}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (projectData.containsKey('bio')) Text(projectData['bio']),
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       // navigate to about page
@@ -317,10 +311,10 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(255, 16, 34, 65),
+                        const Color.fromARGB(255, 16, 34, 65),
                       ),
                     ),
-                    child: Text('About'),
+                    child: const Text('About'),
                   ),
                   Visibility(
                     visible: projectData
@@ -332,12 +326,12 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                         else
                           {onPostClick(currentUserID)}
                       },
-                      child: Text(joinButtonText),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(255, 16, 34, 65),
+                          const Color.fromARGB(255, 16, 34, 65),
                         ),
                       ),
+                      child: Text(joinButtonText),
                     ),
                   ),
                 ],
@@ -346,7 +340,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
             // Expanded(
             // child:
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: projectData['posts']?.length ?? 0,
               itemBuilder: (context, index) {
@@ -437,8 +431,6 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     } catch (e) {
       throw Exception('Failed to update project: $e');
     }
-
-    return null;
     // final url = Uri.parse(
     //     'http://44.203.120.103:3000/projects/${projectData['_id']}/member');
     // final Map<String, dynamic> data = {

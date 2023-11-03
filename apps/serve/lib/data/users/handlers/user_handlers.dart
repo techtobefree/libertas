@@ -1,16 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
-import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
-import 'package:provider/provider.dart';
-
-import '../../../models/ModelProvider.dart';
-import '../providers/user_provider.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class UserHandlers {
   //static const String _baseUrl = 'http://localhost:3000/users';
@@ -87,7 +78,7 @@ class UserHandlers {
       final response = await Amplify.API.mutate(request: request).response;
       safePrint('Response: $response');
       UUser? newuuser = response.data;
-      if (response.data! != null) {
+      if (response.data != null) {
         return UserClass(
             id: uuser.id,
             email: newuuser!.email,
@@ -151,7 +142,7 @@ class UserHandlers {
 
   static Future<void> signInUser(String username, String password) async {
     try {
-      final result = await Amplify.Auth.signIn(
+      final _ = await Amplify.Auth.signIn(
         username: username,
         password: password,
       );

@@ -3,13 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-import '../../../widgets/find_project_card.dart';
+import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class MyProjects extends StatefulWidget {
   const MyProjects({super.key});
@@ -32,9 +29,9 @@ class _MyProjectsState extends State<MyProjects> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('My Projects'),
+          title: const Text('My Projects'),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -62,11 +59,11 @@ class _MyProjectsState extends State<MyProjects> {
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text("Failed to load projects."),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

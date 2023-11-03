@@ -38,7 +38,7 @@ void main() {
             value: userProvider,
           ),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           home: LoginScreen(),
         ),
       ),
@@ -67,7 +67,7 @@ void main() {
     const String id = "";
 
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: DashboardUserDisplay(
             name: name,
@@ -87,7 +87,7 @@ void main() {
   });
 
   testWidgets('TasksPage renders properly', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: TasksPage()));
+    await tester.pumpWidget(const MaterialApp(home: TasksPage()));
 
     // Verify that the app bar is rendered
     expect(find.byType(AppBar), findsOneWidget);
@@ -101,7 +101,7 @@ void main() {
 
   testWidgets('SponsorCard renders properly', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: SponsorCard(),
         ),
@@ -114,7 +114,7 @@ void main() {
 
   testWidgets('FinishProject renders properly', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: FinishProject(),
         ),
@@ -127,9 +127,14 @@ void main() {
 
   testWidgets('MenuPage renders properly', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
-          body: MenuPage(),
+          body: MenuPage(
+            myProfilePath: '',
+            finishProjectsPath: '',
+            howItWorksPath: '',
+            aboutPath: '',
+          ),
         ),
       ),
     );

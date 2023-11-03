@@ -1,40 +1,34 @@
-import 'dart:convert';
-
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/widgets/projects_appbar_display.dart';
-import '../widgets/buttons/wide_border_button.dart';
-import '../widgets/sponsor_card.dart';
-import '../widgets/my_project_card.dart';
+import 'package:serve_to_be_free/widgets/buttons/wide_border_button.dart';
+import 'package:serve_to_be_free/widgets/sponsor_card.dart';
+import 'package:serve_to_be_free/widgets/my_project_card.dart';
 
 class ProjectsPage extends StatefulWidget {
-  final findProjectsPath;
-  final createProjectsPath;
-  final leadProjectsPath;
-  final sponsorProjectsPath;
-  final myProjectsPath;
+  final String findProjectsPath;
+  final String createProjectsPath;
+  final String leadProjectsPath;
+  final String sponsorProjectsPath;
+  final String myProjectsPath;
   const ProjectsPage({
     Key? key,
-    this.createProjectsPath,
-    this.findProjectsPath,
-    this.leadProjectsPath,
-    this.sponsorProjectsPath,
-    this.myProjectsPath,
+    required this.createProjectsPath,
+    required this.findProjectsPath,
+    required this.leadProjectsPath,
+    required this.sponsorProjectsPath,
+    required this.myProjectsPath,
   }) : super(key: key);
 
   @override
-  _ProjectsPageState createState() => _ProjectsPageState();
+  ProjectsPageState createState() => ProjectsPageState();
 }
 
-class _ProjectsPageState extends State<ProjectsPage> {
+class ProjectsPageState extends State<ProjectsPage> {
   List<dynamic> projectData = [];
   int numProjs = 0;
   int hoursSpent = 0;
@@ -105,9 +99,9 @@ class _ProjectsPageState extends State<ProjectsPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('AlertDialog Title'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('This is a demo alert dialog.'),
                 Text('Would you like to approve of this message?'),
               ],
@@ -128,14 +122,14 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
-    precacheImage(AssetImage("assets/images/19219.jpg"), context);
+    precacheImage(const AssetImage("assets/images/19219.jpg"), context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(192.0),
+          preferredSize: const Size.fromHeight(192.0),
           child: AppBar(
             flexibleSpace: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -144,7 +138,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
               )),
-              padding: EdgeInsets.only(top: 50),
+              padding: const EdgeInsets.only(top: 50),
               // padding: EdgeInsets.only(bottom: 10)
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -153,7 +147,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                   Container(
                     width: MediaQuery.of(context).size.width - 10,
                     height: (MediaQuery.of(context).size.width - 10) / 3.5,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(
                             'assets/images/STBF_logo_horizontal_navy.png'),
@@ -215,14 +209,14 @@ class _ProjectsPageState extends State<ProjectsPage> {
                     size: 28.0,
                   ),
                   widget.sponsorProjectsPath),
-              SponsorCard(),
+              const SponsorCard(),
               Container(
-                margin: EdgeInsets.only(left: 25, right: 25, top: 30),
+                margin: const EdgeInsets.only(left: 25, right: 25, top: 30),
                 child: Row(children: [
-                  Text("My Projects",
+                  const Text("My Projects",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                  Spacer(),
+                  const Spacer(),
                   TextButton(
                     style: TextButton.styleFrom(
                       textStyle: const TextStyle(
@@ -238,7 +232,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
               if (projectData.isNotEmpty)
                 if (projectData.length == 1)
                   Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
+                    margin: const EdgeInsets.only(left: 20, right: 20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -252,7 +246,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                   )
                 else
                   Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
+                    margin: const EdgeInsets.only(left: 20, right: 20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -270,7 +264,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                     ),
                   )
               else
-                Center(
+                const Center(
                   child: Text('Choose find a project to join!'),
                 )
 

@@ -1,40 +1,32 @@
-import 'dart:io';
-import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart' show Provider;
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
-import 'package:serve_to_be_free/widgets/profile_picture.dart';
 import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-
-import '../widgets/ui/my_scaffold.dart';
-import '../widgets/ui/project_post.dart';
+import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
   @override
-  _DashboardPageState createState() => _DashboardPageState();
+  DashboardPageState createState() => DashboardPageState();
 }
 
 final List<Widget> myWidgets = [
-  DashboardPost(),
-  DashboardPost(),
-  DashboardPost(),
-  DashboardPost(),
-  DashboardPost(),
-  DashboardPost(),
+  const DashboardPost(),
+  const DashboardPost(),
+  const DashboardPost(),
+  const DashboardPost(),
+  const DashboardPost(),
+  const DashboardPost(),
 ];
 
-class _DashboardPageState extends State<DashboardPage> {
+class DashboardPageState extends State<DashboardPage> {
   List<dynamic> posts = [];
   List<dynamic> profPics = ["", "", "", "", ""];
   List<dynamic> names = ["", "", "", "", ""];
@@ -230,7 +222,7 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
           title: const Text('My Dashboard'),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -242,191 +234,182 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           )),
       extendBody: false,
-      body: Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            padding: EdgeInsets.only(top: 20, bottom: 10),
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(right: 10, left: 10),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(
-                          width: 3.0,
-                          color: Colors.grey.withOpacity(0.5),
-                        ),
+      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+          padding: const EdgeInsets.only(top: 20, bottom: 10),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(right: 10, left: 10),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(
+                        width: 3.0,
+                        color: Colors.grey.withOpacity(0.5),
                       ),
                     ),
-                    child: DashboardUserDisplay(
-                      dimension: 80.0,
-                      name: names[0] ?? "",
-                      url: profPics[0] ?? "",
-                      id: ids[0] ?? "",
-                    ),
                   ),
-                  // Container(
-                  //   padding: EdgeInsets.all(20),
-                  //   width: 2, // Set the width of the divider
-                  //   height: 100, // Set the height of the divider
-                  //   color: Colors.grey,
-                  // ),
-                  Container(
-                      child: Expanded(
-                          child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // LIST OF USERS
-                        DashboardUserDisplay(
-                          dimension: 60.0,
-                          name: names[1] ?? "",
-                          url: profPics[1] ?? "",
-                          id: ids[1] ?? "",
-                        ),
-                        DashboardUserDisplay(
-                          dimension: 60.0,
-                          name: names[2] ?? "",
-                          url: profPics[2] ?? "",
-                          id: ids[2] ?? "",
-                        ),
-                        DashboardUserDisplay(
-                          dimension: 60.0,
-                          name: names[3] ?? "",
-                          url: profPics[3] ?? "",
-                          id: ids[3] ?? "",
-                        ),
-                        DashboardUserDisplay(
-                          dimension: 60.0,
-                          name: names[4] ?? "",
-                          url: profPics[4] ?? "",
-                          id: ids[4] ?? "",
-                        ),
-                      ],
-                    ),
-                  ))),
-                ]),
-          ),
-          Container(
-            margin: EdgeInsets.only(bottom: 15),
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(0, 28, 72, 1.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: Offset(0, 4), // changes position of shadow
+                  child: DashboardUserDisplay(
+                    dimension: 80.0,
+                    name: names[0] ?? "",
+                    url: profPics[0] ?? "",
+                    id: ids[0] ?? "",
+                  ),
                 ),
-              ],
-            ),
-            height: 50,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  //Inkwell
-                  Container(
-                      padding: EdgeInsets.all(10),
-                      child: GestureDetector(
-                        onTap: () {
-                          _showDropdown(context);
-                          // Add your click action here
-                          // For example, you can show a dialog, navigate to a new screen, etc.
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.sort,
-                              color: Colors.white,
-                              size: 24, // Adjust the size as needed
-                            ),
-                            SizedBox(width: 5),
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              child: Text(
-                                selectedValue,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  letterSpacing: -0.5,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
-                  //Inkewell
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    color: Color.fromRGBO(35, 107, 140, 1.0),
+                // Container(
+                //   padding: EdgeInsets.all(20),
+                //   width: 2, // Set the width of the divider
+                //   height: 100, // Set the height of the divider
+                //   color: Colors.grey,
+                // ),
+                Expanded(
                     child: Row(
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        Container(
-                          width: 5,
-                        ),
-                        InkWell(
-                            onTap: () {
-                              context.go('/dashboard/createapost');
-                            },
-                            child: Container(
-                                child: Text(
-                              "Create a Post",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  letterSpacing: -.5),
-                            ))),
-                      ],
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // LIST OF USERS
+                    DashboardUserDisplay(
+                      dimension: 60.0,
+                      name: names[1] ?? "",
+                      url: profPics[1] ?? "",
+                      id: ids[1] ?? "",
                     ),
-                  ),
-                ]),
+                    DashboardUserDisplay(
+                      dimension: 60.0,
+                      name: names[2] ?? "",
+                      url: profPics[2] ?? "",
+                      id: ids[2] ?? "",
+                    ),
+                    DashboardUserDisplay(
+                      dimension: 60.0,
+                      name: names[3] ?? "",
+                      url: profPics[3] ?? "",
+                      id: ids[3] ?? "",
+                    ),
+                    DashboardUserDisplay(
+                      dimension: 60.0,
+                      name: names[4] ?? "",
+                      url: profPics[4] ?? "",
+                      id: ids[4] ?? "",
+                    ),
+                  ],
+                )),
+              ]),
+        ),
+        Container(
+          margin: const EdgeInsets.only(bottom: 15),
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(0, 28, 72, 1.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 4), // changes position of shadow
+              ),
+            ],
           ),
-          if (posts.isEmpty)
+          height: 50,
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            //Inkwell
             Container(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                "Join a project then view posts here",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                padding: const EdgeInsets.all(10),
+                child: GestureDetector(
+                  onTap: () {
+                    _showDropdown(context);
+                    // Add your click action here
+                    // For example, you can show a dialog, navigate to a new screen, etc.
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.sort,
+                        color: Colors.white,
+                        size: 24, // Adjust the size as needed
+                      ),
+                      const SizedBox(width: 5),
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: Text(
+                          selectedValue,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            //Inkewell
+            Container(
+              padding: const EdgeInsets.all(12),
+              color: const Color.fromRGBO(35, 107, 140, 1.0),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  Container(
+                    width: 5,
+                  ),
+                  InkWell(
+                      onTap: () {
+                        context.go('/dashboard/createapost');
+                      },
+                      child: const Text(
+                        "Create a Post",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            letterSpacing: -.5),
+                      )),
+                ],
               ),
             ),
+          ]),
+        ),
+        if (posts.isEmpty)
           Container(
-            child: Expanded(
-              child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  // compute the index of the reversed list
-                  //print(posts[index]['_id']);
-                  return ProjectPost(
-                    id: posts[index]['id'],
-                    name: posts[index]['name'],
-                    postText: posts[index]['text'],
-                    profURL: posts[index]['imageUrl'] ?? '',
-                    date: posts[index]['date'] ?? '',
-                    userId: posts[index]['user']['id'],
-                  );
-                  // return DashboardUserDisplay(
-                  //     dimension: 60.0,
-                  //     name: projectData['posts']?[index]['text']);
-                },
+            padding: const EdgeInsets.all(16),
+            child: const Text(
+              "Join a project then view posts here",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        ]),
-      ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              // compute the index of the reversed list
+              //print(posts[index]['_id']);
+              return ProjectPost(
+                id: posts[index]['id'],
+                name: posts[index]['name'],
+                postText: posts[index]['text'],
+                profURL: posts[index]['imageUrl'] ?? '',
+                date: posts[index]['date'] ?? '',
+                userId: posts[index]['user']['id'],
+              );
+              // return DashboardUserDisplay(
+              //     dimension: 60.0,
+              //     name: projectData['posts']?[index]['text']);
+            },
+          ),
+        ),
+      ]),
     );
   }
 

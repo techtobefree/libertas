@@ -1,24 +1,19 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
-import 'package:intl/intl.dart';
-
-import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 import 'package:serve_to_be_free/widgets/post_dialogue.dart';
-
-import '../../../data/projects/project_handlers.dart';
-import '../../../models/ModelProvider.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class LeadProjectDetails extends StatefulWidget {
   final String? id;
@@ -26,10 +21,10 @@ class LeadProjectDetails extends StatefulWidget {
   const LeadProjectDetails({Key? key, required this.id}) : super(key: key);
 
   @override
-  _LeadProjectDetailsState createState() => _LeadProjectDetailsState();
+  LeadProjectDetailsState createState() => LeadProjectDetailsState();
 }
 
-class _LeadProjectDetailsState extends State<LeadProjectDetails> {
+class LeadProjectDetailsState extends State<LeadProjectDetails> {
   Map<String, dynamic> projectData = {};
   List<dynamic> users = [];
 
@@ -149,16 +144,15 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
   @override
   Widget build(BuildContext context) {
     final currentUserID = Provider.of<UserProvider>(context, listen: false).id;
-    final members = projectData['members'] ?? [];
-
-    final hasLeader =
-        projectData['leader'] != null && projectData['leader'].isNotEmpty;
+    // unused?
+    //final members = projectData['members'] ?? [];
+    //final hasLeader = projectData['leader'] != null && projectData['leader'].isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
-          title: Text('Project Dashboard'),
+          title: const Text('Project Dashboard'),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -176,16 +170,16 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   // Add horizontal margins
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     projectData['name'] ?? '',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
 
                   Center(
                     child: Row(
@@ -193,17 +187,17 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
                       children: [
                         Text(
                           '${projectData['members']?.length ?? ''} Members',
-                          style: TextStyle(fontSize: 12),
+                          style: const TextStyle(fontSize: 12),
                         ),
-                        SizedBox(width: 5),
-                        SizedBox(
+                        const SizedBox(width: 5),
+                        const SizedBox(
                             width:
                                 5), // Add spacing between the members count and the dot
-                        Text(
+                        const Text(
                           '•', // Horizontal dot separator
                           style: TextStyle(fontSize: 12),
                         ),
-                        SizedBox(
+                        const SizedBox(
                             width:
                                 5), // Add spacing between the "Members" text and the hyperlink
                         GestureDetector(
@@ -213,7 +207,7 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
                               'projectId': projectData['id'],
                             });
                           },
-                          child: Text(
+                          child: const Text(
                             'View Members',
                             style: TextStyle(
                               color: Colors.blue,
@@ -225,22 +219,22 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (projectData.containsKey('date'))
                     Text(
                       '${projectData['date']}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                       ),
                     ),
                   Container(
-                    padding: EdgeInsets.only(top: 20, bottom: 10),
+                    padding: const EdgeInsets.only(top: 20, bottom: 10),
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            padding: EdgeInsets.only(right: 10, left: 10),
+                            padding: const EdgeInsets.only(right: 10, left: 10),
                             decoration: BoxDecoration(
                               border: Border(
                                 right: BorderSide(
@@ -266,28 +260,27 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
                           //   height: 90, // Set the height of the divider
                           //   color: Colors.grey,
                           // ),
-                          Container(
-                              child: Expanded(
-                                  child: Container(
-                            padding: EdgeInsets.all(10),
+                          Expanded(
+                              child: Container(
+                            padding: const EdgeInsets.all(10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: generateUserWidgets(users),
                             ),
-                          ))),
+                          )),
                         ]),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (sponsor > 0)
                     Text(
                         'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (projectData.containsKey('city'))
                     Text('${projectData['city']}, ${projectData['state']}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   if (projectData.containsKey('bio')) Text(projectData['bio']),
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       // navigate to about page
@@ -297,10 +290,10 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(255, 16, 34, 65),
+                        const Color.fromARGB(255, 16, 34, 65),
                       ),
                     ),
-                    child: Text('About'),
+                    child: const Text('About'),
                   ),
                   Visibility(
                     visible: projectData
@@ -312,12 +305,12 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
                         else
                           {onPostClick(currentUserID)}
                       },
-                      child: Text(buttonText),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(255, 16, 34, 65),
+                          const Color.fromARGB(255, 16, 34, 65),
                         ),
                       ),
+                      child: Text(buttonText),
                     ),
                   ),
                 ],
@@ -326,7 +319,7 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
             // Expanded(
             // child:
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: projectData['posts']?.length ?? 0,
               itemBuilder: (context, index) {
@@ -417,8 +410,6 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
     } catch (e) {
       throw Exception('Failed to update project: $e');
     }
-
-    return null;
   }
 
   Future<void> addLeader() async {
@@ -450,7 +441,5 @@ class _LeadProjectDetailsState extends State<LeadProjectDetails> {
     } catch (e) {
       throw Exception('Failed to update project: $e');
     }
-
-    return null;
   }
 }

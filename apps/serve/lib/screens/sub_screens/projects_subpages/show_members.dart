@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:serve_to_be_free/models/UProject.dart';
-
-import '../../../data/projects/project_handlers.dart';
-import '../../../widgets/ui/member_card.dart'; // Import your project handlers
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/widgets/ui/member_card.dart'; // Import your project handlers
 
 class ShowMembers extends StatefulWidget {
   final String? projectId;
 
-  ShowMembers({required this.projectId});
+  const ShowMembers({super.key, required this.projectId});
 
   @override
-  _ShowMembersState createState() => _ShowMembersState();
+  ShowMembersState createState() => ShowMembersState();
 }
 
-class _ShowMembersState extends State<ShowMembers> {
+class ShowMembersState extends State<ShowMembers> {
   List<String>? projectMems;
 
   @override
@@ -32,9 +30,9 @@ class _ShowMembersState extends State<ShowMembers> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
-        title: Text('Members'),
+        title: const Text('Members'),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color.fromRGBO(0, 28, 72, 1.0),
@@ -49,7 +47,7 @@ class _ShowMembersState extends State<ShowMembers> {
         centerTitle: false,
       ),
       body: projectMems == null
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(), // Show a loading indicator
             )
           : ListView.builder(

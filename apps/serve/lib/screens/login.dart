@@ -1,29 +1,22 @@
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/config/routes/app_routes.dart';
 import 'package:provider/provider.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-import 'package:serve_to_be_free/utilities/auth.dart';
-
 import 'package:serve_to_be_free/utilities/constants.dart';
-
-import 'package:serve_to_be_free/screens/createAccount.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 //import '../utilities/user_model.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   bool? _rememberMe = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -74,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'Email',
           style: kLabelStyle,
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
@@ -82,14 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
           child: TextField(
             controller: emailController,
             keyboardType: TextInputType.text,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
+              contentPadding: const EdgeInsets.only(top: 14.0),
+              prefixIcon: const Icon(
                 Icons.arrow_right_alt,
                 color: Colors.white,
               ),
@@ -110,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'Password',
           style: kLabelStyle,
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
@@ -118,14 +111,14 @@ class _LoginScreenState extends State<LoginScreen> {
           child: TextField(
             controller: passwordController,
             obscureText: true,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
+              contentPadding: const EdgeInsets.only(top: 14.0),
+              prefixIcon: const Icon(
                 Icons.lock,
                 color: Colors.white,
               ),
@@ -152,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildRememberMeCheckbox() {
-    return Container(
+    return SizedBox(
       height: 20.0,
       child: Row(
         children: <Widget>[
@@ -180,18 +173,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildLoginBtn() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
+      padding: const EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () => {tryLogin()},
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12), // <-- Radius
           ),
-          backgroundColor: Color(0xff256C8D),
+          backgroundColor: const Color(0xff256C8D),
         ),
-        child: Text(
+        child: const Text(
           'LOGIN',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
@@ -218,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context.go('/login/createaccountscreen')
       },
       child: RichText(
-        text: TextSpan(
+        text: const TextSpan(
           children: [
             TextSpan(
               text: 'Don\'t have an Account? ',
@@ -254,22 +247,22 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 height: double.infinity,
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xff001B48),
                 ),
               ),
-              Container(
+              SizedBox(
                 height: double.infinity,
                 child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 40.0,
                     vertical: 120.0,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         'Sign In',
                         style: TextStyle(
                           color: Colors.white,
@@ -278,9 +271,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 30.0),
+                      const SizedBox(height: 30.0),
                       _buildUserNameTF(),
-                      SizedBox(
+                      const SizedBox(
                         height: 30.0,
                       ),
                       _buildPasswordTF(),
@@ -302,7 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
   showAlertDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: const Text("OK"),
       onPressed: () {
         Navigator.of(context).pop(); // dismiss dialog
       },
@@ -310,8 +303,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Account not found"),
-      content: Text("Username and Password did not match any results"),
+      title: const Text("Account not found"),
+      content: const Text("Username and Password did not match any results"),
       actions: [
         okButton,
       ],
@@ -340,6 +333,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _handleSignInResult(SignInResult result) async {
     switch (result.nextStep.signInStep) {
+      //case AuthSignInStep.continueSignInWithMfaSelection:
+      //case AuthSignInStep.continueSignInWithTotpSetup:
+      //case AuthSignInStep.confirmSignInWithTotpMfaCode:
+      //case AuthSignInStep.resetPassword:
+      //case AuthSignInStep.confirmSignUp:
+
       case AuthSignInStep.confirmSignInWithSmsMfaCode:
         final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
         _handleCodeDelivery(codeDeliveryDetails);
@@ -356,6 +355,8 @@ class _LoginScreenState extends State<LoginScreen> {
       case AuthSignInStep.done:
         safePrint('Sign in is complete');
         break;
+      default:
+        safePrint('Unexpected sign-in result');
     }
   }
 

@@ -1,27 +1,22 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
-import '../../data/users/handlers/user_handlers.dart';
-import '../../data/users/providers/user_provider.dart';
-import '../../models/ModelProvider.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
+import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class CreateAPost extends StatefulWidget {
   const CreateAPost({Key? key}) : super(key: key);
 
   @override
-  _CreateAPostState createState() => _CreateAPostState();
+  CreateAPostState createState() => CreateAPostState();
 }
 
-class _CreateAPostState extends State<CreateAPost> {
+class CreateAPostState extends State<CreateAPost> {
   final _textEditingController = TextEditingController();
   Map<String, dynamic> _selectedOption = {
     'name': 'Projects',
@@ -49,27 +44,28 @@ class _CreateAPostState extends State<CreateAPost> {
     }
   }
 
-  Widget _buildListTile(Map<String, dynamic> option, int index,
-      Function setStateCallback, BuildContext context) {
-    return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(5.0),
-        child: Image.asset(
-          option['image'],
-          fit: BoxFit.cover,
-          height: 30,
-          width: 30,
-        ),
-      ),
-      title: Text(option['text']),
-      onTap: () {
-        setStateCallback(() {
-          _selectedOption = option;
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
+  /// unused
+  // Widget _buildListTile(Map<String, dynamic> option, int index,
+  //     Function setStateCallback, BuildContext context) {
+  //   return ListTile(
+  //     leading: ClipRRect(
+  //       borderRadius: BorderRadius.circular(5.0),
+  //       child: Image.asset(
+  //         option['image'],
+  //         fit: BoxFit.cover,
+  //         height: 30,
+  //         width: 30,
+  //       ),
+  //     ),
+  //     title: Text(option['text']),
+  //     onTap: () {
+  //       setStateCallback(() {
+  //         _selectedOption = option;
+  //       });
+  //       Navigator.pop(context);
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +73,7 @@ class _CreateAPostState extends State<CreateAPost> {
         appBar: AppBar(
           title: const Text('Create a Post'),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -92,61 +88,57 @@ class _CreateAPostState extends State<CreateAPost> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(15),
-                      //padding: EdgeInsets.all(5),
-                      child: _selectedOption['url'] != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: Image.network(
-                                _selectedOption['url'],
-                                fit: BoxFit.cover,
-                                height: 40,
-                                width: 40,
-                              ),
-                            )
-                          : Container(
-                              padding: EdgeInsets.all(5),
-                              child: Icon(
-                                Icons.group_outlined,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.amberAccent,
-                              ),
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(15),
+                    //padding: EdgeInsets.all(5),
+                    child: _selectedOption['url'] != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(5.0),
+                            child: Image.network(
+                              _selectedOption['url'],
+                              fit: BoxFit.cover,
+                              height: 40,
+                              width: 40,
                             ),
+                          )
+                        : Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.amberAccent,
+                            ),
+                            child: const Icon(
+                              Icons.group_outlined,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _showOptionsDialog(); // Show the options dialog
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          _selectedOption['name'],
+                        ), // Display the selected option
+                        const Icon(Icons.keyboard_arrow_down_rounded)
+                      ],
                     ),
-                    InkWell(
-                      onTap: () {
-                        _showOptionsDialog(); // Show the options dialog
-                      },
-                      child: Container(
-                        child: Row(
-                          children: [
-                            Text(
-                              _selectedOption['name'],
-                            ), // Display the selected option
-                            Icon(Icons.keyboard_arrow_down_rounded)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Divider(),
+              const Divider(),
               Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
+                  margin: const EdgeInsets.only(left: 10, right: 10),
                   child: TextField(
                     controller: _textEditingController,
                     maxLines:
                         null, // This will allow the text area to expand to fit the content.
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText:
                             'Enter your text here', // Placeholder text for the text area
                         border: InputBorder.none // Border around the text area
@@ -181,7 +173,6 @@ class _CreateAPostState extends State<CreateAPost> {
         content: text,
         date:
             '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}');
-
 
     final request = ModelMutations.create(upost);
     final response = await Amplify.API.mutate(request: request).response;
@@ -291,7 +282,7 @@ class _CreateAPostState extends State<CreateAPost> {
                 },
               ),
               if (_isLoading)
-                Center(
+                const Center(
                   child: CircularProgressIndicator(),
                 ),
             ],

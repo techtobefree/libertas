@@ -1,17 +1,14 @@
-import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
-import '../models/ModelProvider.dart';
-import '../widgets/find_project_card.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class Profile extends StatefulWidget {
   final String? id; // Add this line
@@ -25,7 +22,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   UUser user = UUser(email: "", password: "", firstName: "", lastName: "");
   @override
   void initState() {
-    _tabController = new TabController(length: 1, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     final userId =
         widget.id ?? Provider.of<UserProvider>(context, listen: false).id;
     _futureProjects = ProjectHandlers.getMyProjects(userId);
@@ -88,8 +85,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-            child: Column(children: [
+        body: Column(children: [
       Stack(
           //crossAxisAlignment: CrossAxisAlignment.center,
 
@@ -97,8 +93,8 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           children: [
             Container(
               // This margin is just enough to show the profile picture. Not sure if this is going to be a permanent solution.
-              margin: EdgeInsets.only(bottom: 50),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.only(bottom: 50),
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/profile_background.jpeg'),
                   fit: BoxFit.cover,
@@ -112,25 +108,25 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 right: null,
                 left: null,
                 child: InkWell(
-                  onTap: () => {print("Profilel pic tapped")},
+                  onTap: () => print("Profilel pic tapped"),
                   child: Container(
                     //transform: Matrix4.translationValues(0.0, -70.0, 0.0),
                     //margin: EdgeInsets.only(bottom: 50),
                     child: ProfilePicture(
                       Colors.pinkAccent,
                       120,
-                      user?.profilePictureUrl ?? "",
-                      user!.id,
+                      user.profilePictureUrl ?? "",
+                      user.id,
                       borderRadius: 10,
                     ),
                   ),
                 ))
           ]),
       Container(
-        padding: EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10),
         child: Text(
-          "${user?.firstName} ${user?.lastName}",
-          style: TextStyle(
+          "${user.firstName} ${user.lastName}",
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
             fontFamily: 'Open Sans',
@@ -164,7 +160,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         child: TabBar(
           unselectedLabelColor: Colors.grey.withOpacity(1),
           labelColor: Colors.blue[900],
-          tabs: [
+          tabs: const [
             Tab(
               text: "Projects",
             ),
@@ -178,6 +174,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       ),
       Expanded(
         child: TabBarView(
+          controller: _tabController,
           children: [
             FutureBuilder<List<dynamic>>(
               future: _futureProjects,
@@ -196,11 +193,11 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     },
                   );
                 } else if (snapshot.hasError) {
-                  return Center(
+                  return const Center(
                     child: Text("Failed to load projects."),
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
@@ -210,9 +207,8 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             //   color: Colors.greenAccent,
             // ),
           ],
-          controller: _tabController,
         ),
       ),
-    ])));
+    ]));
   }
 }

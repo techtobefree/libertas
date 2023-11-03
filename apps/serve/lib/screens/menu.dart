@@ -1,31 +1,27 @@
-import 'dart:io';
-
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:serve_to_be_free/widgets/buttons/menu_button.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 
 class MenuPage extends StatelessWidget {
-  final myProfilePath;
-  final finishProjectsPath;
+  final String myProfilePath;
+  final String finishProjectsPath;
   //final String favoritesPath;
-  final howItWorksPath;
-  final aboutPath;
+  final String howItWorksPath;
+  final String aboutPath;
 
   // Is having the const here necessary? I feel it improves performance since we are not changing it after instantiation.
   const MenuPage({
-    this.myProfilePath,
-    this.finishProjectsPath,
+    super.key,
+    required this.myProfilePath,
+    required this.finishProjectsPath,
     //required this.favoritesPath,
-    this.howItWorksPath,
-    this.aboutPath,
+    required this.howItWorksPath,
+    required this.aboutPath,
   });
 
   Future<void> signOutCurrentUser() async {
@@ -41,11 +37,12 @@ class MenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(150.0), // Set the height of the AppBar
+          preferredSize:
+              const Size.fromHeight(150.0), // Set the height of the AppBar
           child: AppBar(
-            title: Text("SERVE TO BE FREE"),
+            title: const Text("SERVE TO BE FREE"),
             flexibleSpace: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -58,7 +55,7 @@ class MenuPage extends StatelessWidget {
           ),
         ),
         body: Container(
-            margin: EdgeInsets.only(top: 10, right: 20),
+            margin: const EdgeInsets.only(top: 10, right: 20),
             child: Column(
               children: [
                 MenuButton(
@@ -105,7 +102,7 @@ class MenuPage extends StatelessWidget {
                     ),
                     "About Serve To Be Free",
                     aboutPath),
-                SizedBox(
+                const SizedBox(
                     height:
                         20), // Add some space between the last item and the logout button
                 TextButton(
@@ -114,7 +111,7 @@ class MenuPage extends StatelessWidget {
                     signOutCurrentUser();
                     context.go("/login");
                   },
-                  child: Text(
+                  child: const Text(
                     "Logout",
                     style: TextStyle(
                       color: Colors.red, // Change the text color as desired

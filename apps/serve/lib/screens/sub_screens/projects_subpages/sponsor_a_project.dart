@@ -1,12 +1,6 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-
-import '../../../widgets/sponsor_project_list_card.dart';
+import 'package:serve_to_be_free/widgets/sponsor_project_list_card.dart';
 
 class SponsorAProject extends StatefulWidget {
   const SponsorAProject({super.key});
@@ -28,7 +22,7 @@ class _SponsorAProjectState extends State<SponsorAProject> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 16, 34, 65),
+        backgroundColor: const Color.fromARGB(255, 16, 34, 65),
         title: const Text('Sponsor A Project'),
       ),
       body: FutureBuilder<List<dynamic>>(
@@ -49,11 +43,11 @@ class _SponsorAProjectState extends State<SponsorAProject> {
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text("Failed to load projects."),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

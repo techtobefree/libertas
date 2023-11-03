@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/screens/createAccount.dart';
+import 'package:serve_to_be_free/screens/create_account.dart';
 import 'package:serve_to_be_free/screens/dashboard.dart';
 import 'package:serve_to_be_free/screens/groups.dart';
 import 'package:serve_to_be_free/screens/login.dart';
@@ -20,10 +20,10 @@ import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/my_account_su
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_project/invite_a_leader.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project/sponsor_project_form.dart';
 import 'package:serve_to_be_free/screens/tasks.dart';
-import '../../screens/sub_screens/create_a_post.dart';
-import '../../screens/sub_screens/menu_subpages/about_page.dart';
-import '../../screens/sub_screens/menu_subpages/my_account.dart';
-import '../../screens/sub_screens/projects_subpages/create_a_project/project_details_form.dart';
+import 'package:serve_to_be_free/screens/sub_screens/create_a_post.dart';
+import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/about_page.dart';
+import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/my_account.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_project/project_details_form.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_project/create_a_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_a_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_details.dart';
@@ -31,12 +31,10 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/about_pro
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/my_projects.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_project_details.dart';
-
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project.dart';
 import 'package:serve_to_be_free/widgets/ui/my_scaffold.dart';
-
-import '../../screens/sub_screens/projects_subpages/find_a_project.dart';
-import '../../screens/sub_screens/projects_subpages/finish_projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/find_a_project.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/finish_projects.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -49,7 +47,8 @@ final goRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/login',
-      pageBuilder: (context, state) => NoTransitionPage(child: LoginScreen()),
+      pageBuilder: (context, state) =>
+          const NoTransitionPage(child: LoginScreen()),
       routes: [
         GoRoute(
           path: 'createaccountscreen',
@@ -57,7 +56,7 @@ final goRouter = GoRouter(
           routes: [
             GoRoute(
                 path: 'chooseprofilepicture',
-                builder: (context, state) => ChooseProfilePicture(),
+                builder: (context, state) => const ChooseProfilePicture(),
                 routes: [
                   GoRoute(
                     path: 'confirmemail',
@@ -82,9 +81,8 @@ final goRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/dashboard',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child:
-                const DashboardPage(/*label: 'A', detailsPath: '/a/details'*/),
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: DashboardPage(/*label: 'A', detailsPath: '/a/details'*/),
           ),
           routes: [
             GoRoute(
@@ -95,9 +93,9 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: '/projects',
-          pageBuilder: (context, state) => NoTransitionPage(
+          pageBuilder: (context, state) => const NoTransitionPage(
               // eventually we add a way to see all projects from a different profile.
-              child: const ProjectsPage(
+              child: ProjectsPage(
             myProjectsPath: '/projects/myprojects',
             findProjectsPath: '/projects/findprojects',
             createProjectsPath: '/projects/createprojects',
@@ -124,7 +122,7 @@ final goRouter = GoRouter(
                       routes: [
                         GoRoute(
                             path: 'invitealeader',
-                            builder: (context, state) => InviteALeader(
+                            builder: (context, state) => const InviteALeader(
                                 path:
                                     '/projects/createprojects/projectdetailsform/invitealeader/projectroles'))
                       ])
@@ -178,8 +176,8 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: '/groups',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: const GroupsPage(/*label: 'B', detailsPath: '/b/details'*/),
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: GroupsPage(/*label: 'B', detailsPath: '/b/details'*/),
           ),
           // routes: [
           //   GoRoute(
@@ -190,8 +188,8 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: '/mytasks',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: const TasksPage(/*label: 'B', detailsPath: '/b/details'*/),
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: TasksPage(/*label: 'B', detailsPath: '/b/details'*/),
           ),
           // routes: [
           //   GoRoute(
@@ -202,9 +200,8 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: '/mymessages',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child:
-                const MessagesPage(/*label: 'B', detailsPath: '/b/details'*/),
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: MessagesPage(/*label: 'B', detailsPath: '/b/details'*/),
           ),
           // routes: [
           //   GoRoute(
@@ -215,8 +212,8 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: '/menu',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: const MenuPage(
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: MenuPage(
               myProfilePath: '/menu/myprofile',
               finishProjectsPath: '/menu/finishprojects',
               //favoritesPath: '/menu/createprojects',
@@ -233,7 +230,7 @@ final goRouter = GoRouter(
             ),
             GoRoute(
               path: 'finishprojects',
-              builder: (context, state) => FinishProject(),
+              builder: (context, state) => const FinishProject(),
             ),
             GoRoute(
                 path: 'myaccount',
@@ -246,16 +243,18 @@ final goRouter = GoRouter(
                 routes: [
                   GoRoute(
                       path: 'generalinfo',
-                      builder: (context, state) => MyAccountGeneralInfo()),
+                      builder: (context, state) =>
+                          const MyAccountGeneralInfo()),
                   GoRoute(
                       path: 'emergencyinfo',
-                      builder: (context, state) => MyAccountEmergencyInfo()),
+                      builder: (context, state) =>
+                          const MyAccountEmergencyInfo()),
                   GoRoute(
                       path: 'logininfo',
-                      builder: (context, state) => MyAccountLoginInfo()),
+                      builder: (context, state) => const MyAccountLoginInfo()),
                   GoRoute(
                       path: 'contactinfo',
-                      builder: (context, state) => MyAccountContactInfo())
+                      builder: (context, state) => const MyAccountContactInfo())
                 ]),
             GoRoute(
               path: 'howitworks',
