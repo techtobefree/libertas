@@ -16,11 +16,11 @@ class MyProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         topRight: Radius.circular(10.0),
         bottomRight: Radius.circular(10.0),
       ),
-      child: Container(
+      child: SizedBox(
         height: 100,
         child: GestureDetector(
           onTap: () {
@@ -33,11 +33,11 @@ class MyProjectCard extends StatelessWidget {
               children: [
                 if (projectPhoto.isNotEmpty)
                   ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10.0),
                       bottomLeft: Radius.circular(10.0),
                     ),
-                    child: Container(
+                    child: SizedBox(
                       width: 100,
                       height: 100,
                       child: FadeInImage.assetNetwork(
@@ -51,7 +51,7 @@ class MyProjectCard extends StatelessWidget {
                 Expanded(
                   // Use Expanded widget here
                   child: Container(
-                    margin: EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(20),
                     child: Text(
                       projectName,
                       overflow: TextOverflow.ellipsis,

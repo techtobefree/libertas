@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class DirectMessages extends StatefulWidget {
   const DirectMessages({super.key});
@@ -20,8 +18,6 @@ class _DirectMessagesState extends State<DirectMessages> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("Direct messages between user and another person."),
-    );
+    return const Text("Direct messages between user and another person.");
   }
 }

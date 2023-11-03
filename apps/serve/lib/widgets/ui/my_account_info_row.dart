@@ -13,14 +13,14 @@ class MyAccountInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: 100,
             child: Text(
               subject,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Open Sans',
                 fontSize: 14,
               ),
@@ -30,7 +30,7 @@ class MyAccountInfoRow extends StatelessWidget {
               ? Expanded(
                   child: Text(
                     value!,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Open Sans',
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -43,7 +43,7 @@ class MyAccountInfoRow extends StatelessWidget {
               : Expanded(
                   child: Text(
                     subject,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Open Sans',
                       color: Colors.grey,
                       fontSize: 14,

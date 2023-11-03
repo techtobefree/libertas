@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
@@ -67,8 +65,8 @@ class _MemberCardState extends State<MemberCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(bottom: 10, left: 10, right: 10),
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         color: Colors.white,
@@ -77,18 +75,18 @@ class _MemberCardState extends State<MemberCard> {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 2,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: isLoading
-          ? Placeholder() // Display a placeholder while loading.
+          ? const Placeholder() // Display a placeholder while loading.
           : Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (member != null && member!.profilePictureUrl != "")
                   Container(
-                    margin: EdgeInsets.only(right: 15),
+                    margin: const EdgeInsets.only(right: 15),
                     child: ProfilePicture(
                       getRandomAccentColor(),
                       60,
@@ -103,7 +101,7 @@ class _MemberCardState extends State<MemberCard> {
                     children: [
                       Text(
                         "${member?.firstName ?? ""} ${member?.lastName ?? ""}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),

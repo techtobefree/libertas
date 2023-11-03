@@ -25,9 +25,9 @@ class _LeadAProjectState extends State<LeadAProject> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
-        title: Text('Lead a Project'),
+        title: const Text('Lead a Project'),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color.fromRGBO(0, 28, 72, 1.0),
@@ -41,12 +41,12 @@ class _LeadAProjectState extends State<LeadAProject> {
         elevation: 0,
         centerTitle: false,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
+          preferredSize: const Size.fromHeight(60.0),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
             child: Column(
               children: [
-                SizedBox(height: 5.0),
+                const SizedBox(height: 5.0),
                 TextField(
                   onChanged: (query) {
                     setState(() {
@@ -70,11 +70,11 @@ class _LeadAProjectState extends State<LeadAProject> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 16.0),
                   ),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
               ],
             ),
           ),
@@ -102,16 +102,17 @@ class _LeadAProjectState extends State<LeadAProject> {
                       combined.contains(query)) {
                     return ProjectCard.fromJson(projects[index], lead: true);
                   }
-                  return SizedBox.shrink(); // or return null; to hide the card
+                  return const SizedBox
+                      .shrink(); // or return null; to hide the card
                 }
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text("Failed to load projects."),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

@@ -3,9 +3,6 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 
-import '../data/users/providers/user_provider.dart';
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
-
 /// Hashes a password using the SHA256 algorithm.
 String hashPassword(String password) {
   var bytes = utf8.encode(password);
@@ -23,7 +20,6 @@ bool verifyPassword(String password, String hash) {
 ///
 /// Returns the authenticated user object, or null if authentication fails.
 Future<bool> authenticateUser(String email, String password) async {
-  final userProvider = UserProvider();
   final user = await UserHandlers.getUserByEmail(email);
   if (user != null) {
     if (verifyPassword(password, user.password)) {

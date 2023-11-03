@@ -15,7 +15,7 @@ class SponsorCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Container(
+      child: SizedBox(
         height: 150,
         child: Card(
           shape: RoundedRectangleBorder(
@@ -27,9 +27,9 @@ class SponsorCard extends StatelessWidget {
               Container(
                 height: 120,
                 width: 120,
-                margin: EdgeInsets.all(15),
+                margin: const EdgeInsets.all(15),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/chick-fil-a-logo-2.jpg'),
                     ),
@@ -39,11 +39,11 @@ class SponsorCard extends StatelessWidget {
               Expanded(
                 child: ListView(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     Container(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: const Text(
                         "FEATURED SPONSOR BONUS",
                         style: TextStyle(
                           fontSize: 12,
@@ -54,8 +54,8 @@ class SponsorCard extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: const Text(
                         "75 Bonus Points",
                         style: TextStyle(
                           fontSize: 21,
@@ -64,13 +64,11 @@ class SponsorCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      child: Text(
-                        "when you join any project sponsored by Chick-Fil-A",
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
+                    const Text(
+                      "when you join any project sponsored by Chick-Fil-A",
+                      softWrap: true,
+                      style: TextStyle(
+                        fontSize: 16,
                       ),
                     ),
                   ],

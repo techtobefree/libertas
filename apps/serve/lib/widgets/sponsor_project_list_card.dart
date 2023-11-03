@@ -7,7 +7,8 @@ class SponsorProjectListCard extends StatefulWidget {
   final Map<String, dynamic> project;
   final List<dynamic> sponsors;
 
-  SponsorProjectListCard({
+  const SponsorProjectListCard({
+    super.key,
     required this.title,
     required this.numMembers,
     required this.project,
@@ -15,23 +16,23 @@ class SponsorProjectListCard extends StatefulWidget {
   });
 
   // Named constructor that accepts a JSON object
-  SponsorProjectListCard.fromJson(Map<String, dynamic> json)
+  SponsorProjectListCard.fromJson(Map<String, dynamic> json, {super.key})
       : title = json['name'],
         numMembers = json['members'].length.toString(),
         sponsors = json['sponsors'],
         project = json;
 
   @override
-  _SponsorProjectListCardState createState() => _SponsorProjectListCardState();
+  SponsorProjectListCardState createState() => SponsorProjectListCardState();
 }
 
-class _SponsorProjectListCardState extends State<SponsorProjectListCard> {
+class SponsorProjectListCardState extends State<SponsorProjectListCard> {
   bool _isImageError = false;
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         height: 140.0,
         child: GestureDetector(
@@ -48,7 +49,7 @@ class _SponsorProjectListCardState extends State<SponsorProjectListCard> {
             shadowColor: Colors.grey.withOpacity(0.4),
             elevation: 4.0,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -60,7 +61,7 @@ class _SponsorProjectListCardState extends State<SponsorProjectListCard> {
                       children: [
                         Text(
                           widget.title,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
                           ),
@@ -74,8 +75,8 @@ class _SponsorProjectListCardState extends State<SponsorProjectListCard> {
                           ),
                         if (widget.project.containsKey('date'))
                           Text('${widget.project['date']}'),
-                        SizedBox(height: 8.0),
-                        Text(
+                        const SizedBox(height: 8.0),
+                        const Text(
                           'Sponsor!',
                           style: TextStyle(
                             fontSize: 20.0, // Adjust the font size as desired
@@ -87,7 +88,7 @@ class _SponsorProjectListCardState extends State<SponsorProjectListCard> {
                     ),
                   ),
                   if (_isImageError)
-                    SizedBox(
+                    const SizedBox(
                       width: 120,
                       height: 120,
                       child: Placeholder(), // Display a placeholder image
@@ -104,7 +105,7 @@ class _SponsorProjectListCardState extends State<SponsorProjectListCard> {
                           setState(() {
                             _isImageError = true; // Set the error flag
                           });
-                          return SizedBox(
+                          return const SizedBox(
                             width: 120,
                             height: 120,
                             child: Placeholder(), // Display a placeholder image

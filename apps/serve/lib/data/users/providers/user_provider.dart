@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
 
 class UserProvider extends ChangeNotifier {
-  final String _baseUrl = 'http://44.203.120.103:3000/users';
+  //final String _baseUrl = 'http://44.203.120.103:3000/users';
 
   late String id;
   late String email;

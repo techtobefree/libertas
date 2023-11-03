@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/widgets/ui/my_account_info_row.dart';
 
@@ -26,8 +24,8 @@ class MyAccount extends StatelessWidget {
         ),
         body: SingleChildScrollView(
             child: Container(
-          margin: EdgeInsets.only(top: 5),
-          padding: EdgeInsets.all(5),
+          margin: const EdgeInsets.only(top: 5),
+          padding: const EdgeInsets.all(5),
           child: Column(
             children: [
               Container(
@@ -43,23 +41,23 @@ class MyAccount extends StatelessWidget {
                     ),
                   ],
                 ),
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 20,
                   top: 10,
                   right: 10,
                 ),
                 child: Column(children: [
                   Container(
-                    padding: EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 15),
                     child: Row(children: [
-                      Text(
+                      const Text(
                         "General Info",
                         style: TextStyle(
                             fontFamily: 'Open Sans',
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       TextButton(
                         style: TextButton.styleFrom(
                           textStyle: const TextStyle(fontSize: 16),
@@ -73,15 +71,15 @@ class MyAccount extends StatelessWidget {
                     ]),
                   ),
                   // VALUES from user
-                  MyAccountInfoRow(subject: "First Name", value: "Ayana"),
+                  const MyAccountInfoRow(subject: "First Name", value: "Ayana"),
                   //VALUES
-                  MyAccountInfoRow(subject: "Last Name", value: "Brown"),
+                  const MyAccountInfoRow(subject: "Last Name", value: "Brown"),
                   //VALUES
                   // get a stringed date value in here.
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                       subject: "Birthday", value: "October 19, 1988"),
                   //VALUES
-                  MyAccountInfoRow(subject: "Gender"),
+                  const MyAccountInfoRow(subject: "Gender"),
                 ]),
               ),
               Container(
@@ -100,23 +98,23 @@ class MyAccount extends StatelessWidget {
                     ),
                   ],
                 ),
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 20,
                   top: 10,
                   right: 10,
                 ),
                 child: Column(children: [
                   Container(
-                    padding: EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 15),
                     child: Row(children: [
-                      Text(
+                      const Text(
                         "Login Info",
                         style: TextStyle(
                             fontFamily: 'Open Sans',
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       TextButton(
                         style: TextButton.styleFrom(
                           textStyle: const TextStyle(fontSize: 16),
@@ -130,7 +128,7 @@ class MyAccount extends StatelessWidget {
                     ]),
                   ),
                   // VALUES from user object after api call
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                       subject: "Email",
                       value: "shannonbasdfsdfsadfea@gmail.com"),
                   //VALUES
@@ -156,23 +154,23 @@ class MyAccount extends StatelessWidget {
                     ),
                   ],
                 ),
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 20,
                   top: 10,
                   right: 10,
                 ),
                 child: Column(children: [
                   Container(
-                    padding: EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 15),
                     child: Row(children: [
-                      Text(
+                      const Text(
                         "Contact Info",
                         style: TextStyle(
                             fontFamily: 'Open Sans',
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       TextButton(
                         style: TextButton.styleFrom(
                           textStyle: const TextStyle(fontSize: 16),
@@ -186,21 +184,21 @@ class MyAccount extends StatelessWidget {
                     ]),
                   ),
                   // VALUES from user object after api call
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "Address",
                     value: null,
                   ),
                   //VALUES
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "City",
                   ),
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "State",
                   ),
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "Zip Code",
                   ),
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "Phone",
                   ),
                 ]),
@@ -221,23 +219,23 @@ class MyAccount extends StatelessWidget {
                     ),
                   ],
                 ),
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 20,
                   top: 10,
                   right: 10,
                 ),
                 child: Column(children: [
                   Container(
-                    padding: EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 15),
                     child: Row(children: [
-                      Text(
+                      const Text(
                         "Emergency Contact Info",
                         style: TextStyle(
                             fontFamily: 'Open Sans',
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       TextButton(
                         style: TextButton.styleFrom(
                           textStyle: const TextStyle(fontSize: 16),
@@ -251,15 +249,15 @@ class MyAccount extends StatelessWidget {
                     ]),
                   ),
                   // VALUES from user object after api call
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "First Name",
                     value: null,
                   ),
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "Last Name",
                     value: null,
                   ),
-                  MyAccountInfoRow(
+                  const MyAccountInfoRow(
                     subject: "Phone",
                     value: null,
                   ),

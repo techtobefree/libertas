@@ -4,16 +4,16 @@ class TasksPage extends StatefulWidget {
   const TasksPage({Key? key}) : super(key: key);
 
   @override
-  _TasksPageState createState() => _TasksPageState();
+  TasksPageState createState() => TasksPageState();
 }
 
-class _TasksPageState extends State<TasksPage> {
+class TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Tasks Demo'),
         ),
-        body: Container(child: Text("I am Tasks")));
+        body: const Text("I am Tasks"));
   }
 }

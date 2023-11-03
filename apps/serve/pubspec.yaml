@@ -57,6 +57,7 @@ dependencies:
   flutter_bloc: ^8.1.3
   provider: ^6.0.5 # was missing
   intl: ^0.18.1
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:

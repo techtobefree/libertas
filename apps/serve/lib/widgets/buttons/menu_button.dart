@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:go_router/go_router.dart';
 
 class MenuButton extends StatelessWidget {
@@ -8,7 +6,7 @@ class MenuButton extends StatelessWidget {
   final Widget _icon;
   final String _text;
   final String _path;
-  const MenuButton(this._icon, this._text, this._path);
+  const MenuButton(this._icon, this._text, this._path, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,33 +15,28 @@ class MenuButton extends StatelessWidget {
           // handle tap event
           context.go(_path);
         },
-        child: Container(
-            child: Container(
-                child: Row(children: [
+        child: Row(children: [
           Container(
 
               // This keeps stretching the profile photo for some reason. Gonna figure out what may cause that.
               width: 80,
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Container(
                 child: _icon,
               )),
-          Container(
-              child: Text(
+          Text(
             _text,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
               fontFamily: 'Comic Sans MS',
             ),
-          )),
-          Spacer(),
-          Container(
-            child: Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
+          ),
+          const Spacer(),
+          const Icon(
+            Icons.arrow_forward_ios,
+            size: 15,
           )
-        ]))));
+        ]));
   }
 }

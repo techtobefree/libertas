@@ -1,13 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:serve_to_be_free/config/routes/app_routes.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:provider/provider.dart';
-
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
 class SponsorProjectForm extends StatefulWidget {
@@ -17,12 +12,12 @@ class SponsorProjectForm extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SponsorProjectFormState createState() => _SponsorProjectFormState();
+  SponsorProjectFormState createState() => SponsorProjectFormState();
 }
 
-class _SponsorProjectFormState extends State<SponsorProjectForm> {
+class SponsorProjectFormState extends State<SponsorProjectForm> {
   Map<String, dynamic> projectData = {};
-  TextEditingController _amountController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
 
   void _submitSponsorship() async {
     final amount = double.parse(_amountController.text);
@@ -39,8 +34,8 @@ class _SponsorProjectFormState extends State<SponsorProjectForm> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Sponsorship Submitted'),
-        content: Text('Thank you for sponsoring this project!'),
+        title: const Text('Sponsorship Submitted'),
+        content: const Text('Thank you for sponsoring this project!'),
         actions: [
           TextButton(
             onPressed: () {
@@ -50,37 +45,39 @@ class _SponsorProjectFormState extends State<SponsorProjectForm> {
               // Navigate back to sponsor projects list
               context.go('/projects/sponsorprojects');
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
     );
   }
 
-  void _showConfirmationModal() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Confirm Sponsorship'),
-        content: Text('Are you sure you want to submit this sponsorship?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              goRouter.pop(context); // Close the confirmation dialog
-              _submitSponsorship(); // Perform the sponsorship submission
-            },
-            child: Text('Yes'),
-          ),
-          TextButton(
-            onPressed: () {
-              goRouter.pop(context); // Use goRouter.pop to navigate back
-            },
-            child: Text('No'),
-          ),
-        ],
-      ),
-    );
-  }
+  // unused
+  //void _showConfirmationModal() {
+  //  showDialog(
+  //    context: context,
+  //    builder: (context) => AlertDialog(
+  //      title: const Text('Confirm Sponsorship'),
+  //      content:
+  //          const Text('Are you sure you want to submit this sponsorship?'),
+  //      actions: [
+  //        TextButton(
+  //          onPressed: () {
+  //            goRouter.pop(context); // Close the confirmation dialog
+  //            _submitSponsorship(); // Perform the sponsorship submission
+  //          },
+  //          child: const Text('Yes'),
+  //        ),
+  //        TextButton(
+  //          onPressed: () {
+  //            goRouter.pop(context); // Use goRouter.pop to navigate back
+  //          },
+  //          child: const Text('No'),
+  //        ),
+  //      ],
+  //    ),
+  //  );
+  //}
 
   @override
   void initState() {
@@ -102,7 +99,7 @@ class _SponsorProjectFormState extends State<SponsorProjectForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 16, 34, 65),
+        backgroundColor: const Color.fromARGB(255, 16, 34, 65),
         title: const Text('Sponsor A Project'),
       ),
       body: SingleChildScrollView(
@@ -110,7 +107,7 @@ class _SponsorProjectFormState extends State<SponsorProjectForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               if (projectData.containsKey('projectPicture') &&
                   projectData['projectPicture'].isNotEmpty)
                 Image.network(
@@ -119,12 +116,12 @@ class _SponsorProjectFormState extends State<SponsorProjectForm> {
                   width: 300,
                   height: 300,
                 ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 projectData['name'] ?? '',
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               if (projectData.containsKey('description'))
                 Center(
                   child: Text(
@@ -132,34 +129,35 @@ class _SponsorProjectFormState extends State<SponsorProjectForm> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              SizedBox(height: 20),
-              Container(
+              const SizedBox(height: 20),
+              SizedBox(
                 width: 200,
                 child: TextFormField(
                   controller: _amountController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     prefixText: '\$',
                     labelText: 'Sponsorship Amount',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
                   ],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitSponsorship,
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromARGB(255, 16, 34, 65),
+                    const Color.fromARGB(255, 16, 34, 65),
                   ),
                 ),
-                child: Text('Submit Sponsorship'),
+                child: const Text('Submit Sponsorship'),
               ),
             ],
           ),

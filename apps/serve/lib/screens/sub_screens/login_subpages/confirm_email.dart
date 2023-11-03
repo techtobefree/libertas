@@ -1,13 +1,11 @@
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
-
-import '../../../data/users/handlers/user_handlers.dart';
-import '../../../data/users/providers/user_provider.dart';
-import '../../../models/ModelProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/data/users/models/user_class.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
+import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
 class ConfirmationCodePage extends StatefulWidget {
   final String email;
@@ -15,10 +13,10 @@ class ConfirmationCodePage extends StatefulWidget {
   const ConfirmationCodePage({Key? key, required this.email}) : super(key: key);
 
   @override
-  _ConfirmationCodePageState createState() => _ConfirmationCodePageState();
+  ConfirmationCodePageState createState() => ConfirmationCodePageState();
 }
 
-class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
+class ConfirmationCodePageState extends State<ConfirmationCodePage> {
   String _confirmationCode = "";
 
   void _onCodeChanged(String code) {
@@ -72,14 +70,14 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Error"),
+          title: const Text("Error"),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );
@@ -116,8 +114,9 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
       var authUser = await Amplify.Auth.getCurrentUser();
 
       if (authUser.signInDetails is CognitoSignInDetailsApiBased) {
-        var apiBasedSignInDetails =
-            authUser.signInDetails as CognitoSignInDetailsApiBased;
+        //unused
+        //var apiBasedSignInDetails =
+        //    authUser.signInDetails as CognitoSignInDetailsApiBased;
       }
     }
     return result.isSignedIn;
@@ -144,7 +143,7 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(0, 28, 72, 1.0),
+      backgroundColor: const Color.fromRGBO(0, 28, 72, 1.0),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -161,38 +160,38 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 onChanged: _onCodeChanged,
                 keyboardType: TextInputType.number,
                 maxLength: 6,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Enter 6-digit code',
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: const TextStyle(color: Colors.white70),
                   counterText: "",
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: const BorderSide(color: Colors.white),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: const BorderSide(color: Colors.white),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _onSubmit,
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(15.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                backgroundColor: Color(0xff256C8D),
+                backgroundColor: const Color(0xff256C8D),
               ),
-              child: Text(
+              child: const Text(
                 'Submit',
                 style: TextStyle(
                   color: Colors.white,
@@ -203,10 +202,10 @@ class _ConfirmationCodePageState extends State<ConfirmationCodePage> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextButton(
               onPressed: _onResendCode,
-              child: Text(
+              child: const Text(
                 'Resend Code',
                 style: TextStyle(
                   color: Colors.white,

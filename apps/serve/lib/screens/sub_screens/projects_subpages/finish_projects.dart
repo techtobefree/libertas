@@ -1,15 +1,8 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-
-import '../../../data/users/providers/user_provider.dart';
-import '../../../widgets/finish_project_card.dart';
-import 'package:serve_to_be_free/widgets/finish_project_card.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
+import 'package:serve_to_be_free/widgets/finish_project_card.dart';
 
 class FinishProject extends StatefulWidget {
   const FinishProject({super.key});
@@ -50,9 +43,9 @@ class _FinishProjectState extends State<FinishProject> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Finish a Project'),
+          title: const Text('Finish a Project'),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -68,10 +61,10 @@ class _FinishProjectState extends State<FinishProject> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<dynamic>? projects = snapshot.data;
-            if (projects == null || projects.length == 0) {
+            if (projects == null || projects.isEmpty) {
               return Container(
-                padding: EdgeInsets.all(16),
-                child: Text(
+                padding: const EdgeInsets.all(16),
+                child: const Text(
                   "Create a project to get started",
                   style: TextStyle(
                     fontSize: 18,
@@ -91,11 +84,11 @@ class _FinishProjectState extends State<FinishProject> {
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text("Failed to load projects."),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

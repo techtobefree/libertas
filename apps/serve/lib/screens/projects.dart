@@ -177,7 +177,7 @@ class ProjectsPageState extends State<ProjectsPage> {
           margin: const EdgeInsets.only(top: 20.0),
           child: Column(
             children: [
-              wideBorderButton(
+              WideBorderButton(
                   "Find a Project",
                   Icon(
                     Icons.search,
@@ -185,7 +185,7 @@ class ProjectsPageState extends State<ProjectsPage> {
                     size: 28.0,
                   ),
                   widget.findProjectsPath),
-              wideBorderButton(
+              WideBorderButton(
                   "Create a Project",
                   Icon(
                     Icons.add_outlined,
@@ -193,7 +193,7 @@ class ProjectsPageState extends State<ProjectsPage> {
                     size: 28.0,
                   ),
                   widget.createProjectsPath),
-              wideBorderButton(
+              WideBorderButton(
                   "Lead a Project",
                   Icon(
                     Icons.star_border_rounded,
@@ -201,7 +201,7 @@ class ProjectsPageState extends State<ProjectsPage> {
                     size: 28.0,
                   ),
                   widget.leadProjectsPath),
-              wideBorderButton(
+              WideBorderButton(
                   "Sponsor a Project",
                   Icon(
                     Icons.favorite_border_rounded,

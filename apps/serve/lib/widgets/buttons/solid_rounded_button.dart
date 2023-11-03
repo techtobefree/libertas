@@ -8,6 +8,7 @@ class SolidRoundedButton extends StatelessWidget {
 
   SolidRoundedButton(
     this._label, {
+    super.key,
     VoidCallback? passedFunction,
     String? path,
   })  : _passedFunction = passedFunction ?? (() {}),
@@ -15,7 +16,7 @@ class SolidRoundedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 150,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
@@ -25,10 +26,10 @@ class SolidRoundedButton extends StatelessWidget {
           ),
         ),
         child: Container(
-          margin: EdgeInsets.only(top: 10, bottom: 10),
+          margin: const EdgeInsets.only(top: 10, bottom: 10),
           child: Text(
             _label,
-            style: TextStyle(fontSize: 18, color: Colors.white),
+            style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
         onPressed: () {

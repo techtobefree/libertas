@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class wideBorderButton extends StatelessWidget {
+class WideBorderButton extends StatelessWidget {
   /* This is going to be a pointer to whatever function we pass in
   */
   final String _path;
   final Widget _icon;
   final String _label;
 
-  wideBorderButton(this._label, this._icon, this._path);
+  const WideBorderButton(this._label, this._icon, this._path, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class wideBorderButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          side: BorderSide(width: 2.5, color: Colors.black),
+          side: const BorderSide(width: 2.5, color: Colors.black),
         ),
 
         // ignore: sort_child_properties_last
@@ -33,13 +33,13 @@ class wideBorderButton extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 32.0, top: 6, bottom: 6),
                 child: Container(
-                    margin: EdgeInsets.all(6),
-                    padding: EdgeInsets.only(top: 2, bottom: 2),
+                    margin: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.only(top: 2, bottom: 2),
                     child: Text(
                       // inherited label
                       _label,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                           fontSize: 16),

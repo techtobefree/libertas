@@ -1,38 +1,36 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
+import 'dart:core';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:core';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:go_router/go_router.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
-import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
+//import 'package:path_provider/path_provider.dart'; // for getting the directory path
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
-import 'package:provider/provider.dart';
-import 'package:path_provider/path_provider.dart'; // for getting the directory path
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
-import '../../../../models/ModelProvider.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class ProjectDetailsForm extends StatefulWidget {
-  final String _path; // private variable
+  // unused
+  //final String _path; // private variable
   final String? id;
-  ProjectDetailsForm({Key? key, required String path, this.id})
-      : _path = path,
-        super(key: key);
+  const ProjectDetailsForm({super.key, required String path, this.id});
+  //: _path = path;
 
   @override
-  _ProjectDetailsFormState createState() => _ProjectDetailsFormState();
+  ProjectDetailsFormState createState() => ProjectDetailsFormState();
 }
 
-class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
+class ProjectDetailsFormState extends State<ProjectDetailsForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final List<String> privacyOptions = ['Friends', 'Public'];
   var projectData = UProject(
@@ -48,9 +46,7 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
 
   // final UProject proj = await ProjectHandlers.getUProjectById(id);
 
-  String _selectedState = '';
-
-  late XFile? imageCache = null;
+  late XFile? imageCache;
 
   @override
   void initState() {
@@ -97,9 +93,9 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       _formKey.currentState!.save();
 
-      final bucketName = 'servetobefree-images-dev';
-      final region = 'us-east-1';
-      final url = 'https://$bucketName.s3.$region.amazonaws.com';
+      const bucketName = 'servetobefree-images-dev';
+      const region = 'us-east-1';
+      const url = 'https://$bucketName.s3.$region.amazonaws.com';
 
       debugPrint(url);
 
@@ -155,12 +151,11 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
         final createdUser = response.data;
         if (createdUser == null) {
           safePrint('errors: ${response.errors}');
-          return null;
+        } else {
+          context.goNamed("projectdetails",
+              pathParameters: {'id': createdUser.id},
+              queryParameters: {'id': createdUser.id});
         }
-
-        context.goNamed("projectdetails",
-            pathParameters: {'id': createdUser.id},
-            queryParameters: {'id': createdUser.id});
       } else {
         UProject? uproject =
             await ProjectHandlers.getUProjectById(widget.id ?? "");
@@ -243,14 +238,14 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
     }
   }
 
-  InputDecoration _fieldDecoration(_hintText) {
+  InputDecoration _fieldDecoration(hintText) {
     return InputDecoration(
-      hintText: _hintText,
+      hintText: hintText,
       // For some reason this does not work if I am only styling one or two borders. So I specified all 4 down below.
       // border: OutlineInputBorder(
       //     borderRadius: BorderRadius.circular(10),
       //     borderSide: BorderSide.none),
-      contentPadding: EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(16),
       fillColor: Colors.grey[200],
       filled: true,
       // Many other way to customize this to make it feel interactive, otherwise the enabledBorder and the focusedBorder can just be deleted.
@@ -259,31 +254,29 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
       focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
       errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.red,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(10)),
-      focusedErrorBorder: new OutlineInputBorder(
+      focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
+        borderSide: const BorderSide(
           color: Colors.red,
           width: 2,
         ),
       ),
-      errorStyle: TextStyle(fontSize: 12, color: Colors.red),
+      errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    String? _selectedState;
-
     return Scaffold(
         appBar: AppBar(
             title: const Text('Project Details'),
             flexibleSpace: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
                     Color.fromRGBO(0, 28, 72, 1.0),
@@ -295,23 +288,22 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
               ),
             )),
         body: SingleChildScrollView(
-            child: Container(
-                child: FormBuilder(
+            child: FormBuilder(
           key: _formKey,
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Project Name",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 12),
+                      margin: const EdgeInsets.only(top: 12),
                       child: FormBuilderTextField(
                           name: 'projectName',
                           validator: FormBuilderValidators.compose([
@@ -329,23 +321,23 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Date",
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w600),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 12),
+                        margin: const EdgeInsets.only(top: 12),
                         child: FormBuilderDateTimePicker(
                             name: 'projectDate',
                             inputType: InputType.date,
@@ -355,23 +347,23 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       ),
                     ]),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Privacy",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 12),
+                      margin: const EdgeInsets.only(top: 12),
                       // decoration: BoxDecoration(
                       //   color: Colors.grey[200],
                       //   borderRadius: BorderRadius.circular(10),
@@ -398,23 +390,23 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Leadership",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 12),
+                      margin: const EdgeInsets.only(top: 12),
                       // decoration: BoxDecoration(
                       //   color: Colors.grey[200],
                       //   borderRadius: BorderRadius.circular(10),
@@ -444,76 +436,73 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Project Photo",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
-                    Container(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        // child: Container(
-                        //   width: 100,
-                        child: FormBuilderImagePicker(
-                          name: "projectImage",
-                          initialValue: projectData.projectPicture.isNotEmpty
-                              ? [
-                                  File(Uri.encodeFull(
-                                      projectData.projectPicture))
-                                ] // Provide the initial image as a File
-                              : [], // Or an empty list if there's no initial image
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            //errorText: 'Please select an image',
-                            // errorBorder: OutlineInputBorder(
-                            //   borderRadius: BorderRadius.circular(10),
-                            //   borderSide:
-                            //       BorderSide(color: Colors.red, width: 2),
-                            // ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      // child: Container(
+                      //   width: 100,
+                      child: FormBuilderImagePicker(
+                        name: "projectImage",
+                        initialValue: projectData.projectPicture.isNotEmpty
+                            ? [
+                                File(Uri.encodeFull(projectData.projectPicture))
+                              ] // Provide the initial image as a File
+                            : [], // Or an empty list if there's no initial image
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
                           ),
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(
-                              errorText: 'Please select an Image',
-                            ),
-                          ]),
-
-                          // previewHeight: 100,
-                          // previewWidth: 100,
-                          //previewAutoSizeWidth: true,
-                          fit: BoxFit.cover,
-                          maxImages: 1,
+                          //errorText: 'Please select an image',
+                          // errorBorder: OutlineInputBorder(
+                          //   borderRadius: BorderRadius.circular(10),
+                          //   borderSide:
+                          //       BorderSide(color: Colors.red, width: 2),
+                          // ),
                         ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(
+                            errorText: 'Please select an Image',
+                          ),
+                        ]),
+
+                        // previewHeight: 100,
+                        // previewWidth: 100,
+                        //previewAutoSizeWidth: true,
+                        fit: BoxFit.cover,
+                        maxImages: 1,
                       ),
                     ),
                     //),
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.only(bottom: 15),
-                      child: Text(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: const Text(
                         "State",
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w600),
@@ -594,23 +583,23 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "City",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 12),
+                      margin: const EdgeInsets.only(top: 12),
                       child: FormBuilderTextField(
                           name: 'city',
                           validator: FormBuilderValidators.compose([
@@ -628,23 +617,23 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Project Bio",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 10),
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Container(
@@ -667,23 +656,23 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 //height: 1,
                 color: Colors.grey,
                 thickness: 0.5,
               ),
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Project Description",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 10),
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Container(
@@ -706,11 +695,11 @@ class _ProjectDetailsFormState extends State<ProjectDetailsForm> {
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(bottom: 20),
+                  margin: const EdgeInsets.only(bottom: 20),
                   child:
                       SolidRoundedButton("Next", passedFunction: _submitForm))
             ],
           ),
-        ))));
+        )));
   }
 }

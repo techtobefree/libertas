@@ -1,29 +1,18 @@
 import 'dart:io';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
-
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-
-import 'dart:convert';
-
+import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-import 'package:serve_to_be_free/utilities/auth.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
-
-import '../../../data/users/handlers/user_handlers.dart';
 
 class ChooseProfilePicture extends StatefulWidget {
   const ChooseProfilePicture({Key? key}) : super(key: key);
 
   @override
-  _ChooseProfilePictureState createState() => _ChooseProfilePictureState();
+  ChooseProfilePictureState createState() => ChooseProfilePictureState();
 
   // passed from the create account.
   static UserClass? _user;
@@ -37,7 +26,7 @@ class ChooseProfilePicture extends StatefulWidget {
   }
 }
 
-class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
+class ChooseProfilePictureState extends State<ChooseProfilePicture> {
   File? _image;
   String? errorText;
 
@@ -97,17 +86,16 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
     Provider.of<UserProvider>(context, listen: false).firstName =
         user.firstName;
     Provider.of<UserProvider>(context, listen: false).lastName = user.lastName;
-    if (user.profilePictureUrl != null) {
-      Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-          s3url;
-    }
+    //if (user.profilePictureUrl != null) {
+    Provider.of<UserProvider>(context, listen: false).profilePictureUrl = s3url;
+    //}
     context.goNamed('confirmemail', queryParameters: {'email': user.email});
   }
 
   Widget _buildCreateAccBtn() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
-      padding: EdgeInsets.symmetric(vertical: 25.0),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
@@ -120,13 +108,13 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
           }
         },
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12), // <-- Radius
           ),
-          backgroundColor: Color(0xff256C8D),
+          backgroundColor: const Color(0xff256C8D),
         ),
-        child: Text(
+        child: const Text(
           'Create Account',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
@@ -143,11 +131,11 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(0, 28, 72, 1.0),
+      backgroundColor: const Color.fromRGBO(0, 28, 72, 1.0),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Choose Profile Picture',
           style: TextStyle(
             color: Colors.white,
@@ -176,15 +164,15 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
                           fit: BoxFit.cover,
                         ),
                       )
-                    : Icon(
+                    : const Icon(
                         Icons.camera_alt,
                         size: 80,
                         color: Color.fromRGBO(0, 28, 72, 1.0),
                       ),
               ),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Tap to select a profile picture',
               style: TextStyle(
                 color: Colors.white,
@@ -194,15 +182,16 @@ class _ChooseProfilePictureState extends State<ChooseProfilePicture> {
             ),
             if (errorText != null)
               Container(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                margin: EdgeInsets.only(left: 16.0, right: 16, top: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                margin: const EdgeInsets.only(left: 16.0, right: 16, top: 16),
                 decoration: BoxDecoration(
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Text(
                   errorText!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16.0,

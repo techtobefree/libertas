@@ -19,7 +19,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return [
       IconButton(
           onPressed: () {
-            query:
+            // query
             '';
           },
           icon: const Icon(Icons.clear))
@@ -40,10 +40,10 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     // Need to display the UserClass with all the info
     List<UserClass> matchQuery = [];
-    for (var UserClass in potentialUserClasss) {
-      var fullName = UserClass.firstName + UserClass.lastName;
+    for (var userClass in potentialUserClasss) {
+      var fullName = userClass.firstName + userClass.lastName;
       if ((fullName).toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(UserClass);
+        matchQuery.add(userClass);
       }
     }
     return ListView.builder(
@@ -59,11 +59,11 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     // Need to display the UserClass with all the info
     List<UserClass> matchQuery = [];
-    for (var UserClass in potentialUserClasss) {
-      var fullName = UserClass.firstName + UserClass.lastName;
+    for (var userClass in potentialUserClasss) {
+      var fullName = userClass.firstName + userClass.lastName;
       //if ((UserClass.name).toLowerCase().contains(query.toLowerCase())) {
       if ((fullName).toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(UserClass);
+        matchQuery.add(userClass);
       }
     }
     return ListView.builder(

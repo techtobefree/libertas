@@ -1,19 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
-import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
-import 'package:provider/provider.dart';
-
-import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-
-import '../../models/ModelProvider.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class ProjectHandlers {
   //static const String _baseUrl = 'http://localhost:3000/projects';
-  static const String _baseUrl = 'http://44.203.120.103:3000/projects';
+  //static const String _baseUrl = 'http://44.203.120.103:3000/projects';
 
   static Future<UProject?> getUProjectById(String id) async {
     final queryPredicate = UProject.ID.eq(id);
@@ -63,7 +56,7 @@ class ProjectHandlers {
     final uprojFinished = uproject!.copyWith(isCompleted: true);
     try {
       final request = ModelMutations.update(uprojFinished);
-      final response = await Amplify.API.mutate(request: request).response;
+      final _ = await Amplify.API.mutate(request: request).response;
     } catch (e) {
       throw Exception('Failed to finish project: $e');
     }
@@ -75,14 +68,14 @@ class ProjectHandlers {
     final uprojFinished = uproject!.copyWith(hoursSpent: doubleHours);
     try {
       final request = ModelMutations.update(uprojFinished);
-      final response = await Amplify.API.mutate(request: request).response;
+      final _ = await Amplify.API.mutate(request: request).response;
     } catch (e) {
       throw Exception('Failed to add hours project: $e');
     }
   }
 
   static Future<Map<String, dynamic>> getProjectById(projectId) async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects/${projectId}');
+    var url = Uri.parse('http://44.203.120.103:3000/projects/$projectId');
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +8,8 @@ class ProjectCard extends StatelessWidget {
   final List<dynamic> sponsors;
   final bool lead; // Add the 'lead' parameter
 
-  ProjectCard({
+  const ProjectCard({
+    super.key,
     required this.title,
     required this.numMembers,
     required this.project,
@@ -19,17 +18,34 @@ class ProjectCard extends StatelessWidget {
   });
 
   // Named constructor that accepts a JSON object
-  ProjectCard.fromJson(Map<String, dynamic> json, {bool lead = false})
-      : title = json['name'],
-        numMembers = json['members'].length.toString(),
-        sponsors = json['sponsors'] ?? [],
-        project = json,
-        this.lead = lead; // Initialize 'lead' with the provided value
+  factory ProjectCard.fromJson(
+    Map<String, dynamic> json, {
+    Key? key,
+    bool lead = false,
+  }) =>
+      ProjectCard(
+          key: key,
+          title: json['name'],
+          numMembers: json['members'].length.toString(),
+          sponsors: json['sponsors'] ?? [],
+          project: json,
+          lead: lead);
+
+  // Named constructor that accepts a JSON object
+  //ProjectCard.fromJson(
+  //  Map<String, dynamic> json, {
+  //  super.key,
+  //  bool lead = false,
+  //})  : title = json['name'],
+  //      numMembers = json['members'].length.toString(),
+  //      sponsors = json['sponsors'] ?? [],
+  //      project = json,
+  //      this.lead = lead; // Initialize 'lead' with the provided value
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         // height: 140.0,
         child: GestureDetector(
@@ -51,7 +67,7 @@ class ProjectCard extends StatelessWidget {
             shadowColor: Colors.grey.withOpacity(0.4),
             elevation: 4.0,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -60,11 +76,11 @@ class ProjectCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
+                        SizedBox(
                           width: 200, // set the desired width for the text
                           child: Text(
                             title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
@@ -75,12 +91,12 @@ class ProjectCard extends StatelessWidget {
                           Text('${project['city']}, ${project['state']}'),
                         if (project.containsKey('date'))
                           Text('${project['date']}'),
-                        SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
                         Text('$numMembers Members'),
-                        SizedBox(height: 12.0),
+                        const SizedBox(height: 12.0),
                         Text(
                             (project['isCompleted'] == true ? 'Completed' : ''),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.redAccent,
                             )),
@@ -98,7 +114,7 @@ class ProjectCard extends StatelessWidget {
                         width: 160,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return Container(
+                          return const SizedBox(
                               height: 130,
                               width: 160,
                               child: Padding(
@@ -109,7 +125,7 @@ class ProjectCard extends StatelessWidget {
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             color: Colors.grey,
-                            child: Icon(
+                            child: const Icon(
                               Icons.error,
                               color: Colors.white,
                             ),

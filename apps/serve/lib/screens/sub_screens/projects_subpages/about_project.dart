@@ -1,20 +1,10 @@
-import 'dart:convert';
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
-import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
-
-import 'package:serve_to_be_free/widgets/ui/dashboard_post.dart';
-import 'package:serve_to_be_free/widgets/ui/project_post.dart';
-import 'package:serve_to_be_free/widgets/post_dialogue.dart';
-
-import '../../../models/ModelProvider.dart';
+import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class AboutProject extends StatefulWidget {
   final String? id;
@@ -22,10 +12,10 @@ class AboutProject extends StatefulWidget {
   const AboutProject({Key? key, required this.id}) : super(key: key);
 
   @override
-  _AboutProjectState createState() => _AboutProjectState();
+  AboutProjectState createState() => AboutProjectState();
 }
 
-class _AboutProjectState extends State<AboutProject> {
+class AboutProjectState extends State<AboutProject> {
   Map<String, dynamic> projectData = {};
 
   Future<Map<String, dynamic>> getProject() async {
@@ -63,9 +53,9 @@ class _AboutProjectState extends State<AboutProject> {
     final members = projectData['members'] ?? [];
     final leader = projectData['leader'];
 
-    final hasJoined = members.contains(currentUserID);
-
-    final joinButtonText = hasJoined ? 'Post' : 'Join';
+    // unused
+    //final hasJoined = members.contains(currentUserID);
+    //final joinButtonText = hasJoined ? 'Post' : 'Join';
 
     bool shouldDisplayEditButton = false;
 
@@ -75,9 +65,9 @@ class _AboutProjectState extends State<AboutProject> {
     }
     return Scaffold(
       appBar: AppBar(
-          title: Text('Project Dashboard'),
+          title: const Text('Project Dashboard'),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color.fromRGBO(0, 28, 72, 1.0),
@@ -90,7 +80,7 @@ class _AboutProjectState extends State<AboutProject> {
           )),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(25),
+          margin: const EdgeInsets.all(25),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -100,7 +90,7 @@ class _AboutProjectState extends State<AboutProject> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(255, 16, 34, 65),
+                        const Color.fromARGB(255, 16, 34, 65),
                       ),
                     ),
                     onPressed: () {
@@ -112,7 +102,7 @@ class _AboutProjectState extends State<AboutProject> {
                         },
                       );
                     },
-                    child: Text('Edit Project'),
+                    child: const Text('Edit Project'),
                   ),
                 ),
                 if (projectData.containsKey('projectPicture') &&
@@ -123,15 +113,15 @@ class _AboutProjectState extends State<AboutProject> {
                     width: 300, // set the width of the widget
                     height: 300, // set the height of the widget
                   ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   projectData['name'] ?? '',
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 if (projectData.containsKey('bio'))
                   Text('${projectData['bio']}'),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 if (projectData.containsKey('description'))
                   Text('${projectData['description']}'),
               ],

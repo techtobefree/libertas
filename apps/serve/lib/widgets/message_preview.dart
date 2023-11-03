@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 
 class MessagePreview extends StatefulWidget {
@@ -39,38 +37,27 @@ class _MessagePreviewState extends State<MessagePreview> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(children: [
+    return Column(children: [
       Row(
         children: [
           widget.profilePicture,
-          Container(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      child: Text(
-                        "Becky",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      child: Text("yesterday"),
-                    )
-                  ],
-                ),
-                Container(
-                  //margin or padding
-                  child: Text("I am the message"),
-                )
-              ],
-            ),
+          const Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Becky",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text("yesterday")
+                ],
+              ),
+              Text("I am the message")
+            ],
           )
         ],
       ),
-      Divider()
-    ]));
+      const Divider()
+    ]);
   }
 }

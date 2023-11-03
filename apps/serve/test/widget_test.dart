@@ -4,24 +4,16 @@
 // utility in the flutter_test package. For example, you can send tap and scroll
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:serve_to_be_free/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-import 'package:serve_to_be_free/screens/dashboard.dart';
 import 'package:serve_to_be_free/screens/login.dart';
 import 'package:serve_to_be_free/screens/menu.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/finish_projects.dart';
-import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project/sponsor_project_form.dart';
 import 'package:serve_to_be_free/screens/tasks.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
-import 'package:serve_to_be_free/widgets/project_preview.dart';
 import 'package:serve_to_be_free/widgets/sponsor_card.dart';
 
 void main() {

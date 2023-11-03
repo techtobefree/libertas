@@ -1,14 +1,8 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-
-import '../data/users/providers/user_provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class FinishProjectCard extends StatelessWidget {
   final String title;
@@ -19,21 +13,23 @@ class FinishProjectCard extends StatelessWidget {
 
   // final String thumbnailUrl;
 
-  FinishProjectCard(
-      {required this.title,
-      required this.numMembers,
-      required this.project,
-      required this.onFinish,
-      required this.resetState
-      // required this.thumbnailUrl,
-      });
+  const FinishProjectCard({
+    super.key,
+    required this.title,
+    required this.numMembers,
+    required this.project,
+    required this.onFinish,
+    required this.resetState,
+    // required this.thumbnailUrl,
+  });
 
   // Named constructor that accepts a JSON object
   FinishProjectCard.fromJson(
     Map<String, dynamic> json,
     void Function() onFinishFun,
-    void Function() resState,
-  )   : title = json['name'],
+    void Function() resState, {
+    super.key,
+  })  : title = json['name'],
         numMembers = json['members'].length.toString(),
         project = json,
         onFinish = onFinishFun,
@@ -58,7 +54,7 @@ class FinishProjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textController = TextEditingController();
     return Center(
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         // height: 160.0,
         child: GestureDetector(
@@ -74,7 +70,7 @@ class FinishProjectCard extends StatelessWidget {
             shadowColor: Colors.grey.withOpacity(0.4),
             elevation: 4.0,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -85,7 +81,7 @@ class FinishProjectCard extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
@@ -94,34 +90,35 @@ class FinishProjectCard extends StatelessWidget {
                             Text('${project['city']}, ${project['state']}'),
                           if (project.containsKey('date'))
                             Text('${project['date']}'),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           Text('$numMembers Members'),
                           ElevatedButton(
                             onPressed: () async {
                               // Code to handle the "Finish" button click
                               onFinish();
 
-                              final result = await showDialog(
+                              final _ = await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Approximate Number of Hours'),
+                                    title: const Text(
+                                        'Approximate Number of Hours'),
                                     content: TextField(
                                       controller: textController,
                                       keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         hintText: 'Enter the number of hours',
                                       ),
                                     ),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: Text('Cancel'),
+                                        child: const Text('Cancel'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
                                       ),
                                       ElevatedButton(
-                                        child: Text('Save'),
+                                        child: const Text('Save'),
                                         onPressed: () {
                                           // final hours = int.tryParse(
                                           //   (Navigator.of(context).pop()
@@ -149,10 +146,10 @@ class FinishProjectCard extends StatelessWidget {
                             },
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 16, 34, 65),
+                                const Color.fromARGB(255, 16, 34, 65),
                               ),
                             ),
-                            child: Text('Finish'),
+                            child: const Text('Finish'),
                           ),
                         ],
                       ),
@@ -169,7 +166,7 @@ class FinishProjectCard extends StatelessWidget {
                           width: 150,
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
-                            return Container(
+                            return const SizedBox(
                                 height: 130,
                                 width: 160,
                                 child: Padding(
@@ -180,7 +177,7 @@ class FinishProjectCard extends StatelessWidget {
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
                               color: Colors.grey,
-                              child: Icon(
+                              child: const Icon(
                                 Icons.error,
                                 color: Colors.white,
                               ),

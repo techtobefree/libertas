@@ -13,12 +13,13 @@ class ProfilePicture extends StatelessWidget {
     this.dimension,
     this.url,
     this.userId, {
+    super.key,
     this.borderRadius = 10,
   });
 
-  void _handleTap() {
-    // Add your desired functionality here
-  }
+  //void _handleTap() {
+  //  // Add your desired functionality here
+  //}
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +42,14 @@ class ProfilePicture extends StatelessWidget {
           fit: BoxFit.cover,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) return child;
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           },
           errorBuilder: (context, error, stackTrace) {
             return Container(
               color: Colors.grey,
-              child: Icon(
+              child: const Icon(
                 Icons.error,
                 color: Colors.white,
               ),

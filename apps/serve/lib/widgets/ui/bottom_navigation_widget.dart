@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/config/routes/app_routes.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   const BottomNavigationWidget({Key? key}) : super(key: key);
   @override
-  _BottomNavigationWidgetState createState() => _BottomNavigationWidgetState();
+  BottomNavigationWidgetState createState() => BottomNavigationWidgetState();
 }
 
-class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
+class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   static const tabs = [
     ScaffoldWithNavBarTabItem(
       initialLocation: '/dashboard',

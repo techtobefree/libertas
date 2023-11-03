@@ -1,12 +1,6 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-
-import '../../../widgets/find_project_card.dart';
+import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class FindAProject extends StatefulWidget {
   const FindAProject({super.key});
@@ -31,9 +25,9 @@ class _FindAProjectState extends State<FindAProject> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
-        title: Text('Find a Project'),
+        title: const Text('Find a Project'),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color.fromRGBO(0, 28, 72, 1.0),
@@ -47,12 +41,12 @@ class _FindAProjectState extends State<FindAProject> {
         elevation: 0,
         centerTitle: false,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
+          preferredSize: const Size.fromHeight(60.0),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
             child: Column(
               children: [
-                SizedBox(height: 5.0),
+                const SizedBox(height: 5.0),
                 TextField(
                   onChanged: (query) {
                     setState(() {
@@ -76,11 +70,11 @@ class _FindAProjectState extends State<FindAProject> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 16.0),
                   ),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
               ],
             ),
           ),
@@ -108,16 +102,17 @@ class _FindAProjectState extends State<FindAProject> {
                       combined.contains(query)) {
                     return ProjectCard.fromJson(projects[index]);
                   }
-                  return SizedBox.shrink(); // or return null; to hide the card
+                  return const SizedBox
+                      .shrink(); // or return null; to hide the card
                 }
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text("Failed to load projects."),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
