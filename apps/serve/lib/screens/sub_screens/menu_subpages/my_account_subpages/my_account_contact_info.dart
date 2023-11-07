@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
@@ -30,14 +28,14 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
     }
   }
 
-  InputDecoration _fieldDecoration(_hintText) {
+  InputDecoration _fieldDecoration(hintText) {
     return InputDecoration(
-      hintText: _hintText,
+      hintText: hintText,
       // For some reason this does not work if I am only styling one or two borders. So I specified all 4 down below.
       // border: OutlineInputBorder(
       //     borderRadius: BorderRadius.circular(10),
       //     borderSide: BorderSide.none),
-      contentPadding: EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(16),
       fillColor: Colors.grey[200],
       filled: true,
       // Many other way to customize this to make it feel interactive, otherwise the enabledBorder and the focusedBorder can just be deleted.
@@ -46,19 +44,19 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
       focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
       errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.red,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(10)),
-      focusedErrorBorder: new OutlineInputBorder(
+      focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
+        borderSide: const BorderSide(
           color: Colors.red,
           width: 2,
         ),
       ),
-      errorStyle: TextStyle(fontSize: 12, color: Colors.red),
+      errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
     );
   }
 
@@ -69,23 +67,22 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
           title: const Text('Create a Project Demo'),
         ),
         body: SingleChildScrollView(
-            child: Container(
-                child: FormBuilder(
+            child: FormBuilder(
           key: _formKey,
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Address",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 5),
+                      margin: const EdgeInsets.only(top: 5),
                       child: FormBuilderTextField(
                           name: 'address',
                           initialValue: placeholder,
@@ -102,13 +99,13 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                           decoration: _fieldDecoration("Address")),
                     ),
                     Container(height: 20),
-                    Text(
+                    const Text(
                       "City",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 5),
+                      margin: const EdgeInsets.only(top: 5),
                       child: FormBuilderTextField(
                           name: 'city',
                           validator: FormBuilderValidators.compose([
@@ -122,13 +119,13 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                           decoration: _fieldDecoration("City")),
                     ),
                     Container(height: 20),
-                    Text(
+                    const Text(
                       "State",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 5),
+                      margin: const EdgeInsets.only(top: 5),
                       child: FormBuilderTextField(
                           name: 'state',
                           //initialValue: "October 12, 1998",
@@ -138,13 +135,13 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                           decoration: _fieldDecoration("State")),
                     ),
                     Container(height: 20),
-                    Text(
+                    const Text(
                       "Zip Code",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 5),
+                      margin: const EdgeInsets.only(top: 5),
                       child: FormBuilderTextField(
                           name: 'zipcode',
                           //initialValue: "October 12, 1998",
@@ -159,13 +156,13 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                           decoration: _fieldDecoration("Zip Code")),
                     ),
                     Container(height: 20),
-                    Text(
+                    const Text(
                       "Phone",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 5),
+                      margin: const EdgeInsets.only(top: 5),
                       child: FormBuilderTextField(
                           name: 'phone',
                           //initialValue: "October 12, 1998",
@@ -184,7 +181,7 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
               ),
               Container(
                 width: 150,
-                padding: EdgeInsets.only(bottom: 50),
+                padding: const EdgeInsets.only(bottom: 50),
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     backgroundColor: Colors.lightBlue[900],
@@ -195,7 +192,7 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                     //side: BorderSide(width: 2.5, color: Colors.black),
                   ),
                   onPressed: _submitForm,
-                  child: Text(
+                  child: const Text(
                     "Save",
                     style: TextStyle(
                         color: Colors.white,
@@ -206,6 +203,6 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
               )
             ],
           ),
-        ))));
+        )));
   }
 }
