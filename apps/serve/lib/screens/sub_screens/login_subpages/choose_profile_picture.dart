@@ -53,8 +53,7 @@ class ChooseProfilePictureState extends State<ChooseProfilePicture> {
       username: email,
       password: password,
     );
-    Provider.of<UserProvider>(context, listen: false).signUpResult = result;
-    // TODO: BlocProvider.of<UserCubit>(context).update(signUpResult: result);
+    BlocProvider.of<UserCubit>(context).update(signUpResult: result);
     await _handleSignUpResult(result);
   }
 
@@ -81,19 +80,8 @@ class ChooseProfilePictureState extends State<ChooseProfilePicture> {
     await _signUp(password: user.password, email: user.email);
     final s3url = await uploadProfileImageToS3(
         _image!, DateTime.now().millisecondsSinceEpoch.toString());
-
     BlocProvider.of<UserCubit>(context).fromUserClass(userClass: user);
     BlocProvider.of<UserCubit>(context).update(profilePictureUrl: s3url);
-    // TODO: remove after cubit tested
-    Provider.of<UserProvider>(context, listen: false).password = user.password;
-    Provider.of<UserProvider>(context, listen: false).email = user.email;
-    Provider.of<UserProvider>(context, listen: false).id = user.id;
-    Provider.of<UserProvider>(context, listen: false).firstName =
-        user.firstName;
-    Provider.of<UserProvider>(context, listen: false).lastName = user.lastName;
-    //if (user.profilePictureUrl != null) {
-    Provider.of<UserProvider>(context, listen: false).profilePictureUrl = s3url;
-    //}
     context.goNamed('confirmemail', queryParameters: {'email': user.email});
   }
 

@@ -31,8 +31,7 @@ class CreateAPostState extends State<CreateAPost> {
   Future<List<Map<String, dynamic>>> _getOptions() async {
     try {
       var projs = await ProjectHandlers.getMyProjects(
-          Provider.of<UserProvider>(context, listen: false).id);
-      // TODO: BlocProvider.of<UserCubit>(context).state.id);
+          BlocProvider.of<UserCubit>(context).state.id);
       List<Map<String, dynamic>> myprojs = [];
       for (var proj in projs) {
         myprojs.add({
@@ -168,8 +167,7 @@ class CreateAPostState extends State<CreateAPost> {
     UProject? uproject = await ProjectHandlers.getUProjectById(projId);
     var uprojectPosts = uproject!.posts;
     var uuser = await UserHandlers.getUUserById(
-        Provider.of<UserProvider>(context, listen: false).id);
-    // TODO: BlocProvider.of<UserCubit>(context).state.id);
+        BlocProvider.of<UserCubit>(context).state.id);
     DateTime now = DateTime.now();
 
     var upost = UPost(

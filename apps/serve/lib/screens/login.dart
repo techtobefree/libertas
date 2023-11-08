@@ -42,15 +42,6 @@ class LoginScreenState extends State<LoginScreen> {
         final user = await UserHandlers.getUserByEmail(email);
         if (user != null) {
           BlocProvider.of<UserCubit>(context).fromUserClass(userClass: user);
-          // TODO: remove provider stuff after cubit tested:
-          Provider.of<UserProvider>(context, listen: false).email = user.email;
-          Provider.of<UserProvider>(context, listen: false).id = user.id;
-          Provider.of<UserProvider>(context, listen: false).firstName =
-              user.firstName;
-          Provider.of<UserProvider>(context, listen: false).lastName =
-              user.lastName;
-          Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-              user.profilePictureUrl;
         }
         context.go('/dashboard');
       }

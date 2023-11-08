@@ -48,8 +48,7 @@ class ProjectsPageState extends State<ProjectsPage> {
         hoursSpent += projHours;
       }
       for (var member in proj['members']) {
-        if (Provider.of<UserProvider>(context, listen: false).id == member) {
-          // TODO: if (BlocProvider.of<UserCubit>(context).state.id == member) {
+        if (BlocProvider.of<UserCubit>(context).state.id == member) {
           if (counter <= 2) {
             myProjs.add(proj);
             counter++;

@@ -24,9 +24,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     _tabController = TabController(length: 1, vsync: this);
-    final userId =
-        widget.id ?? Provider.of<UserProvider>(context, listen: false).id;
-    // TODO: widget.id ?? BlocProvider.of<UserCubit>(context).state.id;
+    final userId = widget.id ?? BlocProvider.of<UserCubit>(context).state.id;
 
     _futureProjects = ProjectHandlers.getMyProjects(userId);
     UserHandlers.getUUserById(userId).then((data) => {

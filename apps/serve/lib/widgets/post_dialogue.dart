@@ -1,7 +1,9 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
@@ -61,8 +63,7 @@ class JoinProjectDialogState extends State<JoinProjectDialog> {
         await ProjectHandlers.getUProjectById(widget.projectId);
     var uprojectPosts = uproject!.posts;
     var uuser = await UserHandlers.getUUserById(
-        Provider.of<UserProvider>(context, listen: false).id);
-    // TODO: BlocProvider.of<UserCubit>(context).state.id);
+        BlocProvider.of<UserCubit>(context).state.id);
     DateTime now = DateTime.now();
     var upost = UPost(
         user: uuser!,

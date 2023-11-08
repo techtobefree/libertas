@@ -64,8 +64,9 @@ class MenuPage extends StatelessWidget {
                     ProfilePicture(
                         Colors.amberAccent,
                         45,
-                        Provider.of<UserProvider>(context).profilePictureUrl,
-                        // TODO: BlocProvider.of<UserCubit>(context).state.profilePictureUrl,
+                        BlocProvider.of<UserCubit>(context)
+                            .state
+                            .profilePictureUrl,
                         '',
                         borderRadius: 7),
                     "My Profile",

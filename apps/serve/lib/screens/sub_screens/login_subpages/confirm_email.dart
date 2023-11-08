@@ -36,27 +36,13 @@ class ConfirmationCodePageState extends State<ConfirmationCodePage> {
         return;
       }
       await UserHandlers.signInUser(
-          Provider.of<UserProvider>(context, listen: false).email,
-          // TODO: BlocProvider.of<UserCubit>(context).state.email,
-          Provider.of<UserProvider>(context, listen: false).password);
-      // TODO: BlocProvider.of<UserCubit>(context).state.password);
-      // TODO: UserClass user = BlocProvider.of<UserCubit>(context).state.userClass;
-      // TODO: user.friendRequests = [];
-      // TODO: user.friends = [];
-      // TODO: user.posts = [];
-      // TODO: user.projects = [];
-      UserClass user = UserClass(
-          password: Provider.of<UserProvider>(context, listen: false).password,
-          email: Provider.of<UserProvider>(context, listen: false).email,
-          firstName:
-              Provider.of<UserProvider>(context, listen: false).firstName,
-          lastName: Provider.of<UserProvider>(context, listen: false).lastName,
-          friendRequests: [],
-          friends: [],
-          posts: [],
-          profilePictureUrl: Provider.of<UserProvider>(context, listen: false)
-              .profilePictureUrl,
-          projects: []);
+          BlocProvider.of<UserCubit>(context).state.email,
+          BlocProvider.of<UserCubit>(context).state.password);
+      UserClass user = BlocProvider.of<UserCubit>(context).state.userClass;
+      user.friendRequests = [];
+      user.friends = [];
+      user.posts = [];
+      user.projects = [];
       final isSignedIn = await isUserSignedIn();
       if (isSignedIn) {
         final createdUser = await UserHandlers.createUser(user);
@@ -64,8 +50,7 @@ class ConfirmationCodePageState extends State<ConfirmationCodePage> {
         if (createdUser != null) {
           // Do something with the created user
           print('User created: ${createdUser.toJson()}');
-          Provider.of<UserProvider>(context, listen: false).id = createdUser.id;
-          // TODO: BlocProvider.of<UserCubit>(context).update(id: createdUser.id);
+          BlocProvider.of<UserCubit>(context).update(id: createdUser.id);
           context.go('/projects'); // Replace with the actual route
         }
       } else {

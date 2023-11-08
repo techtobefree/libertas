@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
@@ -143,8 +145,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserID = Provider.of<UserProvider>(context, listen: false).id;
-    // TODO: final currentUserID =  BlocProvider.of<UserCubit>(context).state.id;
+    final currentUserID = BlocProvider.of<UserCubit>(context).state.id;
 
     // unused?
     //final members = projectData['members'] ?? [];
@@ -391,8 +392,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
     UProject? uproject =
         await ProjectHandlers.getUProjectById(projectData['id']);
     var uprojectMems = uproject!.members;
-    var memID = Provider.of<UserProvider>(context, listen: false).id;
-    // TODO: var memID =  BlocProvider.of<UserCubit>(context).state.id;
+    var memID = BlocProvider.of<UserCubit>(context).state.id;
 
     if (uprojectMems != null) {
       uprojectMems.add(memID);
@@ -420,8 +420,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
     UProject? uproject =
         await ProjectHandlers.getUProjectById(projectData['id']);
     var uprojectMems = uproject!.members;
-    var memID = Provider.of<UserProvider>(context, listen: false).id;
-    // TODO: var memID =  BlocProvider.of<UserCubit>(context).state.id;
+    var memID = BlocProvider.of<UserCubit>(context).state.id;
 
     if (uprojectMems != null) {
       if (!uprojectMems.contains(memID)) {
