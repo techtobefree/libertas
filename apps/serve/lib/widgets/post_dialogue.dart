@@ -62,6 +62,7 @@ class JoinProjectDialogState extends State<JoinProjectDialog> {
     var uprojectPosts = uproject!.posts;
     var uuser = await UserHandlers.getUUserById(
         Provider.of<UserProvider>(context, listen: false).id);
+    // TODO: BlocProvider.of<UserCubit>(context).state.id);
     DateTime now = DateTime.now();
     var upost = UPost(
         user: uuser!,

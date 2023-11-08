@@ -23,6 +23,7 @@ class _MyProjectsState extends State<MyProjects> {
     // _futureProjects = getMyProjects();
     _futureProjects = ProjectHandlers.getMyProjects(
         Provider.of<UserProvider>(context, listen: false).id);
+    //TODO: BlocProvider.of<UserCubit>(context).state.id);
   }
 
   @override
@@ -81,6 +82,7 @@ class _MyProjectsState extends State<MyProjects> {
       for (var proj in jsonResponse) {
         for (var member in proj['members']) {
           if (member == Provider.of<UserProvider>(context, listen: false).id) {
+            // TODO: if (member == BlocProvider.of<UserCubit>(context).state.id) {
             myprojs.add(proj);
           }
         }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/widgets/buttons/menu_button.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -63,6 +65,7 @@ class MenuPage extends StatelessWidget {
                         Colors.amberAccent,
                         45,
                         Provider.of<UserProvider>(context).profilePictureUrl,
+                        // TODO: BlocProvider.of<UserCubit>(context).state.profilePictureUrl,
                         '',
                         borderRadius: 7),
                     "My Profile",

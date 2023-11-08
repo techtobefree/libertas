@@ -102,6 +102,8 @@ class _FinishProjectState extends State<FinishProject> {
     // var response = await http.get(url);
     try {
       var userId = Provider.of<UserProvider>(context, listen: false).id;
+      // TODO: var userId =  BlocProvider.of<UserCubit>(context).state.id;
+
       var projs = await ProjectHandlers.getMyProjects(userId);
       if (projs.isNotEmpty) {
         // var jsonResponse = jsonDecode(response.body);

@@ -16,7 +16,7 @@ abstract class UserCubitState extends Equatable {
   final bool isLeader;
   final List<String> friendRequests;
   //final SignUpResult signUpResult; // import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-  final bool signUpResult;
+  final SignUpResult signUpResult;
   final bool busy;
   final List<UProject> projects;
   final List<UUser> friends;

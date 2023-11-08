@@ -22,6 +22,7 @@ class SponsorProjectFormState extends State<SponsorProjectForm> {
   void _submitSponsorship() async {
     final amount = double.parse(_amountController.text);
     final userId = Provider.of<UserProvider>(context, listen: false).id;
+    // TODO: final userId = BlocProvider.of<UserCubit>(context).state.id;
 
     final sponsorData = {
       'amount': amount,

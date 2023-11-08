@@ -164,6 +164,8 @@ class ProjectDetailsState extends State<ProjectDetails> {
   @override
   Widget build(BuildContext context) {
     final currentUserID = Provider.of<UserProvider>(context, listen: false).id;
+    // TODO: final currentUserID = BlocProvider.of<UserCubit>(context).state.id;
+
     final members = projectData['members'] ?? [];
 
     final hasJoined = members.contains(currentUserID);
@@ -411,6 +413,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
         await ProjectHandlers.getUProjectById(projectData['id']);
     var uprojectMems = uproject!.members;
     var memID = Provider.of<UserProvider>(context, listen: false).id;
+    // TODO: var memID = BlocProvider.of<UserCubit>(context).state.id;
     if (uprojectMems != null) {
       uprojectMems.add(memID);
     }

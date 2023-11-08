@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -47,6 +49,7 @@ class ProjectsPageState extends State<ProjectsPage> {
       }
       for (var member in proj['members']) {
         if (Provider.of<UserProvider>(context, listen: false).id == member) {
+          // TODO: if (BlocProvider.of<UserCubit>(context).state.id == member) {
           if (counter <= 2) {
             myProjs.add(proj);
             counter++;

@@ -50,6 +50,8 @@ class AboutProjectState extends State<AboutProject> {
   Widget build(BuildContext context) {
     // UserProvider or UserClass?
     final currentUserID = Provider.of<UserProvider>(context, listen: false).id;
+    // TODO: final currentUserID =  BlocProvider.of<UserCubit>(context).state.id;
+
     final members = projectData['members'] ?? [];
     final leader = projectData['leader'];
 

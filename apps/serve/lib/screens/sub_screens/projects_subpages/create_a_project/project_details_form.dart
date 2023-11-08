@@ -122,6 +122,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
         var leaderStr = "";
         if (formData['leadership'] == 'Same as owner') {
           leaderStr = Provider.of<UserProvider>(context, listen: false).id;
+          // TODO: leaderStr = BlocProvider.of<UserCubit>(context).state.id;
         }
         UProject uproject = UProject(
             name: formData['projectName'],
@@ -138,6 +139,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             isCompleted: false,
             leader: leaderStr,
             members: [Provider.of<UserProvider>(context, listen: false).id]);
+        // TODO: members: [BlocProvider.of<UserCubit>(context).state.id]);
 
         final request = ModelMutations.create(uproject);
         final response = await Amplify.API.mutate(request: request).response;
@@ -221,6 +223,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
         Uri.parse('http://44.203.120.103:3000/projects/${projId}/member');
     final Map<String, dynamic> data = {
       'memberId': Provider.of<UserProvider>(context, listen: false).id
+      // TODO:'memberId': BlocProvider.of<UserCubit>(context).state.id
     };
     final response = await http.put(
       url,

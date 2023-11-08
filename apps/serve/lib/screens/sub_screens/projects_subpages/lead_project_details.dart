@@ -144,6 +144,8 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
   @override
   Widget build(BuildContext context) {
     final currentUserID = Provider.of<UserProvider>(context, listen: false).id;
+    // TODO: final currentUserID =  BlocProvider.of<UserCubit>(context).state.id;
+
     // unused?
     //final members = projectData['members'] ?? [];
     //final hasLeader = projectData['leader'] != null && projectData['leader'].isNotEmpty;
@@ -390,6 +392,8 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
         await ProjectHandlers.getUProjectById(projectData['id']);
     var uprojectMems = uproject!.members;
     var memID = Provider.of<UserProvider>(context, listen: false).id;
+    // TODO: var memID =  BlocProvider.of<UserCubit>(context).state.id;
+
     if (uprojectMems != null) {
       uprojectMems.add(memID);
     }
@@ -417,6 +421,8 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
         await ProjectHandlers.getUProjectById(projectData['id']);
     var uprojectMems = uproject!.members;
     var memID = Provider.of<UserProvider>(context, listen: false).id;
+    // TODO: var memID =  BlocProvider.of<UserCubit>(context).state.id;
+
     if (uprojectMems != null) {
       if (!uprojectMems.contains(memID)) {
         uprojectMems.add(memID);

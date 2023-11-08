@@ -25,7 +25,11 @@ const initialUser = UserState(
   isLeader: false,
   friends: [],
   friendRequests: [],
-  signUpResult: false,
+  signUpResult: SignUpResult(
+    isSignUpComplete: false,
+    nextStep: AuthNextSignUpStep(signUpStep: AuthSignUpStep.done),
+    userId: null,
+  ),
   busy: false,
   projects: [],
   posts: [],
@@ -49,7 +53,7 @@ class UserCubit extends Cubit<UserCubitState> {
     String? coverPictureUrl,
     bool? isLeader,
     List<String>? friendRequests,
-    bool? signUpResult,
+    SignUpResult? signUpResult,
     List<UProject>? projects,
     List<UUser>? friends,
     List<UPost>? posts,
@@ -82,7 +86,7 @@ class UserCubit extends Cubit<UserCubitState> {
     String? bio,
     bool? isLeader,
     List<String>? friendRequests,
-    bool? signUpResult,
+    SignUpResult? signUpResult,
     bool? busy,
   }) =>
       update(
@@ -108,7 +112,7 @@ class UserCubit extends Cubit<UserCubitState> {
   void fromUserClass({
     required UserClass userClass,
     List<String>? friendRequests,
-    bool? signUpResult,
+    SignUpResult? signUpResult,
     List<UProject>? projects,
     List<UUser>? friends,
     List<UPost>? posts,
@@ -154,7 +158,7 @@ class UserCubit extends Cubit<UserCubitState> {
     );
   }
 
-  Future<bool> _signUp({
+  Future<SignUpResult> _signUp({
     required String password,
     required String email,
   }) async {
@@ -162,21 +166,19 @@ class UserCubit extends Cubit<UserCubitState> {
       username: email,
       password: password,
     );
-    return await _handleSignUpResult(result);
+    _handleSignUpResult(result);
+    return result;
   }
 
-  Future<bool> _handleSignUpResult(SignUpResult result) async {
-    if (result.userId == null) {
-      return false;
-    }
+  Future<void> _handleSignUpResult(SignUpResult result) async {
     switch (result.nextStep.signUpStep) {
       case AuthSignUpStep.confirmSignUp:
         final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
         _handleCodeDelivery(codeDeliveryDetails);
-        return true;
+        break;
       case AuthSignUpStep.done:
         safePrint('Sign up is complete');
-        return true;
+        break;
     }
   }
 
