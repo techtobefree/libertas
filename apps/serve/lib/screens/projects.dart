@@ -70,23 +70,28 @@ class ProjectsPageState extends State<ProjectsPage> {
   void initState() {
     super.initState();
     getProjects().then((data) {
-      setState(() {
-        if (data.isEmpty) {
-          // If no projects are found, update the state with an empty list
-          projectData = [];
-        } else {
-          // Otherwise, update the state with the returned project data
-          projectData = data;
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (data.isEmpty) {
+            // If no projects are found, update the state with an empty list
+            projectData = [];
+          } else {
+            // Otherwise, update the state with the returned project data
+            projectData = data;
+          }
+        });
+      }
     });
     getNumUsers().then(
       (data) => {
-        setState(
-          () {
-            numMembers = data;
+        if (mounted)
+          {
+            setState(
+              () {
+                numMembers = data;
+              },
+            ),
           },
-        ),
       },
     );
   }

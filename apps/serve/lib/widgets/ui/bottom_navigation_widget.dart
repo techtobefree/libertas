@@ -35,6 +35,11 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
     //   label: 'Messages',
     // ),
     ScaffoldWithNavBarTabItem(
+      initialLocation: '/notifications',
+      icon: Icon(Icons.notifications),
+      label: 'NOTIFICATIONS',
+    ),
+    ScaffoldWithNavBarTabItem(
       initialLocation: '/menu',
       icon: Icon(Icons.menu),
       label: 'MENU',

@@ -12,6 +12,8 @@ type UUser @model {
   friends: [UUser] @hasMany
   posts: [UPost] @hasMany
   sponsors: [USponsor] @hasMany
+  leaderRequestsSent: [ULeaderRequest] @hasMany
+  leaderRequestsReceived: [ULeaderRequest] @hasMany
 }
 
 type UProject @model @auth(rules: [{ allow: public }]){
@@ -53,4 +55,13 @@ type UComment @model @auth(rules: [{ allow: public }]){
   likes: Int!
   comments: [UComment] @hasMany
   post: UPost @belongsTo
+}
+
+type ULeaderRequest @model {
+  id: ID!
+  owner: UUser! @belongsTo
+  applicant: UUser! @belongsTo
+  date: String!
+  message: String!
+  status: String!
 }

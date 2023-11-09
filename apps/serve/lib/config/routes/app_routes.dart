@@ -8,6 +8,7 @@ import 'package:serve_to_be_free/screens/groups.dart';
 import 'package:serve_to_be_free/screens/login.dart';
 import 'package:serve_to_be_free/screens/menu.dart';
 import 'package:serve_to_be_free/screens/messages.dart';
+import 'package:serve_to_be_free/screens/notifications.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
 import 'package:serve_to_be_free/screens/sub_screens/login_subpages/choose_profile_picture.dart';
@@ -197,6 +198,12 @@ final goRouter = GoRouter(
           //     builder: (context, state) => const DetailsScreen(label: 'B'),
           //   ),
           // ],
+        ),
+        GoRoute(
+          path: '/notifications',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: NotificationsPage(/*label: 'B', detailsPath: '/b/details'*/),
+          ),
         ),
         GoRoute(
           path: '/mymessages',
