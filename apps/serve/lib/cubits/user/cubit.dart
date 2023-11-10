@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bson/bson.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,34 +12,10 @@ import 'package:serve_to_be_free/models/uuser.dart';
 
 part 'state.dart';
 
-const initialUser = UserState(
-  id: '',
-  email: '',
-  password: '',
-  firstName: '',
-  lastName: '',
-  profilePictureUrl: '',
-  bio: '',
-  coverPictureUrl: '',
-  isLeader: false,
-  friends: [],
-  friendRequests: [],
-  signUpResult: SignUpResult(
-    isSignUpComplete: false,
-    nextStep: AuthNextSignUpStep(signUpStep: AuthSignUpStep.done),
-    userId: null,
-  ),
-  busy: false,
-  projects: [],
-  posts: [],
-  sponsors: [],
-  uUserFriendsId: '',
-);
-
 class UserCubit extends Cubit<UserCubitState> {
-  UserCubit() : super(initialUser);
+  UserCubit() : super(const InitialUserState());
 
-  void reset() => emit(initialUser);
+  void reset() => emit(const InitialUserState());
 
   void update({
     String? id,
@@ -189,25 +164,3 @@ class UserCubit extends Cubit<UserCubitState> {
     );
   }
 }
-
-
-/* User use:
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-// using the bloc pattern allows you to favor StatelessWidgets
-class User extends StatelessWidget {
-  const User({super.key});
-
-  @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<UserCubit, UserCubitState>(
-        
-        // you don't have to re-build on every state change
-        buildWhen: (previous, current) => previous.status != current.status,
-
-        // build according to current state
-        builder: (context, state) => state.status == ActiveStatus.full
-              ? Body(name: state.object.name)
-              : const SizedBox.shrink()); // could be button to change state
-}
-*/

@@ -122,3 +122,30 @@ class UserState extends UserCubitState {
     required super.busy,
   });
 }
+
+class InitialUserState extends UserCubitState {
+  const InitialUserState()
+      : super(
+          id: '',
+          email: '',
+          password: '',
+          firstName: '',
+          lastName: '',
+          profilePictureUrl: '',
+          bio: '',
+          coverPictureUrl: '',
+          isLeader: false,
+          friends: const [],
+          friendRequests: const [],
+          signUpResult: const SignUpResult(
+            isSignUpComplete: false,
+            nextStep: AuthNextSignUpStep(signUpStep: AuthSignUpStep.done),
+            userId: null,
+          ),
+          busy: false,
+          projects: const [],
+          posts: const [],
+          sponsors: const [],
+          uUserFriendsId: '',
+        );
+}

@@ -25,6 +25,7 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<UserCubit>(create: (context) => UserCubit()),
+        BlocProvider<PostsCubit>(create: (context) => PostsCubit()),
       ],
       child: ChangeNotifierProvider(
         create: (context) => UserProvider(),
