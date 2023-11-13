@@ -174,17 +174,22 @@ class DashboardPageState extends State<DashboardPage> {
     super.initState();
     _loadDropdownOptions();
     getPosts("All Posts").then((data) {
-      setState(() {
-        posts = sortPosts(data);
-      });
+      if (mounted) {
+        setState(() {
+          posts = sortPosts(data);
+        });
+      }
     });
     getUsers().then((data) => {
-          setState(() {
-            var idsAndPics = getProfPics(data);
-            profPics = idsAndPics["profPics"]!;
-            ids = idsAndPics["ids"]!;
-            names = setNames(data);
-          })
+          if (mounted)
+            {
+              setState(() {
+                var idsAndPics = getProfPics(data);
+                profPics = idsAndPics["profPics"]!;
+                ids = idsAndPics["ids"]!;
+                names = setNames(data);
+              })
+            }
         });
   }
 

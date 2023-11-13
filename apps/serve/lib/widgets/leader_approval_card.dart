@@ -8,6 +8,9 @@ class LeaderApprovalCard extends StatelessWidget {
   final bool isRead; // Add a field to indicate whether the notification is read
   final void Function() onApprove;
   final void Function() onDeny;
+  final String appName;
+  final String profURL;
+  final String appId;
 
   const LeaderApprovalCard({
     Key? key,
@@ -17,6 +20,9 @@ class LeaderApprovalCard extends StatelessWidget {
     this.isRead = false,
     required this.onApprove,
     required this.onDeny,
+    required this.appName,
+    required this.profURL,
+    required this.appId,
   });
 
   @override
@@ -42,16 +48,12 @@ class LeaderApprovalCard extends StatelessWidget {
             ),
             Row(
               children: [
-                ProfilePicture(
-                    Colors.indigoAccent,
-                    50,
-                    'https://servetobefree-images-dev.s3.amazonaws.com/ProfileImages/1693934744494/ProfilePicture',
-                    'd033737f-5f98-4ca8-8be8-5f6a7936d056'),
+                ProfilePicture(Colors.indigoAccent, 50, profURL, appId),
                 SizedBox(
                   width: 4,
                 ),
                 Text(
-                  'Miller Clark',
+                  appName,
                   style: TextStyle(
                     color: Colors.black,
                   ),

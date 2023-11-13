@@ -31,6 +31,7 @@ type UProject @model @auth(rules: [{ allow: public }]){
   posts: [String]
   projectPicture: String!
   sponsors: [USponsor] @hasMany
+  leaderRequests: [ULeaderRequest] @hasMany
   isCompleted: Boolean!
 }
 
@@ -61,6 +62,7 @@ type ULeaderRequest @model {
   id: ID!
   owner: UUser! @belongsTo
   applicant: UUser! @belongsTo
+  project: UProject! @belongsTo
   date: String!
   message: String!
   status: String!
