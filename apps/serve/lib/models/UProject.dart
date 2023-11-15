@@ -41,6 +41,7 @@ class UProject extends amplify_core.Model {
   final List<String>? _posts;
   final String? _projectPicture;
   final List<USponsor>? _sponsors;
+  final List<ULeaderRequest>? _leaderRequests;
   final bool? _isCompleted;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -147,6 +148,10 @@ class UProject extends amplify_core.Model {
     return _sponsors;
   }
   
+  List<ULeaderRequest>? get leaderRequests {
+    return _leaderRequests;
+  }
+  
   bool get isCompleted {
     try {
       return _isCompleted!;
@@ -172,9 +177,9 @@ class UProject extends amplify_core.Model {
     return _uUserProjectsId;
   }
   
-  const UProject._internal({required this.id, required name, required privacy, bio, required description, city, state, hoursSpent, leader, date, members, posts, required projectPicture, sponsors, required isCompleted, createdAt, updatedAt, uUserProjectsId}): _name = name, _privacy = privacy, _bio = bio, _description = description, _city = city, _state = state, _hoursSpent = hoursSpent, _leader = leader, _date = date, _members = members, _posts = posts, _projectPicture = projectPicture, _sponsors = sponsors, _isCompleted = isCompleted, _createdAt = createdAt, _updatedAt = updatedAt, _uUserProjectsId = uUserProjectsId;
+  const UProject._internal({required this.id, required name, required privacy, bio, required description, city, state, hoursSpent, leader, date, members, posts, required projectPicture, sponsors, leaderRequests, required isCompleted, createdAt, updatedAt, uUserProjectsId}): _name = name, _privacy = privacy, _bio = bio, _description = description, _city = city, _state = state, _hoursSpent = hoursSpent, _leader = leader, _date = date, _members = members, _posts = posts, _projectPicture = projectPicture, _sponsors = sponsors, _leaderRequests = leaderRequests, _isCompleted = isCompleted, _createdAt = createdAt, _updatedAt = updatedAt, _uUserProjectsId = uUserProjectsId;
   
-  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, required String projectPicture, List<USponsor>? sponsors, required bool isCompleted, String? uUserProjectsId}) {
+  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, required String projectPicture, List<USponsor>? sponsors, List<ULeaderRequest>? leaderRequests, required bool isCompleted, String? uUserProjectsId}) {
     return UProject._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
@@ -190,6 +195,7 @@ class UProject extends amplify_core.Model {
       posts: posts != null ? List<String>.unmodifiable(posts) : posts,
       projectPicture: projectPicture,
       sponsors: sponsors != null ? List<USponsor>.unmodifiable(sponsors) : sponsors,
+      leaderRequests: leaderRequests != null ? List<ULeaderRequest>.unmodifiable(leaderRequests) : leaderRequests,
       isCompleted: isCompleted,
       uUserProjectsId: uUserProjectsId);
   }
@@ -216,6 +222,7 @@ class UProject extends amplify_core.Model {
       DeepCollectionEquality().equals(_posts, other._posts) &&
       _projectPicture == other._projectPicture &&
       DeepCollectionEquality().equals(_sponsors, other._sponsors) &&
+      DeepCollectionEquality().equals(_leaderRequests, other._leaderRequests) &&
       _isCompleted == other._isCompleted &&
       _uUserProjectsId == other._uUserProjectsId;
   }
@@ -250,7 +257,7 @@ class UProject extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, String? projectPicture, List<USponsor>? sponsors, bool? isCompleted, String? uUserProjectsId}) {
+  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, String? projectPicture, List<USponsor>? sponsors, List<ULeaderRequest>? leaderRequests, bool? isCompleted, String? uUserProjectsId}) {
     return UProject._internal(
       id: id,
       name: name ?? this.name,
@@ -266,6 +273,7 @@ class UProject extends amplify_core.Model {
       posts: posts ?? this.posts,
       projectPicture: projectPicture ?? this.projectPicture,
       sponsors: sponsors ?? this.sponsors,
+      leaderRequests: leaderRequests ?? this.leaderRequests,
       isCompleted: isCompleted ?? this.isCompleted,
       uUserProjectsId: uUserProjectsId ?? this.uUserProjectsId);
   }
@@ -284,6 +292,7 @@ class UProject extends amplify_core.Model {
     ModelFieldValue<List<String>?>? posts,
     ModelFieldValue<String>? projectPicture,
     ModelFieldValue<List<USponsor>?>? sponsors,
+    ModelFieldValue<List<ULeaderRequest>?>? leaderRequests,
     ModelFieldValue<bool>? isCompleted,
     ModelFieldValue<String?>? uUserProjectsId
   }) {
@@ -302,6 +311,7 @@ class UProject extends amplify_core.Model {
       posts: posts == null ? this.posts : posts.value,
       projectPicture: projectPicture == null ? this.projectPicture : projectPicture.value,
       sponsors: sponsors == null ? this.sponsors : sponsors.value,
+      leaderRequests: leaderRequests == null ? this.leaderRequests : leaderRequests.value,
       isCompleted: isCompleted == null ? this.isCompleted : isCompleted.value,
       uUserProjectsId: uUserProjectsId == null ? this.uUserProjectsId : uUserProjectsId.value
     );
@@ -327,13 +337,19 @@ class UProject extends amplify_core.Model {
           .map((e) => USponsor.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
+      _leaderRequests = json['leaderRequests'] is List
+        ? (json['leaderRequests'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => ULeaderRequest.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _isCompleted = json['isCompleted'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
       _uUserProjectsId = json['uUserProjectsId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'leader': _leader, 'date': _date, 'members': _members, 'posts': _posts, 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
+    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'leader': _leader, 'date': _date, 'members': _members, 'posts': _posts, 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'leaderRequests': _leaderRequests?.map((ULeaderRequest? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
   };
   
   Map<String, Object?> toMap() => {
@@ -351,6 +367,7 @@ class UProject extends amplify_core.Model {
     'posts': _posts,
     'projectPicture': _projectPicture,
     'sponsors': _sponsors,
+    'leaderRequests': _leaderRequests,
     'isCompleted': _isCompleted,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt,
@@ -374,6 +391,9 @@ class UProject extends amplify_core.Model {
   static final SPONSORS = amplify_core.QueryField(
     fieldName: "sponsors",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'USponsor'));
+  static final LEADERREQUESTS = amplify_core.QueryField(
+    fieldName: "leaderRequests",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'ULeaderRequest'));
   static final ISCOMPLETED = amplify_core.QueryField(fieldName: "isCompleted");
   static final UUSERPROJECTSID = amplify_core.QueryField(fieldName: "uUserProjectsId");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
@@ -472,6 +492,13 @@ class UProject extends amplify_core.Model {
       isRequired: false,
       ofModelName: 'USponsor',
       associatedKey: USponsor.UPROJECTSPONSORSID
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+      key: UProject.LEADERREQUESTS,
+      isRequired: false,
+      ofModelName: 'ULeaderRequest',
+      associatedKey: ULeaderRequest.PROJECT
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

@@ -174,26 +174,33 @@ class DashboardPageState extends State<DashboardPage> {
     super.initState();
     _loadDropdownOptions();
     getPosts("All Posts").then((data) {
-      setState(() {
-        posts = sortPosts(data);
-      });
+      if (mounted) {
+        setState(() {
+          posts = sortPosts(data);
+        });
+      }
     });
     getUsers().then((data) => {
-          setState(() {
-            var idsAndPics = getProfPics(data);
-            profPics = idsAndPics["profPics"]!;
-            ids = idsAndPics["ids"]!;
-            names = setNames(data);
-          })
+          if (mounted)
+            {
+              setState(() {
+                var idsAndPics = getProfPics(data);
+                profPics = idsAndPics["profPics"]!;
+                ids = idsAndPics["ids"]!;
+                names = setNames(data);
+              })
+            }
         });
   }
 
   Future<void> _loadDropdownOptions() async {
     try {
       var options = await _getOptions();
-      setState(() {
-        dropdownOptions = options;
-      });
+      if (mounted) {
+        setState(() {
+          dropdownOptions = options;
+        });
+      }
     } catch (exp) {
       // Handle the exception
       print('Failed to load options: $exp');
@@ -262,12 +269,6 @@ class DashboardPageState extends State<DashboardPage> {
                     id: ids[0] ?? "",
                   ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.all(20),
-                //   width: 2, // Set the width of the divider
-                //   height: 100, // Set the height of the divider
-                //   color: Colors.grey,
-                // ),
                 Expanded(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -431,10 +432,12 @@ class DashboardPageState extends State<DashboardPage> {
                   title: Text(option['name']),
                   onTap: () {
                     getPosts(option['id']).then((data) {
-                      setState(() {
-                        posts = sortPosts(data);
-                        selectedValue = option['name'];
-                      });
+                      if (mounted) {
+                        setState(() {
+                          posts = sortPosts(data);
+                          selectedValue = option['name'];
+                        });
+                      }
                     });
 
                     Navigator.pop(context); // Close the bottom sheet

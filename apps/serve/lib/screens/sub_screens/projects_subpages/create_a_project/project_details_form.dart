@@ -42,13 +42,13 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       city: "City",
       state: "State",
       date: "Date",
-      privacy: "Project Privacy",
+      privacy: "null",
       isCompleted: false,
       projectPicture: "");
 
   // final UProject proj = await ProjectHandlers.getUProjectById(id);
 
-  late XFile? imageCache;
+  late XFile? imageCache = null;
 
   @override
   void initState() {
@@ -154,9 +154,15 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
         if (createdUser == null) {
           safePrint('errors: ${response.errors}');
         } else {
-          context.goNamed("projectdetails",
-              pathParameters: {'id': createdUser.id},
-              queryParameters: {'id': createdUser.id});
+          if (leaderStr == "") {
+            context.goNamed("leadprojectdetails",
+                pathParameters: {'id': createdUser.id},
+                queryParameters: {'id': createdUser.id});
+          } else {
+            context.goNamed("projectdetails",
+                pathParameters: {'id': createdUser.id},
+                queryParameters: {'id': createdUser.id});
+          }
         }
       } else {
         UProject? uproject =
@@ -379,7 +385,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                         elevation: 2,
                         iconSize: 30,
                         isExpanded: true,
-                        initialValue: projectData.privacy,
+                        initialValue: null,
                         items: privacyOptions
                             .map((option) => DropdownMenuItem(
                                   alignment: AlignmentDirectional.center,
@@ -520,7 +526,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       elevation: 2,
                       iconSize: 30,
                       isExpanded: true,
-                      initialValue: projectData.state,
+                      initialValue: null,
                       //Right here we just have to map it to make them DropdownMenuItems instead of strings
                       items: [
                         'Alabama',
