@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -34,20 +36,13 @@ class ConfirmationCodePageState extends State<ConfirmationCodePage> {
         return;
       }
       await UserHandlers.signInUser(
-          Provider.of<UserProvider>(context, listen: false).email,
-          Provider.of<UserProvider>(context, listen: false).password);
-      UserClass user = UserClass(
-          password: Provider.of<UserProvider>(context, listen: false).password,
-          email: Provider.of<UserProvider>(context, listen: false).email,
-          firstName:
-              Provider.of<UserProvider>(context, listen: false).firstName,
-          lastName: Provider.of<UserProvider>(context, listen: false).lastName,
-          friendRequests: [],
-          friends: [],
-          posts: [],
-          profilePictureUrl: Provider.of<UserProvider>(context, listen: false)
-              .profilePictureUrl,
-          projects: []);
+          BlocProvider.of<UserCubit>(context).state.email,
+          BlocProvider.of<UserCubit>(context).state.password);
+      UserClass user = BlocProvider.of<UserCubit>(context).state.userClass;
+      user.friendRequests = [];
+      user.friends = [];
+      user.posts = [];
+      user.projects = [];
       final isSignedIn = await isUserSignedIn();
       if (isSignedIn) {
         final createdUser = await UserHandlers.createUser(user);
@@ -55,8 +50,7 @@ class ConfirmationCodePageState extends State<ConfirmationCodePage> {
         if (createdUser != null) {
           // Do something with the created user
           print('User created: ${createdUser.toJson()}');
-          Provider.of<UserProvider>(context, listen: false).id = createdUser.id;
-
+          BlocProvider.of<UserCubit>(context).update(id: createdUser.id);
           context.go('/projects'); // Replace with the actual route
         }
       } else {

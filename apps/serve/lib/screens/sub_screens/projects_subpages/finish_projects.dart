@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/widgets/finish_project_card.dart';
@@ -101,7 +103,8 @@ class _FinishProjectState extends State<FinishProject> {
     // var url = Uri.parse('http://44.203.120.103:3000/projects');
     // var response = await http.get(url);
     try {
-      var userId = Provider.of<UserProvider>(context, listen: false).id;
+      var userId = BlocProvider.of<UserCubit>(context).state.id;
+
       var projs = await ProjectHandlers.getMyProjects(userId);
       if (projs.isNotEmpty) {
         // var jsonResponse = jsonDecode(response.body);

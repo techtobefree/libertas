@@ -1,6 +1,7 @@
 import 'package:bson/bson.dart';
+//import 'package:equatable/equatable.dart';
 
-class UserClass {
+class UserClass /*extends Equatable*/ {
   String id;
   String email;
   String password;
@@ -30,6 +31,25 @@ class UserClass {
     required this.friendRequests,
     required this.posts,
   });
+
+  /*
+  @override
+  List<Object> get props => [
+        id,
+        email,
+        password,
+        firstName,
+        lastName,
+        projects,
+        bio,
+        profilePictureUrl,
+        coverPictureUrl,
+        isLeader,
+        friends,
+        friendRequests,
+        posts,
+      ];
+  */
 
   factory UserClass.fromJson(Map<String, dynamic> json) {
     List<ObjectId> projects = [];

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -22,7 +24,7 @@ class _MyProjectsState extends State<MyProjects> {
     super.initState();
     // _futureProjects = getMyProjects();
     _futureProjects = ProjectHandlers.getMyProjects(
-        Provider.of<UserProvider>(context, listen: false).id);
+        BlocProvider.of<UserCubit>(context).state.id);
   }
 
   @override
@@ -80,7 +82,7 @@ class _MyProjectsState extends State<MyProjects> {
       var myprojs = [];
       for (var proj in jsonResponse) {
         for (var member in proj['members']) {
-          if (member == Provider.of<UserProvider>(context, listen: false).id) {
+          if (member == BlocProvider.of<UserCubit>(context).state.id) {
             myprojs.add(proj);
           }
         }

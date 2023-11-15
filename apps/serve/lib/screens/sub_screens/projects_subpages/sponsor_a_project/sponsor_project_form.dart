@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 
@@ -21,7 +23,7 @@ class SponsorProjectFormState extends State<SponsorProjectForm> {
 
   void _submitSponsorship() async {
     final amount = double.parse(_amountController.text);
-    final userId = Provider.of<UserProvider>(context, listen: false).id;
+    final userId = BlocProvider.of<UserCubit>(context).state.id;
 
     final sponsorData = {
       'amount': amount,

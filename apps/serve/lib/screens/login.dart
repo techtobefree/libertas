@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/utilities/constants.dart';
@@ -39,14 +41,7 @@ class LoginScreenState extends State<LoginScreen> {
 
         final user = await UserHandlers.getUserByEmail(email);
         if (user != null) {
-          Provider.of<UserProvider>(context, listen: false).email = user.email;
-          Provider.of<UserProvider>(context, listen: false).id = user.id;
-          Provider.of<UserProvider>(context, listen: false).firstName =
-              user.firstName;
-          Provider.of<UserProvider>(context, listen: false).lastName =
-              user.lastName;
-          Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-              user.profilePictureUrl;
+          BlocProvider.of<UserCubit>(context).fromUserClass(userClass: user);
         }
         context.go('/dashboard');
       }

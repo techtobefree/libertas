@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:core';
 import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 //import 'package:path_provider/path_provider.dart'; // for getting the directory path
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
@@ -121,7 +123,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       if (widget.id == null || widget.id!.isEmpty) {
         var leaderStr = "";
         if (formData['leadership'] == 'Same as owner') {
-          leaderStr = Provider.of<UserProvider>(context, listen: false).id;
+          leaderStr = BlocProvider.of<UserCubit>(context).state.id;
         }
         UProject uproject = UProject(
             name: formData['projectName'],
@@ -137,7 +139,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             bio: formData['projectBio'],
             isCompleted: false,
             leader: leaderStr,
-            members: [Provider.of<UserProvider>(context, listen: false).id]);
+            members: [BlocProvider.of<UserCubit>(context).state.id]);
 
         final request = ModelMutations.create(uproject);
         final response = await Amplify.API.mutate(request: request).response;
@@ -226,7 +228,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
     final url =
         Uri.parse('http://44.203.120.103:3000/projects/${projId}/member');
     final Map<String, dynamic> data = {
-      'memberId': Provider.of<UserProvider>(context, listen: false).id
+      'memberId': BlocProvider.of<UserCubit>(context).state.id
     };
     final response = await http.put(
       url,

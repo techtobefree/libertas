@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 //import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
@@ -22,8 +24,8 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     _tabController = TabController(length: 1, vsync: this);
-    final userId =
-        widget.id ?? Provider.of<UserProvider>(context, listen: false).id;
+    final userId = widget.id ?? BlocProvider.of<UserCubit>(context).state.id;
+
     _futureProjects = ProjectHandlers.getMyProjects(userId);
     UserHandlers.getUUserById(userId).then((data) => {
           setState(() {

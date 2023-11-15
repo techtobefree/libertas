@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
@@ -51,7 +53,7 @@ class ChooseProfilePictureState extends State<ChooseProfilePicture> {
       username: email,
       password: password,
     );
-    Provider.of<UserProvider>(context, listen: false).signUpResult = result;
+    BlocProvider.of<UserCubit>(context).update(signUpResult: result);
     await _handleSignUpResult(result);
   }
 
@@ -78,17 +80,8 @@ class ChooseProfilePictureState extends State<ChooseProfilePicture> {
     await _signUp(password: user.password, email: user.email);
     final s3url = await uploadProfileImageToS3(
         _image!, DateTime.now().millisecondsSinceEpoch.toString());
-
-    Provider.of<UserProvider>(context, listen: false).password = user.password;
-
-    Provider.of<UserProvider>(context, listen: false).email = user.email;
-    Provider.of<UserProvider>(context, listen: false).id = user.id;
-    Provider.of<UserProvider>(context, listen: false).firstName =
-        user.firstName;
-    Provider.of<UserProvider>(context, listen: false).lastName = user.lastName;
-    //if (user.profilePictureUrl != null) {
-    Provider.of<UserProvider>(context, listen: false).profilePictureUrl = s3url;
-    //}
+    BlocProvider.of<UserCubit>(context).fromUserClass(userClass: user);
+    BlocProvider.of<UserCubit>(context).update(profilePictureUrl: s3url);
     context.goNamed('confirmemail', queryParameters: {'email': user.email});
   }
 

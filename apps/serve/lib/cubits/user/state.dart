@@ -1,5 +1,9 @@
 part of 'cubit.dart';
 
+/// Here we include everything that might be associated with a User.
+/// we should probably model the domain such that this is an object itself.
+/// but for now the cubit can express everything about a user and we can
+/// convert to and from both a UserClass and a UUser with it.
 abstract class UserCubitState extends Equatable {
   final String id;
   final String email;
@@ -10,11 +14,15 @@ abstract class UserCubitState extends Equatable {
   final String bio;
   final String coverPictureUrl;
   final bool isLeader;
-  final List<String> friends;
   final List<String> friendRequests;
   //final SignUpResult signUpResult; // import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-  final bool signUpResult;
+  final SignUpResult signUpResult;
   final bool busy;
+  final List<UProject> projects;
+  final List<UUser> friends;
+  final List<UPost> posts;
+  final List<USponsor> sponsors;
+  final String uUserFriendsId; // what is this?
 
   const UserCubitState({
     required this.id,
@@ -23,12 +31,16 @@ abstract class UserCubitState extends Equatable {
     required this.firstName,
     required this.lastName,
     required this.profilePictureUrl,
-    required this.bio,
     required this.coverPictureUrl,
+    required this.bio,
     required this.isLeader,
-    required this.friends,
     required this.friendRequests,
     required this.signUpResult,
+    required this.friends,
+    required this.projects,
+    required this.posts,
+    required this.sponsors,
+    required this.uUserFriendsId,
     required this.busy,
   });
 
@@ -40,14 +52,53 @@ abstract class UserCubitState extends Equatable {
         firstName,
         lastName,
         profilePictureUrl,
-        bio,
         coverPictureUrl,
+        bio,
         isLeader,
         friends,
         friendRequests,
         signUpResult,
+        projects,
+        posts,
+        sponsors,
+        uUserFriendsId,
         busy,
       ];
+
+  UUser get uUser => UUser(
+        id: id,
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        projects: projects,
+        profilePictureUrl: profilePictureUrl,
+        coverPictureUrl: coverPictureUrl,
+        friends: friends,
+        posts: posts,
+        sponsors: sponsors,
+        uUserFriendsId: uUserFriendsId,
+      );
+
+  UserClass get userClass => UserClass(
+        id: id,
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        projects: const [],
+        bio: bio,
+        profilePictureUrl: profilePictureUrl,
+        coverPictureUrl: coverPictureUrl,
+        isLeader: isLeader,
+        friends: [for (final f in friends) ObjectId.tryParse(f.id)]
+            .whereType<ObjectId>()
+            .toList(),
+        friendRequests: [for (final f in friendRequests) ObjectId.tryParse(f)]
+            .whereType<ObjectId>()
+            .toList(),
+        posts: const [],
+      );
 }
 
 class UserState extends UserCubitState {
@@ -64,6 +115,10 @@ class UserState extends UserCubitState {
     required super.friends,
     required super.friendRequests,
     required super.signUpResult,
+    required super.projects,
+    required super.posts,
+    required super.sponsors,
+    required super.uUserFriendsId,
     required super.busy,
   });
 }
