@@ -144,6 +144,28 @@ class ProjectHandlers {
     return projsWithLeader;
   }
 
+  static Future<void> addLeader(projId, leaderId) async {
+    UProject? uproject = await ProjectHandlers.getUProjectById(projId);
+    var uprojectMems = uproject!.members;
+    var memID = leaderId;
+    if (uprojectMems != null) {
+      if (!uprojectMems.contains(memID)) {
+        uprojectMems.add(memID);
+      }
+    }
+
+    final addedMemUProj =
+        uproject.copyWith(members: uprojectMems, leader: memID);
+
+    try {
+      final request = ModelMutations.update(addedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+  }
+
   // Future<void> addMember(projId) async {
   //   final url =
   //       Uri.parse('http://44.203.120.103:3000/projects/${projId}/member');

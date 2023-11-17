@@ -29,6 +29,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (BlocProvider.of<PostsCubit>(context).state is InitPostsState) {
       _getPosts(context, projId: "All Posts");
+
     }
     final dashboardCubit = BlocProvider.of<DashboardCubit>(context);
     if (dashboardCubit.state is InitDashboardState) {
@@ -122,6 +123,7 @@ class DashboardPage extends StatelessWidget {
                             ],
                           )),
                         ])),
+
         ),
         Container(
           margin: const EdgeInsets.only(bottom: 15),
@@ -267,6 +269,7 @@ class DashboardPage extends StatelessWidget {
                   onTap: () {
                     _getPosts(context,
                         projId: option.id, selected: option.name);
+
                     Navigator.pop(context); // Close the bottom sheet
                   },
                 ),

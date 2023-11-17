@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/data/leader_requests/handlers/leader_request_handlers.dart';
 import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -31,7 +32,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
   List<dynamic> users = [];
 
   var sponsor = 0.0;
-  String buttonText = 'Lead Project';
+  String buttonText = 'Apply to Lead Project';
 
   Future<Map<String, dynamic>> getProjects() async {
     final queryPredicate = UProject.ID.eq(widget.id);
@@ -293,7 +294,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color.fromARGB(255, 16, 34, 65),
+                        Color.fromRGBO(16, 34, 65, 1),
                       ),
                     ),
                     child: const Text('About'),
@@ -304,7 +305,11 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                     child: ElevatedButton(
                       onPressed: () => {
                         if (buttonText != "Post")
-                          {addLeader()}
+                          showPopUp(
+                            projectData['members'][0],
+                            Provider.of<UserProvider>(context, listen: false)
+                                .id,
+                          )
                         else
                           {onPostClick(currentUserID)}
                       },
@@ -349,6 +354,68 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
           ],
         ),
       ),
+    );
+  }
+
+  dynamic showPopUp(String ownerID, String applicantID) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController messageController = TextEditingController();
+
+        return AlertDialog(
+          title: Text('Enter your message to project owner'),
+          content: TextField(
+            controller: messageController,
+            decoration: InputDecoration(
+              hintText: 'Type your message...',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                String userMessage = messageController.text;
+
+                LeaderRequestHandlers.createLeaderRequest(
+                    ownerID: ownerID,
+                    applicantID: applicantID,
+                    date: DateFormat('MMM d, yyyy').format(DateTime.now()),
+                    message: userMessage,
+                    status: "INCOMPLETE",
+                    projectID: projectData['id']);
+
+                Navigator.of(context).pop(); // Close the dialog
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Thank you'),
+                      content: Text('Your application is awaiting approval.'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pop(); // Close the second dialog
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -416,35 +483,4 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
     }
   }
 
-  Future<void> addLeader() async {
-    UProject? uproject =
-        await ProjectHandlers.getUProjectById(projectData['id']);
-    var uprojectMems = uproject!.members;
-    var memID = BlocProvider.of<UserCubit>(context).state.id;
-
-    if (uprojectMems != null) {
-      if (!uprojectMems.contains(memID)) {
-        uprojectMems.add(memID);
-      }
-    }
-
-    final addedMemUProj =
-        uproject.copyWith(members: uprojectMems, leader: memID);
-
-    try {
-      final request = ModelMutations.update(addedMemUProj);
-      final response = await Amplify.API.mutate(request: request).response;
-      safePrint('Response: $response');
-      if (response.data!.members!.isNotEmpty) {
-        setState(() {
-          projectData['members'] = projectData['members'] != null
-              ? [...projectData['members'], memID]
-              : [memID];
-          buttonText = "Post"; // Update the button text
-        });
-      }
-    } catch (e) {
-      throw Exception('Failed to update project: $e');
-    }
-  }
 }
