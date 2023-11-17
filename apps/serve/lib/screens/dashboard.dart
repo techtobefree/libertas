@@ -61,65 +61,67 @@ class DashboardPage extends StatelessWidget {
                   previous.busy != current.busy ||
                   previous.dashboardUsers != current.dashboardUsers,
               builder: (context, state) => Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(right: 10, left: 10),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: BorderSide(
-                                width: 3.0,
-                                color: Colors.grey.withOpacity(0.5),
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: state.dashboardUsers.isEmpty
+                      ? []
+                      : [
+                          Container(
+                            padding: const EdgeInsets.only(right: 10, left: 10),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                right: BorderSide(
+                                  width: 3.0,
+                                  color: Colors.grey.withOpacity(0.5),
+                                ),
                               ),
                             ),
+                            child: DashboardUserDisplay(
+                              dimension: 80.0,
+                              name: state.dashboardUsers[0].name ?? "",
+                              url: state.dashboardUsers[0].pictureUrl ?? "",
+                              id: state.dashboardUsers[0].id ?? "",
+                            ),
                           ),
-                          child: DashboardUserDisplay(
-                            dimension: 80.0,
-                            name: state.dashboardUsers[0].name ?? "",
-                            url: state.dashboardUsers[0].pictureUrl ?? "",
-                            id: state.dashboardUsers[0].id ?? "",
-                          ),
-                        ),
-                        // Container(
-                        //   padding: EdgeInsets.all(20),
-                        //   width: 2, // Set the width of the divider
-                        //   height: 100, // Set the height of the divider
-                        //   color: Colors.grey,
-                        // ),
-                        Expanded(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // LIST OF USERS
-                            /// why is there always 5 users?
-                            DashboardUserDisplay(
-                              dimension: 60.0,
-                              name: state.dashboardUsers[1].name ?? "",
-                              url: state.dashboardUsers[1].pictureUrl ?? "",
-                              id: state.dashboardUsers[1].id ?? "",
-                            ),
-                            DashboardUserDisplay(
-                              dimension: 60.0,
-                              name: state.dashboardUsers[2].name ?? "",
-                              url: state.dashboardUsers[2].pictureUrl ?? "",
-                              id: state.dashboardUsers[2].id ?? "",
-                            ),
-                            DashboardUserDisplay(
-                              dimension: 60.0,
-                              name: state.dashboardUsers[3].name ?? "",
-                              url: state.dashboardUsers[3].pictureUrl ?? "",
-                              id: state.dashboardUsers[3].id ?? "",
-                            ),
-                            DashboardUserDisplay(
-                              dimension: 60.0,
-                              name: state.dashboardUsers[4].name ?? "",
-                              url: state.dashboardUsers[4].pictureUrl ?? "",
-                              id: state.dashboardUsers[4].id ?? "",
-                            ),
-                          ],
-                        )),
-                      ])),
+                          // Container(
+                          //   padding: EdgeInsets.all(20),
+                          //   width: 2, // Set the width of the divider
+                          //   height: 100, // Set the height of the divider
+                          //   color: Colors.grey,
+                          // ),
+                          Expanded(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              // LIST OF USERS
+                              /// why is there always 5 users?
+                              DashboardUserDisplay(
+                                dimension: 60.0,
+                                name: state.dashboardUsers[1].name ?? "",
+                                url: state.dashboardUsers[1].pictureUrl ?? "",
+                                id: state.dashboardUsers[1].id ?? "",
+                              ),
+                              DashboardUserDisplay(
+                                dimension: 60.0,
+                                name: state.dashboardUsers[2].name ?? "",
+                                url: state.dashboardUsers[2].pictureUrl ?? "",
+                                id: state.dashboardUsers[2].id ?? "",
+                              ),
+                              DashboardUserDisplay(
+                                dimension: 60.0,
+                                name: state.dashboardUsers[3].name ?? "",
+                                url: state.dashboardUsers[3].pictureUrl ?? "",
+                                id: state.dashboardUsers[3].id ?? "",
+                              ),
+                              DashboardUserDisplay(
+                                dimension: 60.0,
+                                name: state.dashboardUsers[4].name ?? "",
+                                url: state.dashboardUsers[4].pictureUrl ?? "",
+                                id: state.dashboardUsers[4].id ?? "",
+                              ),
+                            ],
+                          )),
+                        ])),
         ),
         Container(
           margin: const EdgeInsets.only(bottom: 15),

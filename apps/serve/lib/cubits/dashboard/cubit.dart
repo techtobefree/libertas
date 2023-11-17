@@ -44,7 +44,7 @@ class DashboardCubit extends Cubit<DashboardCubitState> {
               ProjectDropDownOption.fromProject(proj)
           ];
     } catch (exp) {
-      throw Exception('Failed to load projects');
+      throw Exception('Failed to load projects $exp');
     }
   }
 

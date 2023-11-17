@@ -31,7 +31,7 @@ class PostsCubit extends Cubit<PostsCubitState> {
     assert(projId != null || userId != null);
     update(busy: true);
     update(
-        selected: selectedValue ?? projId ?? userId ?? state.selected,
+        selected: selectedValue ?? projId ?? state.selected,
         posts: _sortPosts(await _getPosts(projId: projId, userId: userId)),
         busy: false);
   }

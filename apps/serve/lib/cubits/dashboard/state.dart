@@ -11,7 +11,7 @@ class ProjectDropDownOption {
     required this.id,
   });
 
-  factory ProjectDropDownOption.fromProject(Map<String, String> proj) =>
+  factory ProjectDropDownOption.fromProject(Map<String, dynamic> proj) =>
       ProjectDropDownOption(
         name: proj['name']!,
         pictureUrl: proj['projectPicture']!,

@@ -9,6 +9,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 //import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:serve_to_be_free/config/routes/app_routes.dart';
 import 'package:serve_to_be_free/cubits/cubits.dart';
+
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 //import 'package:serve_to_be_free/screens/login.dart';
 import 'package:serve_to_be_free/amplifyconfiguration.dart';
@@ -26,6 +27,7 @@ void main() async {
       providers: [
         BlocProvider<UserCubit>(create: (context) => UserCubit()),
         BlocProvider<PostsCubit>(create: (context) => PostsCubit()),
+        BlocProvider<DashboardCubit>(create: (context) => DashboardCubit()),
       ],
       child: ChangeNotifierProvider(
         create: (context) => UserProvider(),
