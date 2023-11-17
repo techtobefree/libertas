@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:provider/provider.dart';
 
+import '../cubits/user/cubit.dart';
 import '../data/leader_requests/handlers/leader_request_handlers.dart';
 import '../models/ModelProvider.dart';
 import '../widgets/leader_approval_card.dart';
@@ -33,7 +35,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     // For example, you can get the owner ID from the currently logged-in user
     final List<ULeaderRequest?> leaderRequests =
         await LeaderRequestHandlers.getLeaderRequestsByOwnerID(
-            Provider.of<UserProvider>(context, listen: false).id);
+            BlocProvider.of<UserCubit>(context).state.id);
 
     // Transform the leaderRequests into a list of notificationData
     // Adjust this logic based on your ULeaderRequest model structure
