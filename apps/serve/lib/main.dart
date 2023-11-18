@@ -28,6 +28,8 @@ void main() async {
         BlocProvider<UserCubit>(create: (context) => UserCubit()),
         BlocProvider<PostsCubit>(create: (context) => PostsCubit()),
         BlocProvider<DashboardCubit>(create: (context) => DashboardCubit()),
+        BlocProvider<NotificationsCubit>(
+            create: (context) => NotificationsCubit()),
       ],
       child: ChangeNotifierProvider(
         create: (context) => UserProvider(),
