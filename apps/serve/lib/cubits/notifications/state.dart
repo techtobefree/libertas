@@ -1,41 +1,42 @@
 part of 'cubit.dart';
 
 abstract class NotificationsCubitState extends Equatable {
-  final List<ULeaderRequest> leaderRequests;
+  final List<UNotification> notifications;
   final String selected;
   final bool busy;
 
   const NotificationsCubitState({
-    required this.leaderRequests,
+    required this.notifications,
     required this.selected,
     required this.busy,
   });
 
   @override
   List<Object> get props => [
-        leaderRequests,
+        notifications,
         selected,
         busy,
       ];
 
-  List<NotificationItem> get notificationDataList => leaderRequests
+  List<NotificationItem> get notificationDataList => notifications
           .where((element) => element.status == "INCOMPLETE")
-          .map((leaderRequest) {
+          .map((notification) {
         return NotificationItem(
-            projName: leaderRequest.project.name,
-            message: leaderRequest.message,
-            date: leaderRequest.date,
-            id: leaderRequest.id,
-            projId: leaderRequest.project.id,
-            appName: leaderRequest.applicant.name,
-            appId: leaderRequest.applicant.id,
-            profURL: leaderRequest.applicant.profilePictureUrl);
+            projName: notification.project!.name,
+            message: notification.message,
+            date: notification.date,
+            id: notification.id,
+            projId: notification.project!.id,
+            senderName:
+                '${notification.sender.firstName} ${notification.sender.lastName}',
+            senderId: notification.sender.id,
+            profURL: notification.sender.profilePictureUrl);
       }).toList();
 }
 
 class NotificationsState extends NotificationsCubitState {
   const NotificationsState({
-    required super.leaderRequests,
+    required super.notifications,
     required super.selected,
     required super.busy,
   });
@@ -44,7 +45,7 @@ class NotificationsState extends NotificationsCubitState {
 class InitNotificationsState extends NotificationsCubitState {
   const InitNotificationsState()
       : super(
-          leaderRequests: const [],
+          notifications: const [],
           selected: 'All Notifications',
           busy: false,
         );
@@ -56,8 +57,8 @@ class NotificationItem {
   final String date;
   final String id;
   final String projId;
-  final String appName;
-  final String appId;
+  final String senderName;
+  final String senderId;
   final String? profURL;
 
   const NotificationItem({
@@ -66,8 +67,8 @@ class NotificationItem {
     required this.date,
     required this.id,
     required this.projId,
-    required this.appName,
-    required this.appId,
+    required this.senderId,
+    required this.senderName,
     this.profURL,
   });
 }

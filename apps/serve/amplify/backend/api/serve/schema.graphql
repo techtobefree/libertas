@@ -12,8 +12,8 @@ type UUser @model {
   friends: [UUser] @hasMany
   posts: [UPost] @hasMany
   sponsors: [USponsor] @hasMany
-  leaderRequestsSent: [ULeaderRequest] @hasMany
-  leaderRequestsReceived: [ULeaderRequest] @hasMany
+  notificationsSent: [UNotification] @hasMany
+  notificationsReceived: [UNotification] @hasMany
 }
 
 type UProject @model @auth(rules: [{ allow: public }]){
@@ -31,7 +31,7 @@ type UProject @model @auth(rules: [{ allow: public }]){
   posts: [String]
   projectPicture: String!
   sponsors: [USponsor] @hasMany
-  leaderRequests: [ULeaderRequest] @hasMany
+  notifications: [UNotification] @hasMany
   isCompleted: Boolean!
 }
 
@@ -58,12 +58,23 @@ type UComment @model @auth(rules: [{ allow: public }]){
   post: UPost @belongsTo
 }
 
-type ULeaderRequest @model {
+# type ULeaderRequest @model {
+#   id: ID!
+#   owner: UUser! @belongsTo
+#   applicant: UUser! @belongsTo
+#   project: UProject! @belongsTo
+#   date: String!
+#   message: String!
+#   status: String!
+# }
+
+type UNotification @model {
   id: ID!
-  owner: UUser! @belongsTo
-  applicant: UUser! @belongsTo
-  project: UProject! @belongsTo
+  receiver: UUser! @belongsTo
+  sender: UUser! @belongsTo
+  project: UProject @belongsTo
   date: String!
   message: String!
   status: String!
+  # INCOMPLETE, APPROVED, DENIED, COMPLETE
 }

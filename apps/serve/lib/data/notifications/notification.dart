@@ -4,8 +4,8 @@ import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
-class LeaderRequestHandlers {
-  static Future<ULeaderRequest?> createLeaderRequest({
+class NotificationHandlers {
+  static Future<UNotification?> createNotification({
     required String ownerID,
     required String applicantID,
     required String date,
@@ -18,37 +18,37 @@ class LeaderRequestHandlers {
       UUser? applicant = await UserHandlers.getUUserById(ownerID);
       UProject? project = await ProjectHandlers.getUProjectById(projectID);
 
-      final leaderRequest = ULeaderRequest(
-        owner: owner!,
-        applicant: applicant!,
+      final notification = UNotification(
+        sender: owner!,
+        receiver: applicant!,
         date: date,
         message: message,
         status: status,
         project: project!,
       );
 
-      final request = ModelMutations.create(leaderRequest);
+      final request = ModelMutations.create(notification);
       final response = await Amplify.API.mutate(request: request).response;
 
-      final createdLeaderRequest = response.data;
-      if (createdLeaderRequest == null) {
+      final creatednotification = response.data;
+      if (creatednotification == null) {
         safePrint('errors: ${response.errors}');
         return null;
       }
 
-      return createdLeaderRequest;
+      return creatednotification;
     } catch (e) {
       throw Exception('Failed to create leader request: $e');
     }
   }
 
-  static Future<List<ULeaderRequest?>> getLeaderRequestsByOwnerID(
+  static Future<List<UNotification?>> getNotificationsByReceiverID(
       String ownerID) async {
     try {
       // Fetching leader requests where the ownerID matches the provided ownerID
-      final queryPredicate = ULeaderRequest.OWNER.eq(ownerID);
-      final request = ModelQueries.list<ULeaderRequest>(
-        ULeaderRequest.classType,
+      final queryPredicate = UNotification.RECEIVER.eq(ownerID);
+      final request = ModelQueries.list<UNotification>(
+        UNotification.classType,
         where: queryPredicate,
       );
 
@@ -65,23 +65,23 @@ class LeaderRequestHandlers {
     }
   }
 
-  static Future<ULeaderRequest?> updateLeaderRequestStatis(
+  static Future<UNotification?> updateNotificationStatus(
       String id, Map<String, dynamic> updatedFields) async {
-    ULeaderRequest? leaderRequest = await getLeaderRequestById(id);
+    UNotification? notification = await getNotificationById(id);
 
-    if (leaderRequest != null) {
-      final updatedLeaderRequest =
-          leaderRequest.copyWith(status: updatedFields['status']);
+    if (notification != null) {
+      final updatednotification =
+          notification.copyWith(status: updatedFields['status']);
 
       try {
-        final request = ModelMutations.update(updatedLeaderRequest);
+        final request = ModelMutations.update(updatednotification);
         final response = await Amplify.API.mutate(request: request).response;
 
         safePrint('Response: $response');
 
         if (response.data != null) {
-          ULeaderRequest? newLeaderRequest = response.data;
-          return newLeaderRequest;
+          UNotification? newnotification = response.data;
+          return newnotification;
         } else {
           return null;
         }
@@ -93,11 +93,11 @@ class LeaderRequestHandlers {
     return null;
   }
 
-  static Future<ULeaderRequest?> getLeaderRequestById(String id) async {
-    final queryPredicate = ULeaderRequest.ID.eq(id);
+  static Future<UNotification?> getNotificationById(String id) async {
+    final queryPredicate = UNotification.ID.eq(id);
 
-    final request = ModelQueries.list<ULeaderRequest>(
-      ULeaderRequest.classType,
+    final request = ModelQueries.list<UNotification>(
+      UNotification.classType,
       where: queryPredicate,
     );
     final response = await Amplify.API.query(request: request).response;

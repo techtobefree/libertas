@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/data/leader_requests/handlers/leader_request_handlers.dart';
 import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/data/notifications/notification.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
@@ -307,8 +307,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                         if (buttonText != "Post")
                           showPopUp(
                             projectData['members'][0],
-                            Provider.of<UserProvider>(context, listen: false)
-                                .id,
+                            BlocProvider.of<UserCubit>(context).state.id,
                           )
                         else
                           {onPostClick(currentUserID)}
@@ -382,7 +381,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
               onPressed: () {
                 String userMessage = messageController.text;
 
-                LeaderRequestHandlers.createLeaderRequest(
+                NotificationHandlers.createNotification(
                     ownerID: ownerID,
                     applicantID: applicantID,
                     date: DateFormat('MMM d, yyyy').format(DateTime.now()),
@@ -482,5 +481,4 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
       throw Exception('Failed to update project: $e');
     }
   }
-
 }
