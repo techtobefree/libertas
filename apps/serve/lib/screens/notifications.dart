@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-<<<<<<< HEAD
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-import 'package:serve_to_be_free/data/leader_requests/handlers/leader_request_handlers.dart';
 import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/widgets/leader_approval_card.dart';
 import 'package:serve_to_be_free/cubits/notifications/cubit.dart';
-=======
-
-import '../cubits/notifications/cubit.dart';
-import '../cubits/user/cubit.dart';
-import '../data/notifications/notification.dart';
-import '../widgets/leader_approval_card.dart';
->>>>>>> main
+import 'package:serve_to_be_free/data/notifications/notification.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({Key? key}) : super(key: key);
@@ -21,13 +13,8 @@ class NotificationsPage extends StatefulWidget {
   NotificationsPageState createState() => NotificationsPageState();
 }
 
-<<<<<<< HEAD
 class NotificationsPageState extends State<NotificationsPage> {
-  late Future<List<Map<String, dynamic>>> _notificationDataList;
-=======
-class _NotificationsPageState extends State<NotificationsPage> {
   // late Future<List<Map<String, dynamic>>> _notificationDataList;
->>>>>>> main
 
   @override
   void initState() {
