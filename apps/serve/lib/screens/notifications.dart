@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubits/notifications/cubit.dart';
 import '../cubits/user/cubit.dart';
-import '../data/leader_requests/handlers/leader_request_handlers.dart';
+import '../data/notifications/notification.dart';
 import '../widgets/leader_approval_card.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -15,7 +15,7 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  late Future<List<Map<String, dynamic>>> _notificationDataList;
+  // late Future<List<Map<String, dynamic>>> _notificationDataList;
 
   @override
   void initState() {
@@ -48,83 +48,83 @@ class _NotificationsPageState extends State<NotificationsPage> {
       ),
       body: Container(
         margin: const EdgeInsets.only(top: 10, right: 5, left: 5),
-        child: FutureBuilder(
-          future: _notificationDataList,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              List<Map<String, dynamic>> notificationDataList =
-                  snapshot.data as List<Map<String, dynamic>>;
-              if (notificationDataList.isEmpty) {
-                return const Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Center(child: Text('No new notifications'))
-                  ],
-                );
-              }
+        child:
+            // FutureBuilder(
+            //   future: _notificationDataList,
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return const CircularProgressIndicator();
+            //     } else if (snapshot.hasError) {
+            //       return Text('Error: ${snapshot.error}');
+            //     } else {
+            //       List<Map<String, dynamic>> notificationDataList =
+            //           snapshot.data as List<Map<String, dynamic>>;
+            //       if (notificationDataList.isEmpty) {
+            //         return const Column(
+            //           children: [
+            //             SizedBox(
+            //               height: 10,
+            //             ),
+            //             Center(child: Text('No new notifications'))
+            //           ],
+            //         );
+            //       }
 
-              return BlocBuilder<NotificationsCubit, NotificationsCubitState>(
-                buildWhen: (previous, current) => previous.busy != current.busy,
-                builder: (context, state) {
-                  final notificationDataList = state.notificationDataList;
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: notificationDataList.length,
-                          itemBuilder: (context, index) {
-                            final notificationData =
-                                notificationDataList[index];
+            BlocBuilder<NotificationsCubit, NotificationsCubitState>(
+          buildWhen: (previous, current) => previous.busy != current.busy,
+          builder: (context, state) {
+            final notificationDataList = state.notificationDataList;
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: notificationDataList.length,
+                    itemBuilder: (context, index) {
+                      final notificationData = notificationDataList[index];
 
-                            return LeaderApprovalCard(
-                              projName: notificationData.projName,
-                              message: notificationData.message,
-                              date: notificationData.date,
-                              profURL: notificationData.profURL ?? '',
-                              appId: notificationData.appId,
-                              appName: notificationData.appName,
-                              isRead: false,
-                              onApprove: () {
-                                try {
-                                  // Handle the "Approve" button action here
-                                  LeaderRequestHandlers
-                                      .updateLeaderRequestStatis(
-                                          notificationData.id,
-                                          {'status': "APPROVED"});
-                                  ProjectHandlers.addLeader(
-                                    notificationData.projId,
-                                    notificationData.appId,
-                                  );
-
-                                  print('Approved Notification ${index + 1}');
-                                } catch (err) {
-                                  print('approval failed $err');
-                                }
-                              },
-                              onDeny: () {
-                                // Handle the "Deny" button action here
-                                LeaderRequestHandlers.updateLeaderRequestStatis(
-                                    notificationData.id, {'status': "DENIED"});
-                                print('Denied Notification ${index + 1}');
-                              },
+                      return LeaderApprovalCard(
+                        projName: notificationData.projName,
+                        message: notificationData.message,
+                        date: notificationData.date,
+                        profURL: notificationData.profURL ?? '',
+                        appId: notificationData.senderId,
+                        appName: notificationData.senderName,
+                        isRead: false,
+                        onApprove: () {
+                          try {
+                            // Handle the "Approve" button action here
+                            NotificationHandlers.updateNotificationStatus(
+                                notificationData.id, {'status': "APPROVED"});
+                            ProjectHandlers.addLeader(
+                              notificationData.projId,
+                              notificationData.senderId,
                             );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
+
+                            print('Approved Notification ${index + 1}');
+                          } catch (err) {
+                            print('approval failed $err');
+                          }
+                        },
+                        onDeny: () {
+                          // Handle the "Deny" button action here
+                          NotificationHandlers.updateNotificationStatus(
+                              notificationData.id, {'status': "DENIED"});
+                          print('Denied Notification ${index + 1}');
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
           },
         ),
       ),
     );
   }
 }
+//         ),
+//       ),
+//     );
+//   }
+// }
