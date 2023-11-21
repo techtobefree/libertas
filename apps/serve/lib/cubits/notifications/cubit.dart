@@ -12,11 +12,12 @@ class NotificationsCubit extends Cubit<NotificationsCubitState> {
 
   void callPeriodically({
     required UserCubit userCubit,
-    Duration period = const Duration(minutes: 5),
+    Duration period = const Duration(seconds: 5), //const Duration(minutes: 5),
   }) {
     periodic = Stream<int>.periodic(period, (_) {
       final userId = userCubit.state.id;
       if (userId != '') {
+        print('calling loadNotifications $userId');
         loadNotifications(userId: userId);
       }
       return 0;
