@@ -4,11 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
-import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class CreateAPost extends StatefulWidget {

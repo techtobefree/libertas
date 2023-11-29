@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/pages/notifications/cubit.dart';
 import 'package:serve_to_be_free/widgets/leader_approval_card.dart';
-import 'package:serve_to_be_free/cubits/notifications/cubit.dart';
 import 'package:serve_to_be_free/data/notifications/notification.dart';
 
 class NotificationsPage extends StatefulWidget {

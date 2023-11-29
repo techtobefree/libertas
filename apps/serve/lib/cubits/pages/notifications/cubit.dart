@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/data/notifications/notification.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 
 part 'state.dart';
 

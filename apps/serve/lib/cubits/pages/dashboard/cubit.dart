@@ -27,9 +27,9 @@ class DashboardCubit extends Cubit<DashboardCubitState> {
     try {
       update(busy: true);
       update(dropdownOptions: await _getOptions(userId), busy: true);
-    } catch (exp) {
+    } catch (e) {
       // Handle the exception
-      print('Failed to load options: $exp');
+      print('Failed to load options: $e');
     }
   }
 

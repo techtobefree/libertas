@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-
-import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class MyProjects extends StatefulWidget {

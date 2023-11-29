@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
-import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
 
 class ChooseProfilePicture extends StatefulWidget {
