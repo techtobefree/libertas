@@ -74,6 +74,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           'projectBio': projectData.bio,
           'projectDescription': projectData.description,
           'projectImage': [xFile],
+          // 'leadership': "leader chosen"
         });
       });
     }
@@ -119,9 +120,12 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       final imageURL = 'https://servetobefree-images-dev.s3.amazonaws.com/$key';
 
       if (widget.id == null || widget.id!.isEmpty) {
-        var leaderStr = "";
+        String? leaderStr = "";
         if (formData['leadership'] == 'Same as owner') {
           leaderStr = BlocProvider.of<UserCubit>(context).state.id;
+        }
+        if (formData['leadership'] == 'Current Leader') {
+          leaderStr = projectData.leader;
         }
         UProject uproject = UProject(
             name: formData['projectName'],
@@ -167,6 +171,13 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             await ProjectHandlers.getUProjectById(widget.id ?? "");
         late UProject uprojectUpdate;
 
+        var leaderStr = uproject?.leader;
+        if (formData['leadership'] == 'Same as owner') {
+          leaderStr = uproject!.members![0];
+        } else if (formData['leadership'] == 'Recruit leadership') {
+          leaderStr = "";
+        }
+
         if (selectedFile != imageCache) {
           uprojectUpdate = uproject!.copyWith(
             name: formData['projectName'],
@@ -178,6 +189,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             city: formData['city'],
             state: formData['state'],
             bio: formData['projectBio'],
+            leader: leaderStr,
           );
         } else {
           uprojectUpdate = uproject!.copyWith(
@@ -189,6 +201,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             city: formData['city'],
             state: formData['state'],
             bio: formData['projectBio'],
+            leader: leaderStr,
           );
         }
         try {
@@ -413,21 +426,23 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 12),
-                      // decoration: BoxDecoration(
-                      //   color: Colors.grey[200],
-                      //   borderRadius: BorderRadius.circular(10),
-                      // ),
                       child: FormBuilderDropdown<String>(
                         name: 'leadership',
-                        decoration: _fieldDecoration("Leadership Option"),
+                        decoration: _fieldDecoration(projectData.leader != null
+                            ? 'Use Current leader'
+                            : "Leadership Option"),
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(),
                         ]),
-                        initialValue: projectData.leader,
                         elevation: 2,
                         iconSize: 30,
                         isExpanded: true,
+                        initialValue: (projectData.leader != null &&
+                                projectData.leader!.isNotEmpty)
+                            ? 'Current leader'
+                            : "Recruit leadership",
                         items: [
+                          if (projectData.leader != null) 'Current leader',
                           'Same as owner',
                           'Recruit leadership',
                         ]
