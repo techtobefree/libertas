@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class LeadAProject extends StatefulWidget {
@@ -10,17 +11,16 @@ class LeadAProject extends StatefulWidget {
 }
 
 class _LeadAProjectState extends State<LeadAProject> {
-  late Future<List<dynamic>> _futureProjects;
   String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _futureProjects = ProjectHandlers.getProjectsWithoutLeader();
   }
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<ProjectsCubit>(context).loadProjects();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -80,42 +80,36 @@ class _LeadAProjectState extends State<LeadAProject> {
           ),
         ),
       ),
-      body: FutureBuilder<List<dynamic>>(
-        future: _futureProjects,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<dynamic>? projects = snapshot.data;
-            return ListView.builder(
-              itemCount: projects!.length,
-              itemBuilder: (context, index) {
-                // print(_searchQuery.toLowerCase());
-                if (_searchQuery.length < 2) {
-                  return ProjectCard.fromJson(projects[index], lead: true);
-                } else {
-                  String projectCity = projects[index]['city'].toLowerCase();
-                  String projectState = projects[index]['state'].toLowerCase();
-                  String combined =
-                      '${projects[index]['city'].toLowerCase()}, ${projects[index]['state'].toLowerCase()}';
-                  String query = _searchQuery.toLowerCase();
-                  if (projectCity.contains(query) ||
-                      projectState.contains(query) ||
-                      combined.contains(query)) {
-                    return ProjectCard.fromJson(projects[index], lead: true);
-                  }
-                  return const SizedBox
-                      .shrink(); // or return null; to hide the card
-                }
-              },
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Failed to load projects."),
-            );
-          } else {
+      body: BlocBuilder<ProjectsCubit, ProjectsCubitState>(
+        buildWhen: (previous, current) => previous != current,
+        builder: (context, state) {
+          if (state.busy) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
+          final projects = state.projectsWithoutLeader.toList();
+          return ListView.builder(
+            itemCount: projects.length,
+            itemBuilder: (context, i) {
+              // print(_searchQuery.toLowerCase());
+              if (_searchQuery.length < 2) {
+                return ProjectCard.fromUProject(projects[i], lead: true);
+              } else {
+                final city = (projects[i].city ?? '').toLowerCase();
+                final usaState = (projects[i].state ?? '').toLowerCase();
+                final combined = '$city, $usaState';
+                final query = _searchQuery.toLowerCase();
+                if (city.contains(query) ||
+                    usaState.contains(query) ||
+                    combined.contains(query)) {
+                  return ProjectCard.fromUProject(projects[i], lead: true);
+                }
+                return const SizedBox
+                    .shrink(); // or return null; to hide the card
+              }
+            },
+          );
         },
       ),
     );

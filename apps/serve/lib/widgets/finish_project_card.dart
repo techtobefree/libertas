@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/models/UProject.dart';
 
 class FinishProjectCard extends StatelessWidget {
   final String title;
@@ -32,6 +33,17 @@ class FinishProjectCard extends StatelessWidget {
   })  : title = json['name'],
         numMembers = json['members'].length.toString(),
         project = json,
+        onFinish = onFinishFun,
+        resetState = resState;
+  // Named constructor that accepts a JSON object
+  FinishProjectCard.fromUProject(
+    UProject uProject, {
+    required void Function() onFinishFun,
+    required void Function() resState,
+    super.key,
+  })  : title = uProject.name,
+        numMembers = (uProject.members?.length ?? 0).toString(),
+        project = uProject.toJson(),
         onFinish = onFinishFun,
         resetState = resState;
 

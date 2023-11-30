@@ -99,6 +99,8 @@ abstract class UserCubitState extends Equatable {
             .toList(),
         posts: const [],
       );
+
+  String get name => '$firstName $lastName';
 }
 
 class UserState extends UserCubitState {
