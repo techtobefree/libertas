@@ -41,6 +41,7 @@ class ProjectHandlers {
     }
   }
 
+  /// moved to cubit
   static Future<List<dynamic>> getProjects() async {
     var jsonResponse = await getUProjects();
     var projects = [];
@@ -85,6 +86,7 @@ class ProjectHandlers {
     }
   }
 
+  /// moved to cubit
   static Future<List<dynamic>> getMyProjects(id) async {
     var projects = await ProjectHandlers.getProjects();
     var myprojs = [];
@@ -98,6 +100,7 @@ class ProjectHandlers {
     return myprojs;
   }
 
+  /// moved to cubit
   static Future<List<dynamic>> getProjectsIncomplete() async {
     var projects = await ProjectHandlers.getProjects();
     var incompleteProjs = [];
@@ -112,6 +115,7 @@ class ProjectHandlers {
     return incompleteProjs;
   }
 
+  /// moved to cubit
   static Future<List<dynamic>> getProjectsWithLeader() async {
     var projects = await ProjectHandlers.getProjects();
     var projsWithLeader = [];
@@ -128,6 +132,7 @@ class ProjectHandlers {
     return projsWithLeader;
   }
 
+  /// moved to cubit
   static Future<List<dynamic>> getProjectsWithoutLeader() async {
     var projects = await ProjectHandlers.getProjects();
     var projsWithLeader = [];

@@ -76,8 +76,13 @@ class ChooseProfilePictureState extends State<ChooseProfilePicture> {
 
   Future<void> tryCreateAccount(UserClass user) async {
     await _signUp(password: user.password, email: user.email);
-    final s3url = await uploadProfileImageToS3(
-        _image!, DateTime.now().millisecondsSinceEpoch.toString());
+    late String s3url;
+    try {
+      s3url = await uploadProfileImageToS3(
+          _image!, DateTime.now().millisecondsSinceEpoch.toString());
+    } catch (e) {
+      print(e);
+    }
     BlocProvider.of<UserCubit>(context).fromUserClass(userClass: user);
     BlocProvider.of<UserCubit>(context).update(profilePictureUrl: s3url);
     context.goNamed('confirmemail', queryParameters: {'email': user.email});

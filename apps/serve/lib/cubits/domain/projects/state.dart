@@ -54,8 +54,13 @@ abstract class ProjectsCubitState extends Equatable {
 
   int get count => projects.length;
 
-  double get hoursSpent =>
-      projects.map((p) => p.hoursSpent ?? 0).reduce((a, b) => a + b);
+  double get hoursSpent {
+    final filtered = projects.map((p) => p.hoursSpent ?? 0);
+    if (filtered.isEmpty) {
+      return 0;
+    }
+    return filtered.reduce((a, b) => a + b);
+  }
 
   Iterable<UProject> withMember(String userId) =>
       projects.where((p) => p.members?.contains(userId) ?? false);
