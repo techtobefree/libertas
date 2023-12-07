@@ -1,18 +1,28 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
-import 'package:serve_to_be_free/models/UPost.dart';
-
-import '../../data/notifications/notification.dart';
-import '../user/cubit.dart';
+import 'package:serve_to_be_free/data/notifications/notification.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
 
 part 'state.dart';
 
 class NotificationsCubit extends Cubit<NotificationsCubitState> {
+  Stream<int>? periodic;
   NotificationsCubit() : super(const InitNotificationsState());
+
+  void callPeriodically({
+    required UserCubit userCubit,
+    Duration period = const Duration(seconds: 5), //const Duration(minutes: 5),
+  }) {
+    periodic = Stream<int>.periodic(period, (_) {
+      final userId = userCubit.state.id;
+      if (userId != '') {
+        print('calling loadNotifications $userId');
+        loadNotifications(userId: userId);
+      }
+      return 0;
+    });
+  }
 
   void reset() => emit(const InitNotificationsState());
 

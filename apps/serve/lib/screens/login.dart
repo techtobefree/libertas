@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/cubits/notifications/cubit.dart';
 import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
@@ -362,13 +363,23 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // TODO: move this function along with all the login functions out of view
+  // and into cubit or service or something.
+  void onSignInSuccessful() async {
+    BlocProvider.of<NotificationsCubit>(context)
+        .callPeriodically(userCubit: BlocProvider.of<UserCubit>(context));
+  }
+
   void tryLogin() async {
     print(emailController.text);
     print(passwordController.text);
 
     await signInUser(emailController.text, passwordController.text);
     // final user = await UserHandlers.getUserByEmail(emailController.text);
-    await isUserSignedIn();
+    final result = await isUserSignedIn();
+    if (result) {
+      onSignInSuccessful();
+    } else {}
 
     // if (user == null) {
     //   showAlertDialog(context);

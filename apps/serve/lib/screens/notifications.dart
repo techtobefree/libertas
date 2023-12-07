@@ -10,14 +10,21 @@ import '../data/notifications/notification.dart';
 import '../widgets/leader_approval_card.dart';
 import '../widgets/message_card.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/widgets/leader_approval_card.dart';
+import 'package:serve_to_be_free/cubits/notifications/cubit.dart';
+import 'package:serve_to_be_free/data/notifications/notification.dart';
+
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({Key? key}) : super(key: key);
 
   @override
-  _NotificationsPageState createState() => _NotificationsPageState();
+  NotificationsPageState createState() => NotificationsPageState();
 }
 
-class _NotificationsPageState extends State<NotificationsPage> {
+class NotificationsPageState extends State<NotificationsPage> {
   // late Future<List<Map<String, dynamic>>> _notificationDataList;
 
   @override
