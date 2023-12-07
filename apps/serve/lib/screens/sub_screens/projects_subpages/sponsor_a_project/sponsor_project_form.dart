@@ -30,7 +30,8 @@ class SponsorProjectFormState extends State<SponsorProjectForm> {
       'user': userId,
     };
 
-    ProjectHandlers.addSponsor(widget.projectId!, sponsorData);
+    ProjectHandlers.addSponsor(widget.projectId!, sponsorData,
+        BlocProvider.of<UserCubit>(context).state.id);
 
     // Show a success dialog
     showDialog(
@@ -84,11 +85,14 @@ class SponsorProjectFormState extends State<SponsorProjectForm> {
   @override
   void initState() {
     super.initState();
-    ProjectHandlers.getProjectById(widget.projectId).then((data) {
-      setState(() {
-        projectData = data;
+    var projId = widget.projectId;
+    if (projId != null) {
+      ProjectHandlers.getUProjectById(projId).then((data) {
+        setState(() {
+          projectData = data!.toJson();
+        });
       });
-    });
+    }
   }
 
   @override
