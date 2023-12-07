@@ -49,7 +49,8 @@ class NotificationsCubit extends Cubit<NotificationsCubitState> {
     // Replace 'yourOwnerId' with the actual owner ID you want to fetch notifications for
     // For example, you can get the owner ID from the currently logged-in user
     final List<UNotification?> notifications =
-        await NotificationHandlers.getNotificationsByReceiverID(userId);
+        await NotificationHandlers.getNotificationsByReceiverIDandIncomplete(
+            userId);
 
     return notifications.whereType<UNotification>().toList();
   }

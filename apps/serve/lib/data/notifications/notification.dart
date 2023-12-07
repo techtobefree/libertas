@@ -11,21 +11,33 @@ class NotificationHandlers {
     required String date,
     required String message,
     required String status,
-    required String projectID,
+    String? projectID,
   }) async {
     try {
       UUser? owner = await UserHandlers.getUUserById(ownerID);
       UUser? applicant = await UserHandlers.getUUserById(ownerID);
-      UProject? project = await ProjectHandlers.getUProjectById(projectID);
+      UProject? project;
+      final UNotification notification;
+      if (projectID != null) {
+        project = await ProjectHandlers.getUProjectById(projectID);
 
-      final notification = UNotification(
-        sender: owner!,
-        receiver: applicant!,
-        date: date,
-        message: message,
-        status: status,
-        project: project!,
-      );
+        notification = UNotification(
+          sender: owner!,
+          receiver: applicant!,
+          date: date,
+          message: message,
+          status: status,
+          project: project!,
+        );
+      } else {
+        notification = UNotification(
+            sender: owner!,
+            receiver: applicant!,
+            date: date,
+            message: message,
+            status: status,
+            project: null);
+      }
 
       final request = ModelMutations.create(notification);
       final response = await Amplify.API.mutate(request: request).response;
@@ -50,6 +62,31 @@ class NotificationHandlers {
       final request = ModelQueries.list<UNotification>(
         UNotification.classType,
         where: queryPredicate,
+      );
+
+      final response = await Amplify.API.query(request: request).response;
+
+      if (response.data != null) {
+        return response.data!.items;
+      } else {
+        safePrint('errors: ${response.errors}');
+        return [];
+      }
+    } catch (e) {
+      throw Exception('Failed to get leader requests by owner: $e');
+    }
+  }
+
+  static Future<List<UNotification?>> getNotificationsByReceiverIDandIncomplete(
+      String ownerID) async {
+    try {
+      // Fetching leader requests where the ownerID matches the provided ownerID
+      final queryPredicate = UNotification.RECEIVER.eq(ownerID);
+      final secondPredicate = UNotification.STATUS.eq("INCOMPLETE");
+      final finalPredicate = queryPredicate.and(secondPredicate);
+      final request = ModelQueries.list<UNotification>(
+        UNotification.classType,
+        where: finalPredicate,
       );
 
       final response = await Amplify.API.query(request: request).response;

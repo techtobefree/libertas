@@ -39,6 +39,7 @@ type USponsor @model @auth(rules: [{ allow: public }]){
   id: ID!
   amount: Float!
   user: UUser @belongsTo
+  project: UProject @belongsTo
 }
 
 type UPost @model @auth(rules: [{ allow: public }]) {

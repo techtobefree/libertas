@@ -8,6 +8,8 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
+import 'package:serve_to_be_free/data/sponsors/models/sponsor_model.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
@@ -160,6 +162,14 @@ class ProjectDetailsState extends State<ProjectDetails> {
           users = value;
         });
       });
+      var id = widget.id;
+      if (id != null) {
+        SponsorHandlers.getUSponsorAmountByProject(id).then(
+          (value) {
+            setState(() => sponsor = value);
+          },
+        );
+      }
     });
   }
 

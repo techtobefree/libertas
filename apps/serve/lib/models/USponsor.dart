@@ -29,9 +29,9 @@ class USponsor extends amplify_core.Model {
   final String id;
   final double? _amount;
   final UUser? _user;
+  final UProject? _project;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
-  final String? _uProjectSponsorsId;
 
   @override
   getInstanceType() => classType;
@@ -63,6 +63,10 @@ class USponsor extends amplify_core.Model {
     return _user;
   }
   
+  UProject? get project {
+    return _project;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -71,18 +75,14 @@ class USponsor extends amplify_core.Model {
     return _updatedAt;
   }
   
-  String? get uProjectSponsorsId {
-    return _uProjectSponsorsId;
-  }
+  const USponsor._internal({required this.id, required amount, user, project, createdAt, updatedAt}): _amount = amount, _user = user, _project = project, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  const USponsor._internal({required this.id, required amount, user, createdAt, updatedAt, uProjectSponsorsId}): _amount = amount, _user = user, _createdAt = createdAt, _updatedAt = updatedAt, _uProjectSponsorsId = uProjectSponsorsId;
-  
-  factory USponsor({String? id, required double amount, UUser? user, String? uProjectSponsorsId}) {
+  factory USponsor({String? id, required double amount, UUser? user, UProject? project}) {
     return USponsor._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       amount: amount,
       user: user,
-      uProjectSponsorsId: uProjectSponsorsId);
+      project: project);
   }
   
   bool equals(Object other) {
@@ -96,7 +96,7 @@ class USponsor extends amplify_core.Model {
       id == other.id &&
       _amount == other._amount &&
       _user == other._user &&
-      _uProjectSponsorsId == other._uProjectSponsorsId;
+      _project == other._project;
   }
   
   @override
@@ -110,32 +110,32 @@ class USponsor extends amplify_core.Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("amount=" + (_amount != null ? _amount!.toString() : "null") + ", ");
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
+    buffer.write("project=" + (_project != null ? _project!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
-    buffer.write("uProjectSponsorsId=" + "$_uProjectSponsorsId");
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  USponsor copyWith({double? amount, UUser? user, String? uProjectSponsorsId}) {
+  USponsor copyWith({double? amount, UUser? user, UProject? project}) {
     return USponsor._internal(
       id: id,
       amount: amount ?? this.amount,
       user: user ?? this.user,
-      uProjectSponsorsId: uProjectSponsorsId ?? this.uProjectSponsorsId);
+      project: project ?? this.project);
   }
   
   USponsor copyWithModelFieldValues({
     ModelFieldValue<double>? amount,
     ModelFieldValue<UUser?>? user,
-    ModelFieldValue<String?>? uProjectSponsorsId
+    ModelFieldValue<UProject?>? project
   }) {
     return USponsor._internal(
       id: id,
       amount: amount == null ? this.amount : amount.value,
       user: user == null ? this.user : user.value,
-      uProjectSponsorsId: uProjectSponsorsId == null ? this.uProjectSponsorsId : uProjectSponsorsId.value
+      project: project == null ? this.project : project.value
     );
   }
   
@@ -145,21 +145,23 @@ class USponsor extends amplify_core.Model {
       _user = json['user']?['serializedData'] != null
         ? UUser.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
         : null,
+      _project = json['project']?['serializedData'] != null
+        ? UProject.fromJson(new Map<String, dynamic>.from(json['project']['serializedData']))
+        : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
-      _uProjectSponsorsId = json['uProjectSponsorsId'];
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'amount': _amount, 'user': _user?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uProjectSponsorsId': _uProjectSponsorsId
+    'id': id, 'amount': _amount, 'user': _user?.toJson(), 'project': _project?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'amount': _amount,
     'user': _user,
+    'project': _project,
     'createdAt': _createdAt,
-    'updatedAt': _updatedAt,
-    'uProjectSponsorsId': _uProjectSponsorsId
+    'updatedAt': _updatedAt
   };
 
   static final amplify_core.QueryModelIdentifier<USponsorModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<USponsorModelIdentifier>();
@@ -168,7 +170,9 @@ class USponsor extends amplify_core.Model {
   static final USER = amplify_core.QueryField(
     fieldName: "user",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UUser'));
-  static final UPROJECTSPONSORSID = amplify_core.QueryField(fieldName: "uProjectSponsorsId");
+  static final PROJECT = amplify_core.QueryField(
+    fieldName: "project",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UProject'));
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "USponsor";
     modelSchemaDefinition.pluralName = "USponsors";
@@ -199,6 +203,13 @@ class USponsor extends amplify_core.Model {
       ofModelName: 'UUser'
     ));
     
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
+      key: USponsor.PROJECT,
+      isRequired: false,
+      targetNames: ['uProjectSponsorsId'],
+      ofModelName: 'UProject'
+    ));
+    
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
       fieldName: 'createdAt',
       isRequired: false,
@@ -211,12 +222,6 @@ class USponsor extends amplify_core.Model {
       isRequired: false,
       isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: USponsor.UPROJECTSPONSORSID,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }

@@ -491,7 +491,7 @@ class UProject extends amplify_core.Model {
       key: UProject.SPONSORS,
       isRequired: false,
       ofModelName: 'USponsor',
-      associatedKey: USponsor.UPROJECTSPONSORSID
+      associatedKey: USponsor.PROJECT
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(

@@ -19,8 +19,20 @@ abstract class NotificationsCubitState extends Equatable {
       ];
 
   List<NotificationItem> get notificationDataList => notifications
-          .where((element) => element.status == "INCOMPLETE")
+          // .where((element) => element.status == "INCOMPLETE")
           .map((notification) {
+        if (notification.project == null) {
+          return NotificationItem(
+              projName: null,
+              message: notification.message,
+              date: notification.date,
+              id: notification.id,
+              projId: null,
+              senderName:
+                  '${notification.sender.firstName} ${notification.sender.lastName}',
+              senderId: notification.sender.id,
+              profURL: notification.sender.profilePictureUrl);
+        }
         return NotificationItem(
             projName: notification.project!.name,
             message: notification.message,
@@ -52,21 +64,21 @@ class InitNotificationsState extends NotificationsCubitState {
 }
 
 class NotificationItem {
-  final String projName;
+  final String? projName;
   final String message;
   final String date;
   final String id;
-  final String projId;
+  final String? projId;
   final String senderName;
   final String senderId;
   final String? profURL;
 
   const NotificationItem({
-    required this.projName,
+    this.projName,
     required this.message,
     required this.date,
     required this.id,
-    required this.projId,
+    this.projId,
     required this.senderId,
     required this.senderName,
     this.profURL,

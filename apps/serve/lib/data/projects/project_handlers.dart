@@ -1,8 +1,13 @@
 import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+
+import '../../cubits/user/cubit.dart';
 
 class ProjectHandlers {
   //static const String _baseUrl = 'http://localhost:3000/projects';
@@ -188,25 +193,58 @@ class ProjectHandlers {
   //   }
   // }
 
-  static Future<void> addSponsor(projId, sponsorData) async {
-    final url =
-        Uri.parse('http://44.203.120.103:3000/projects/$projId/sponsors');
-    //final Map<String, dynamic> data = {'amount': '', 'user': userId};
-    final response = await http.put(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(sponsorData),
-    );
+  static Future<void> addSponsor(String projId, sponsorData, userId) async {
+    UUser? user = await UserHandlers.getUUserById(userId);
+    UProject? project = await ProjectHandlers.getUProjectById(projId);
+    USponsor newSponsor =
+        USponsor(amount: sponsorData["amount"], project: project, user: user);
 
-    if (response.statusCode == 201) {
-      // Sponsor created successfully
-      final sponsorId = jsonDecode(response.body)['_id'];
-      print('Sponsor created successfully with ID: $sponsorId');
-    } else {
-      // Failed to create sponsor
-      print('Failed to create sponsor');
+    USponsor? createdSponsor = await SponsorHandlers.createUSponsor(newSponsor);
+    if (createdSponsor != null) {
+      var proj = await ProjectHandlers.getUProjectById(projId);
+      var projSponsors = proj!.sponsors;
+      if (proj != null) {
+        var sponsors = proj.sponsors ?? [];
+        if (projSponsors == null) {
+          projSponsors = [createdSponsor];
+        } else {
+          projSponsors.add(createdSponsor);
+        }
+
+        sponsors.add(createdSponsor);
+
+        final addedSponsorUProj = proj.copyWith(sponsors: sponsors);
+
+        try {
+          final request = ModelMutations.update(addedSponsorUProj);
+          final response = await Amplify.API.mutate(request: request).response;
+          safePrint('Response: $response');
+        } catch (e) {
+          throw Exception('Failed to update project: $e');
+        }
+        print(proj);
+      } else {
+        print("failed");
+      }
     }
+    // final url =
+    //     Uri.parse('http://44.203.120.103:3000/projects/$projId/sponsors');
+    // //final Map<String, dynamic> data = {'amount': '', 'user': userId};
+    // final response = await http.put(
+    //   url,
+    //   headers: <String, String>{
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: jsonEncode(sponsorData),
+    // );
+
+    // if (response.statusCode == 201) {
+    //   // Sponsor created successfully
+    //   final sponsorId = jsonDecode(response.body)['_id'];
+    //   print('Sponsor created successfully with ID: $sponsorId');
+    // } else {
+    //   // Failed to create sponsor
+    //   print('Failed to create sponsor');
+    // }
   }
 }
