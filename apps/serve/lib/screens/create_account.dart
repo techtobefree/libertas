@@ -69,6 +69,8 @@ class CreateAccountState extends State<CreateAccountScreen> {
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: TextField(
+              controller:
+                  TextEditingController(), // does this make keyboard appear?
               keyboardType: TextInputType.text,
               obscureText: userField == UserField.password ||
                   userField == UserField.confirmPassword,
