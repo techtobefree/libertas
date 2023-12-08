@@ -12,6 +12,7 @@ class SignupState extends Equatable {
   final File? profilePicture;
 //final SignUpResult signUpResult; // import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
   final SignUpResult signUpResult;
+  final String confirmationCode;
   final bool imageBusy;
   final bool signingUpBusy;
   const SignupState({
@@ -29,6 +30,7 @@ class SignupState extends Equatable {
       nextStep: AuthNextSignUpStep(signUpStep: AuthSignUpStep.done),
       userId: null,
     ),
+    this.confirmationCode = '',
     this.imageBusy = false,
     this.signingUpBusy = false,
   });
@@ -45,6 +47,7 @@ class SignupState extends Equatable {
         profilePictureUrl,
         profilePicture,
         signUpResult,
+        confirmationCode,
         imageBusy,
         signingUpBusy,
       ];

@@ -62,8 +62,7 @@ final goRouter = GoRouter(
                   GoRoute(
                     path: 'confirmemail',
                     name: 'confirmemail',
-                    builder: (context, state) => ConfirmationCodePage(
-                        email: state.queryParameters['email']!),
+                    builder: (context, state) => const ConfirmationCodePage(),
                   ),
                 ]),
           ],

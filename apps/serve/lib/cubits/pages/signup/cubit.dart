@@ -22,6 +22,7 @@ class SignupCubit extends Cubit<SignupState> {
     String? profilePictureUrl,
     File? profilePicture,
     SignUpResult? signUpResult,
+    String? confirmationCode,
     bool? imageBusy,
     bool? signingUpBusy,
   }) =>
@@ -36,6 +37,7 @@ class SignupCubit extends Cubit<SignupState> {
         profilePictureUrl: profilePictureUrl ?? state.profilePictureUrl,
         profilePicture: profilePicture ?? state.profilePicture,
         signUpResult: signUpResult ?? state.signUpResult,
+        confirmationCode: confirmationCode ?? state.confirmationCode,
         imageBusy: imageBusy ?? state.imageBusy,
         signingUpBusy: signingUpBusy ?? state.signingUpBusy,
       ));
@@ -69,5 +71,26 @@ class SignupCubit extends Cubit<SignupState> {
       'A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
       'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
     );
+  }
+
+  Future<bool> confirmUser() async {
+    try {
+      final result = await Amplify.Auth.confirmSignUp(
+        username: state.email,
+        confirmationCode: state.confirmationCode,
+      );
+      print(result);
+      // Check if further confirmations are needed or if
+      // the sign up is complete.
+      if (result.isSignUpComplete == false) {
+        return false;
+      }
+      update(signUpResult: result);
+      safePrint('sign up complete');
+      return true;
+    } on AuthException catch (e) {
+      safePrint('Error confirming user: ${e.message}');
+      return false;
+    }
   }
 }

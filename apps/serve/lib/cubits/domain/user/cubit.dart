@@ -1,3 +1,4 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:bson/bson.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -109,4 +110,31 @@ class UserCubit extends Cubit<UserCubitState> {
         uUserFriendsId: uUserFriendsId ?? state.uUserFriendsId,
         busy: busy ?? state.busy,
       );
+
+  /// TODO: to make more secure we shouldn't save password in cubits.
+
+  Future<void> signInUser(String? username, String? password) async {
+    try {
+      final _ = await Amplify.Auth.signIn(
+        username: username ?? state.email,
+        password: password ?? state.password,
+      );
+      print('signed in auth');
+    } on AuthException catch (e) {
+      safePrint('Error signing in: ${e.message}');
+    }
+  }
+
+  Future<bool> isUserSignedIn() async {
+    final result = await Amplify.Auth.fetchAuthSession();
+    if (result.isSignedIn) {
+      var authUser = await Amplify.Auth.getCurrentUser();
+      if (authUser.signInDetails is CognitoSignInDetailsApiBased) {
+        //unused
+        //var apiBasedSignInDetails =
+        //    authUser.signInDetails as CognitoSignInDetailsApiBased;
+      }
+    }
+    return result.isSignedIn;
+  }
 }
