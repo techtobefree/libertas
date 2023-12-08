@@ -26,7 +26,9 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<UserCubit>(create: (context) => UserCubit()),
+        BlocProvider<UsersCubit>(create: (context) => UsersCubit()),
         BlocProvider<PostsCubit>(create: (context) => PostsCubit()),
+        BlocProvider<ProjectsCubit>(create: (context) => ProjectsCubit()),
         BlocProvider<DashboardCubit>(create: (context) => DashboardCubit()),
         BlocProvider<NotificationsCubit>(
             create: (context) => NotificationsCubit()),

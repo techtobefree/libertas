@@ -1,7 +1,9 @@
-export 'package:serve_to_be_free/cubits/user/cubit.dart';
-export 'package:serve_to_be_free/cubits/posts/cubit.dart';
-export 'package:serve_to_be_free/cubits/dashboard/cubit.dart';
-export 'package:serve_to_be_free/cubits/notifications/cubit.dart';
+export 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+export 'package:serve_to_be_free/cubits/domain/users/cubit.dart';
+export 'package:serve_to_be_free/cubits/domain/posts/cubit.dart';
+export 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
+export 'package:serve_to_be_free/cubits/pages/dashboard/cubit.dart';
+export 'package:serve_to_be_free/cubits/pages/notifications/cubit.dart';
 
 
 /*

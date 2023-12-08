@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
-import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
-import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class CreateAPost extends StatefulWidget {
@@ -20,54 +18,22 @@ class CreateAPost extends StatefulWidget {
 
 class CreateAPostState extends State<CreateAPost> {
   final _textEditingController = TextEditingController();
-  Map<String, dynamic> _selectedOption = {
-    'name': 'Projects',
-    'url': null,
-    'id': ""
-  };
-  bool _isLoading = false;
-  List<Map<String, dynamic>>? _options;
+  late UserCubit userCubit;
+  late ProjectOption _selectedOption;
 
-  Future<List<Map<String, dynamic>>> _getOptions() async {
-    try {
-      var projs = await ProjectHandlers.getMyProjects(
-          BlocProvider.of<UserCubit>(context).state.id);
-      List<Map<String, dynamic>> myprojs = [];
-      for (var proj in projs) {
-        myprojs.add({
-          'name': proj['name'],
-          'url': proj['projectPicture'],
-          'id': proj['id']
-        });
-      }
-      return myprojs;
-    } catch (exp) {
-      throw Exception('Failed to load projects');
-    }
+  @override
+  void initState() {
+    super.initState();
+    userCubit = BlocProvider.of<UserCubit>(context);
+    BlocProvider.of<ProjectsCubit>(context).loadMyProjects(userCubit.state.id);
+    _selectedOption = ProjectOption.empty();
   }
 
-  /// unused
-  // Widget _buildListTile(Map<String, dynamic> option, int index,
-  //     Function setStateCallback, BuildContext context) {
-  //   return ListTile(
-  //     leading: ClipRRect(
-  //       borderRadius: BorderRadius.circular(5.0),
-  //       child: Image.asset(
-  //         option['image'],
-  //         fit: BoxFit.cover,
-  //         height: 30,
-  //         width: 30,
-  //       ),
-  //     ),
-  //     title: Text(option['text']),
-  //     onTap: () {
-  //       setStateCallback(() {
-  //         _selectedOption = option;
-  //       });
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  // }
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,11 +61,11 @@ class CreateAPostState extends State<CreateAPost> {
                   Container(
                     margin: const EdgeInsets.all(15),
                     //padding: EdgeInsets.all(5),
-                    child: _selectedOption['url'] != null
+                    child: _selectedOption.url != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(5.0),
                             child: Image.network(
-                              _selectedOption['url'],
+                              _selectedOption.url!,
                               fit: BoxFit.cover,
                               height: 40,
                               width: 40,
@@ -125,7 +91,7 @@ class CreateAPostState extends State<CreateAPost> {
                     child: Row(
                       children: [
                         Text(
-                          _selectedOption['name'],
+                          _selectedOption.name,
                         ), // Display the selected option
                         const Icon(Icons.keyboard_arrow_down_rounded)
                       ],
@@ -149,15 +115,15 @@ class CreateAPostState extends State<CreateAPost> {
               //Spacer(),
               SolidRoundedButton("Post",
                   passedFunction: () => {
-                        if (_selectedOption['id'] != "")
-                          {_postToApi(_selectedOption['id'])}
+                        if (_selectedOption.id != "")
+                          {_postToApi(context, _selectedOption.id)}
                       })
             ],
           ),
         ));
   }
 
-  void _postToApi(projId) async {
+  void _postToApi(BuildContext context, projId) async {
     final text = _textEditingController.text;
 
     // Make sure the text field is not empty
@@ -166,12 +132,12 @@ class CreateAPostState extends State<CreateAPost> {
     }
     UProject? uproject = await ProjectHandlers.getUProjectById(projId);
     var uprojectPosts = uproject!.posts;
-    var uuser = await UserHandlers.getUUserById(
-        BlocProvider.of<UserCubit>(context).state.id);
+    //var uuser = await UserHandlers.getUUserById(userCubit.state.id);
+    final uuser = userCubit.state.uUser;
     DateTime now = DateTime.now();
 
     var upost = UPost(
-        user: uuser!,
+        user: uuser,
         content: text,
         date:
             '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}');
@@ -239,57 +205,50 @@ class CreateAPostState extends State<CreateAPost> {
   }
 
   void _showOptionsDialog() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final options = await _getOptions();
-
-    setState(() {
-      _isLoading = false;
-      _options = options;
-    });
-
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return AnimatedOpacity(
-          duration: const Duration(milliseconds: 500),
-          opacity: _isLoading ? 0.0 : 1.0,
-          child: Stack(
-            children: <Widget>[
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: _options?.length ?? 0,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child:
-
-                            //padding: EdgeInsets.all(5),
-                            Image.network(
-                          _options?[index]['url'] ?? "",
-                          fit: BoxFit.cover,
-                          height: 30,
-                          width: 30,
-                        )),
-                    title: Text(_options?[index]['name'] ?? ""),
-                    onTap: () {
-                      setState(() {
-                        _selectedOption = _options![index];
-                      });
-                    },
-                  );
-                },
-              ),
-              if (_isLoading)
-                const Center(
-                  child: CircularProgressIndicator(),
+        return BlocBuilder<ProjectsCubit, ProjectsCubitState>(
+            buildWhen: (previous, current) => previous != current,
+            builder: (context, state) {
+              final options = state.myOptions.toList();
+              return AnimatedOpacity(
+                duration: const Duration(milliseconds: 500),
+                opacity: state.busy ? 0.0 : 1.0,
+                child: Stack(
+                  children: <Widget>[
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: options.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(5.0),
+                              child:
+                                  //padding: EdgeInsets.all(5),
+                                  Image.network(
+                                options[index].url ?? "",
+                                fit: BoxFit.cover,
+                                height: 30,
+                                width: 30,
+                              )),
+                          title: Text(options[index].name),
+                          onTap: () {
+                            setState(() {
+                              _selectedOption = options[index];
+                            });
+                          },
+                        );
+                      },
+                    ),
+                    if (state.busy)
+                      const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  ],
                 ),
-            ],
-          ),
-        );
+              );
+            });
       },
     );
   }

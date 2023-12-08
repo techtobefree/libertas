@@ -1,13 +1,7 @@
-import 'dart:convert';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-
-import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class MyProjects extends StatefulWidget {
@@ -18,13 +12,14 @@ class MyProjects extends StatefulWidget {
 }
 
 class _MyProjectsState extends State<MyProjects> {
-  late Future<List<dynamic>> _futureProjects;
+  late UserCubit userCubit;
+  late ProjectsCubit projectsCubit;
   @override
   void initState() {
     super.initState();
-    // _futureProjects = getMyProjects();
-    _futureProjects = ProjectHandlers.getMyProjects(
-        BlocProvider.of<UserCubit>(context).state.id);
+    userCubit = BlocProvider.of<UserCubit>(context);
+    projectsCubit = BlocProvider.of<ProjectsCubit>(context);
+    projectsCubit.loadMyProjects(userCubit.state.id);
   }
 
   @override
@@ -44,65 +39,28 @@ class _MyProjectsState extends State<MyProjects> {
               ),
             ),
           )),
-      body: FutureBuilder<List<dynamic>>(
-        future: _futureProjects,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<dynamic>? projects = snapshot.data;
-            return ListView.builder(
-              itemCount: projects!.length,
-              itemBuilder: (context, index) {
-                return ProjectCard.fromJson(projects[index]);
-                // print(projects[index]['members'].length.toString());
-                // return ProjectCard(
-                //   title: projects[index]['name'],
-                //   num_members: projects[index]['members'].length.toString(),
-                // );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Failed to load projects."),
-            );
-          } else {
+      body: BlocBuilder<ProjectsCubit, ProjectsCubitState>(
+        buildWhen: (previous, current) => previous != current,
+        builder: (context, state) {
+          if (state.busy) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
+          final projects = state.mine;
+          return ListView.builder(
+            itemCount: projects.length,
+            itemBuilder: (context, index) {
+              return ProjectCard.fromUProject(projects[index]);
+              // print(projects[index]['members'].length.toString());
+              // return ProjectCard(
+              //   title: projects[index]['name'],
+              //   num_members: projects[index]['members'].length.toString(),
+              // );
+            },
+          );
         },
       ),
     );
-  }
-
-  Future<List<dynamic>> getMyProjects() async {
-    var url = Uri.parse('http://44.203.120.103:3000/projects');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      var myprojs = [];
-      for (var proj in jsonResponse) {
-        for (var member in proj['members']) {
-          if (member == BlocProvider.of<UserCubit>(context).state.id) {
-            myprojs.add(proj);
-          }
-        }
-      }
-      // Sort the list based on isCompleted
-      myprojs.sort((a, b) {
-        // If a.isCompleted is false or null and b.isCompleted is true, a comes first
-        if (a['isCompleted'] == false || a['isCompleted'] == null) {
-          return -1;
-        }
-        // If a.isCompleted is true and b.isCompleted is false or null, b comes first
-        if (b['isCompleted'] == false || b['isCompleted'] == null) {
-          return 1;
-        }
-        // Otherwise, use default comparison (b comes before a if they have the same isCompleted value)
-        return b['date'].compareTo(a['date']);
-      });
-      return myprojs;
-    } else {
-      throw Exception('Failed to load projects');
-    }
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/cubits/dashboard/cubit.dart';
-import 'package:serve_to_be_free/cubits/posts/cubit.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/pages/dashboard/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/posts/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 
@@ -29,7 +29,6 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (BlocProvider.of<PostsCubit>(context).state is InitPostsState) {
       _getPosts(context, projId: "All Posts");
-
     }
     final dashboardCubit = BlocProvider.of<DashboardCubit>(context);
     if (dashboardCubit.state is InitDashboardState) {
@@ -123,7 +122,6 @@ class DashboardPage extends StatelessWidget {
                             ],
                           )),
                         ])),
-
         ),
         Container(
           margin: const EdgeInsets.only(bottom: 15),

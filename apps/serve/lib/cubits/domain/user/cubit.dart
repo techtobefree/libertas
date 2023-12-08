@@ -8,7 +8,7 @@ import 'package:serve_to_be_free/models/UPost.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
 import 'package:serve_to_be_free/models/USponsor.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
-import 'package:serve_to_be_free/models/uuser.dart';
+import 'package:serve_to_be_free/models/UUser.dart';
 
 part 'state.dart';
 

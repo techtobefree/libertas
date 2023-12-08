@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/models/UProject.dart';
 
 class ProjectCard extends StatelessWidget {
   final String title;
   final String numMembers;
   final Map<String, dynamic> project;
   final List<dynamic> sponsors;
-  final bool lead; // Add the 'lead' parameter
+  final bool lead;
 
   const ProjectCard({
     super.key,
@@ -14,7 +15,7 @@ class ProjectCard extends StatelessWidget {
     required this.numMembers,
     required this.project,
     required this.sponsors,
-    required this.lead, // Initialize 'lead' with a default value of false
+    this.lead = false,
   });
 
   // Named constructor that accepts a JSON object
@@ -29,6 +30,19 @@ class ProjectCard extends StatelessWidget {
           numMembers: json['members'].length.toString(),
           sponsors: json['sponsors'] ?? [],
           project: json,
+          lead: lead);
+
+  factory ProjectCard.fromUProject(
+    UProject uProject, {
+    Key? key,
+    bool lead = false,
+  }) =>
+      ProjectCard(
+          key: key,
+          title: uProject.name,
+          numMembers: (uProject.members?.length ?? 0).toString(),
+          sponsors: uProject.sponsors ?? [],
+          project: uProject.toJson(),
           lead: lead);
 
   // Named constructor that accepts a JSON object

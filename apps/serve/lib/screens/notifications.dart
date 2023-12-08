@@ -1,21 +1,12 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../cubits/notifications/cubit.dart';
-import '../cubits/user/cubit.dart';
-import '../data/notifications/notification.dart';
-import '../widgets/leader_approval_card.dart';
-import '../widgets/message_card.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
-import 'package:serve_to_be_free/cubits/user/cubit.dart';
-import 'package:serve_to_be_free/widgets/leader_approval_card.dart';
-import 'package:serve_to_be_free/cubits/notifications/cubit.dart';
 import 'package:serve_to_be_free/data/notifications/notification.dart';
+import 'package:serve_to_be_free/widgets/leader_approval_card.dart';
+import 'package:serve_to_be_free/widgets/message_card.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/pages/notifications/cubit.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({Key? key}) : super(key: key);
