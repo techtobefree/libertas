@@ -5,30 +5,15 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
 
-class ChooseProfilePicture extends StatefulWidget {
-  const ChooseProfilePicture({Key? key}) : super(key: key);
+class ChooseProfilePicture extends StatelessWidget {
+  ChooseProfilePicture({super.key});
 
-  @override
-  ChooseProfilePictureState createState() => ChooseProfilePictureState();
-
-  // passed from the create account.
-  static UserClass? _user;
-
-  static UserClass? getUser() {
-    return _user;
-  }
-
-  static void setUser(UserClass? user) {
-    _user = user;
-  }
-}
-
-class ChooseProfilePictureState extends State<ChooseProfilePicture> {
-  File? _image;
-  String? errorText;
+  late File? _image;
+  late String? errorText;
 
   Future<void> _pickImage() async {
     final imagePicker = ImagePicker();
@@ -43,39 +28,7 @@ class ChooseProfilePictureState extends State<ChooseProfilePicture> {
     });
   }
 
-  Future<void> _signUp({
-    required String password,
-    required String email,
-  }) async {
-    final result = await Amplify.Auth.signUp(
-      username: email,
-      password: password,
-    );
-    BlocProvider.of<UserCubit>(context).update(signUpResult: result);
-    await _handleSignUpResult(result);
-  }
-
-  Future<void> _handleSignUpResult(SignUpResult result) async {
-    switch (result.nextStep.signUpStep) {
-      case AuthSignUpStep.confirmSignUp:
-        final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
-        _handleCodeDelivery(codeDeliveryDetails);
-        break;
-      case AuthSignUpStep.done:
-        safePrint('Sign up is complete');
-        break;
-    }
-  }
-
-  void _handleCodeDelivery(AuthCodeDeliveryDetails codeDeliveryDetails) {
-    safePrint(
-      'A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
-      'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
-    );
-  }
-
-  Future<void> tryCreateAccount(UserClass user) async {
-    await _signUp(password: user.password, email: user.email);
+  Future<void> uploadImage(UserClass user) async {
     final s3url = await uploadProfileImageToS3(
         _image!, DateTime.now().millisecondsSinceEpoch.toString());
     BlocProvider.of<UserCubit>(context).fromUserClass(userClass: user);
@@ -90,13 +43,7 @@ class ChooseProfilePictureState extends State<ChooseProfilePicture> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          UserClass? user = ChooseProfilePicture._user;
-          if (user != null) {
-            tryCreateAccount(user); // TODO: use the cubit:
-            //BlocProvider.of<UserCubit>(context).tryCreateAccount(user, _image);
-
-            //createUser(user);
-          }
+          uploadImage(BlocProvider.of<SignupCubit>(context).state.user);
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(15.0),

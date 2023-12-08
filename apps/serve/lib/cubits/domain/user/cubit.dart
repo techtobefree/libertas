@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:bson/bson.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/models/UPost.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
 import 'package:serve_to_be_free/models/USponsor.dart';
-import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
 import 'package:serve_to_be_free/models/UUser.dart';
 
 part 'state.dart';
@@ -114,53 +112,4 @@ class UserCubit extends Cubit<UserCubitState> {
         uUserFriendsId: uUserFriendsId ?? state.uUserFriendsId,
         busy: busy ?? state.busy,
       );
-
-  // todo implmenet signup() login() getUser()?
-  Future<void> tryCreateAccount(UserClass user, File? image) async {
-    update(busy: true);
-    final result = await _signUp(password: user.password, email: user.email);
-    final s3url = await uploadProfileImageToS3(
-        image!, DateTime.now().millisecondsSinceEpoch.toString());
-    update(
-      password: user.password,
-      email: user.email,
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      profilePictureUrl: s3url,
-      signUpResult: result,
-      busy: false,
-    );
-  }
-
-  Future<SignUpResult> _signUp({
-    required String password,
-    required String email,
-  }) async {
-    final result = await Amplify.Auth.signUp(
-      username: email,
-      password: password,
-    );
-    _handleSignUpResult(result);
-    return result;
-  }
-
-  Future<void> _handleSignUpResult(SignUpResult result) async {
-    switch (result.nextStep.signUpStep) {
-      case AuthSignUpStep.confirmSignUp:
-        final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
-        _handleCodeDelivery(codeDeliveryDetails);
-        break;
-      case AuthSignUpStep.done:
-        safePrint('Sign up is complete');
-        break;
-    }
-  }
-
-  void _handleCodeDelivery(AuthCodeDeliveryDetails codeDeliveryDetails) {
-    safePrint(
-      'A confirmation code has been sent to ${codeDeliveryDetails.destination}. '
-      'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
-    );
-  }
 }

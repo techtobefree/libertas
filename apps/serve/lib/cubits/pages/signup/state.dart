@@ -9,6 +9,8 @@ class SignupState extends Equatable {
   final String lastName;
   final String bio;
   final String profilePictureUrl;
+//final SignUpResult signUpResult; // import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+  final SignUpResult signUpResult;
 
   const SignupState({
     this.id = '',
@@ -19,6 +21,11 @@ class SignupState extends Equatable {
     this.lastName = '',
     this.bio = '',
     this.profilePictureUrl = '',
+    this.signUpResult = const SignUpResult(
+      isSignUpComplete: false,
+      nextStep: AuthNextSignUpStep(signUpStep: AuthSignUpStep.done),
+      userId: null,
+    ),
   });
 
   @override
@@ -31,5 +38,20 @@ class SignupState extends Equatable {
         lastName,
         bio,
         profilePictureUrl,
+        signUpResult,
       ];
+
+  UserClass get user => UserClass(
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      projects: [],
+      bio: '',
+      profilePictureUrl: '',
+      coverPictureUrl: '',
+      isLeader: false,
+      friends: [],
+      friendRequests: [],
+      posts: []);
 }

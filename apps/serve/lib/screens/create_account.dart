@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
 import 'package:serve_to_be_free/utilities/constants.dart';
-import 'package:serve_to_be_free/data/users/models/user_class.dart';
-import 'package:serve_to_be_free/screens/sub_screens/login_subpages/choose_profile_picture.dart';
 
 enum UserField {
   firstName,
@@ -264,25 +262,13 @@ class CreateAccountState extends State<CreateAccountScreen> {
         throw (Exception('Please enter a valid name'));
       }
 
-      UserClass user = UserClass(
-          email: email,
-          password: password,
-          firstName: firstName,
-          lastName: lastName,
-          projects: [],
-          bio: '',
-          profilePictureUrl: '',
-          coverPictureUrl: '',
-          isLeader: false,
-          friends: [],
-          friendRequests: [],
-          posts: []);
-
-      //print(user.toJson());
-
-      ChooseProfilePicture.setUser(user);
-
-      context.go('/login/createaccountscreen/chooseprofilepicture');
+      final user = cubit.state.user;
+      await cubit.signUpCognito(password: user.password, email: user.email);
+      if (cubit.state.signUpResult.isSignUpComplete) {
+        context.go('/login/createaccountscreen/chooseprofilepicture');
+      } else {
+        print('Erorr message or sometihng');
+      }
     } catch (err) {
       showDialog(
         context: context,

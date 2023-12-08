@@ -15,8 +15,6 @@ abstract class UserCubitState extends Equatable {
   final String coverPictureUrl;
   final bool isLeader;
   final List<String> friendRequests;
-  //final SignUpResult signUpResult; // import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-  final SignUpResult signUpResult;
   final bool busy;
   final List<UProject> projects;
   final List<UUser> friends;
@@ -35,7 +33,6 @@ abstract class UserCubitState extends Equatable {
     required this.bio,
     required this.isLeader,
     required this.friendRequests,
-    required this.signUpResult,
     required this.friends,
     required this.projects,
     required this.posts,
@@ -57,7 +54,6 @@ abstract class UserCubitState extends Equatable {
         isLeader,
         friends,
         friendRequests,
-        signUpResult,
         projects,
         posts,
         sponsors,
@@ -116,7 +112,6 @@ class UserState extends UserCubitState {
     required super.isLeader,
     required super.friends,
     required super.friendRequests,
-    required super.signUpResult,
     required super.projects,
     required super.posts,
     required super.sponsors,
@@ -139,11 +134,6 @@ class InitialUserState extends UserCubitState {
           isLeader: false,
           friends: const [],
           friendRequests: const [],
-          signUpResult: const SignUpResult(
-            isSignUpComplete: false,
-            nextStep: AuthNextSignUpStep(signUpStep: AuthSignUpStep.done),
-            userId: null,
-          ),
           busy: false,
           projects: const [],
           posts: const [],
