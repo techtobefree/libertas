@@ -25,10 +25,13 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        // domain
         BlocProvider<UserCubit>(create: (context) => UserCubit()),
         BlocProvider<UsersCubit>(create: (context) => UsersCubit()),
         BlocProvider<PostsCubit>(create: (context) => PostsCubit()),
         BlocProvider<ProjectsCubit>(create: (context) => ProjectsCubit()),
+        // pages
+        BlocProvider<SignupCubit>(create: (context) => SignupCubit()),
         BlocProvider<DashboardCubit>(create: (context) => DashboardCubit()),
         BlocProvider<NotificationsCubit>(
             create: (context) => NotificationsCubit()),

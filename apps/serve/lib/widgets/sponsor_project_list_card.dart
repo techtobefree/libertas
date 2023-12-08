@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/models/UProject.dart';
 
 class SponsorProjectListCard extends StatefulWidget {
   final String title;
@@ -21,6 +22,17 @@ class SponsorProjectListCard extends StatefulWidget {
         numMembers = json['members'].length.toString(),
         sponsors = json['sponsors'],
         project = json;
+
+  factory SponsorProjectListCard.fromUProject(
+    UProject uProject, {
+    Key? key,
+  }) =>
+      SponsorProjectListCard(
+          key: key,
+          title: uProject.name,
+          numMembers: (uProject.members?.length ?? 0).toString(),
+          sponsors: uProject.sponsors ?? [],
+          project: uProject.toJson());
 
   @override
   SponsorProjectListCardState createState() => SponsorProjectListCardState();

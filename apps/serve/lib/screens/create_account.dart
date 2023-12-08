@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
 import 'package:serve_to_be_free/utilities/constants.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/screens/sub_screens/login_subpages/choose_profile_picture.dart';
+
+enum UserField {
+  firstName,
+  lastName,
+  email,
+  password,
+  confirmPassword;
+
+  @override
+  String toString() {
+    switch (this) {
+      case UserField.firstName:
+        return 'First Name';
+      case UserField.lastName:
+        return 'Last Name';
+      case UserField.email:
+        return 'Email';
+      case UserField.password:
+        return 'Password';
+      case UserField.confirmPassword:
+        return 'Confirm Password';
+      default:
+        return 'None';
+    }
+  }
+}
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({Key? key}) : super(key: key);
@@ -13,22 +41,18 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class CreateAccountState extends State<CreateAccountScreen> {
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  late SignupCubit cubit;
 
-  Widget _buildTF(String field, TextEditingController controller) {
+  Widget _buildTF(UserField userField) {
     InputDecoration decoration = InputDecoration(
       border: InputBorder.none,
-      hintText: ' Enter $field',
+      hintText: ' Enter ${userField.toString()}',
       hintStyle: kHintTextStyle,
     );
 
-    if (field == 'Confirm Password') {
+    if (userField == UserField.confirmPassword) {
       decoration = decoration.copyWith(
-        hintText: ' $field',
+        hintText: ' ${userField.toString()}',
         hintStyle: kHintTextStyle,
       );
     }
@@ -36,7 +60,7 @@ class CreateAccountState extends State<CreateAccountScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          field,
+          userField.toString(),
           style: kLabelStyle,
         ),
         const SizedBox(height: 10.0),
@@ -47,13 +71,29 @@ class CreateAccountState extends State<CreateAccountScreen> {
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: TextField(
-              controller: controller,
               keyboardType: TextInputType.text,
-              obscureText: field == 'Password' || field == 'Confirm Password',
+              obscureText: userField == UserField.password ||
+                  userField == UserField.confirmPassword,
               style: const TextStyle(
                 color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
+              onChanged: (value) {
+                switch (userField) {
+                  case UserField.firstName:
+                    return cubit.update(firstName: value);
+                  case UserField.lastName:
+                    return cubit.update(lastName: value);
+                  case UserField.email:
+                    return cubit.update(email: value);
+                  case UserField.password:
+                    return cubit.update(password: value);
+                  case UserField.confirmPassword:
+                    return cubit.update(confirmPassword: value);
+                  default:
+                    return;
+                }
+              },
               decoration: decoration,
             ),
           ),
@@ -91,6 +131,7 @@ class CreateAccountState extends State<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    cubit = BlocProvider.of<SignupCubit>(context);
     return Scaffold(
       backgroundColor: const Color(0xff001B48),
       appBar: AppBar(
@@ -148,15 +189,15 @@ class CreateAccountState extends State<CreateAccountScreen> {
                         ),
                       ),
                       const SizedBox(height: 30.0),
-                      _buildTF('First Name', firstNameController),
+                      _buildTF(UserField.firstName),
                       const SizedBox(height: 20.0),
-                      _buildTF('Last Name', lastNameController),
+                      _buildTF(UserField.lastName),
                       const SizedBox(height: 20.0),
-                      _buildTF('Email', emailController),
+                      _buildTF(UserField.email),
                       const SizedBox(height: 20.0),
-                      _buildTF('Password', passwordController),
+                      _buildTF(UserField.password),
                       const SizedBox(height: 20.0),
-                      _buildTF('Confirm Password', confirmPasswordController),
+                      _buildTF(UserField.confirmPassword),
                       const SizedBox(
                         height: 20.0,
                       ),
@@ -200,11 +241,11 @@ class CreateAccountState extends State<CreateAccountScreen> {
   }
 
   Future<void> tryCreate() async {
-    final String email = emailController.text;
-    final String password = passwordController.text;
-    final String confirmPass = confirmPasswordController.text;
-    final String firstName = firstNameController.text;
-    final String lastName = lastNameController.text;
+    final String email = cubit.state.email;
+    final String password = cubit.state.password;
+    final String confirmPass = cubit.state.confirmPassword;
+    final String firstName = cubit.state.firstName;
+    final String lastName = cubit.state.lastName;
 
     try {
       if (password.length < 8) {
@@ -241,9 +282,7 @@ class CreateAccountState extends State<CreateAccountScreen> {
 
       ChooseProfilePicture.setUser(user);
 
-      context.go(
-        '/login/createaccountscreen/chooseprofilepicture',
-      );
+      context.go('/login/createaccountscreen/chooseprofilepicture');
     } catch (err) {
       showDialog(
         context: context,

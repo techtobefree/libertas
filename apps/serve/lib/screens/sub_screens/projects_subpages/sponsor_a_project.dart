@@ -1,56 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
 import 'package:serve_to_be_free/widgets/sponsor_project_list_card.dart';
 
-class SponsorAProject extends StatefulWidget {
+class SponsorAProject extends StatelessWidget {
   const SponsorAProject({super.key});
 
-  @override
-  State<SponsorAProject> createState() => _SponsorAProjectState();
-}
-
-class _SponsorAProjectState extends State<SponsorAProject> {
-  late Future<List<dynamic>> _futureProjects;
-
-  @override
-  void initState() {
-    super.initState();
-    _futureProjects = ProjectHandlers.getProjectsIncomplete();
-  }
+  //incompleteProjects();
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<ProjectsCubit>(context).loadProjects(); // TODO: hash cache
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 16, 34, 65),
         title: const Text('Sponsor A Project'),
       ),
-      body: FutureBuilder<List<dynamic>>(
-        future: _futureProjects,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<dynamic>? projects = snapshot.data;
-            return ListView.builder(
-              itemCount: projects!.length,
-              itemBuilder: (context, index) {
-                return SponsorProjectListCard.fromJson(projects[index]);
-                //print(ProjectCard.fromJson(projects[index]));
-                // print(projects[index]['members'].length.toString());
-                // return ProjectCard(
-                //   title: projects[index]['name'],
-                //   numMembers: projects[index]['members'].length.toString(),
-                // );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Failed to load projects."),
-            );
-          } else {
+      body: BlocBuilder<ProjectsCubit, ProjectsCubitState>(
+        buildWhen: (previous, current) => previous != current,
+        builder: (context, state) {
+          final incompleteProjects = state.incompleteProjects.toList();
+          if (state.busy) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
+          return ListView.builder(
+            itemCount: incompleteProjects.length,
+            itemBuilder: (context, index) {
+              return SponsorProjectListCard.fromUProject(
+                  incompleteProjects[index]);
+              //print(ProjectCard.fromJson(projects[index]));
+              // print(projects[index]['members'].length.toString());
+              // return ProjectCard(
+              //   title: projects[index]['name'],
+              //   numMembers: projects[index]['members'].length.toString(),
+              // );
+            },
+          );
         },
       ),
     );
