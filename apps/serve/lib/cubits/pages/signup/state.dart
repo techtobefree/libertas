@@ -9,9 +9,10 @@ class SignupState extends Equatable {
   final String lastName;
   final String bio;
   final String profilePictureUrl;
+  final File? profilePicture;
 //final SignUpResult signUpResult; // import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
   final SignUpResult signUpResult;
-
+  final bool imageBusy;
   const SignupState({
     this.id = '',
     this.email = '',
@@ -21,15 +22,17 @@ class SignupState extends Equatable {
     this.lastName = '',
     this.bio = '',
     this.profilePictureUrl = '',
+    this.profilePicture,
     this.signUpResult = const SignUpResult(
       isSignUpComplete: false,
       nextStep: AuthNextSignUpStep(signUpStep: AuthSignUpStep.done),
       userId: null,
     ),
+    this.imageBusy = false,
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         email,
         password,
@@ -38,7 +41,9 @@ class SignupState extends Equatable {
         lastName,
         bio,
         profilePictureUrl,
+        profilePicture,
         signUpResult,
+        imageBusy,
       ];
 
   UserClass get user => UserClass(

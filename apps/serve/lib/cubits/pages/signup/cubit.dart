@@ -1,7 +1,7 @@
+import 'dart:io';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 
 part 'state.dart';
@@ -20,7 +20,9 @@ class SignupCubit extends Cubit<SignupState> {
     String? lastName,
     String? bio,
     String? profilePictureUrl,
+    File? profilePicture,
     SignUpResult? signUpResult,
+    bool? imageBusy,
   }) =>
       emit(SignupState(
         id: id ?? state.id,
@@ -31,7 +33,9 @@ class SignupCubit extends Cubit<SignupState> {
         lastName: lastName ?? state.lastName,
         bio: bio ?? state.bio,
         profilePictureUrl: profilePictureUrl ?? state.profilePictureUrl,
+        profilePicture: profilePicture ?? state.profilePicture,
         signUpResult: signUpResult ?? state.signUpResult,
+        imageBusy: imageBusy ?? state.imageBusy,
       ));
 
   Future<void> signUpCognito({
