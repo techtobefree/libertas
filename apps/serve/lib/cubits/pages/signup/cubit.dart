@@ -25,6 +25,7 @@ class SignupCubit extends Cubit<SignupState> {
     String? confirmationCode,
     bool? imageBusy,
     bool? signingUpBusy,
+    bool? confirmBusy,
   }) =>
       emit(SignupState(
         id: id ?? state.id,
@@ -40,15 +41,16 @@ class SignupCubit extends Cubit<SignupState> {
         confirmationCode: confirmationCode ?? state.confirmationCode,
         imageBusy: imageBusy ?? state.imageBusy,
         signingUpBusy: signingUpBusy ?? state.signingUpBusy,
+        confirmBusy: confirmBusy ?? state.confirmBusy,
       ));
 
   Future<void> signUpCognito({
-    required String password,
-    required String email,
+    String? password,
+    String? email,
   }) async {
     final result = await Amplify.Auth.signUp(
-      username: email,
-      password: password,
+      username: email ?? state.email,
+      password: password ?? state.password,
     );
     update(signUpResult: result);
     await _handleSignUpResult(result);

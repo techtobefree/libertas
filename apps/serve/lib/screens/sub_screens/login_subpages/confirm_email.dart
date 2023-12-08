@@ -19,6 +19,10 @@ class ConfirmationCodePage extends StatelessWidget {
     SignupCubit cubit,
     UserCubit userCubit,
   ) async {
+    if (cubit.state.confirmBusy) {
+      return;
+    }
+    cubit.update(confirmBusy: true);
     if (cubit.state.confirmationCode.length == 6) {
       var confirmed = await cubit.confirmUser();
       if (confirmed == false) {
@@ -48,6 +52,7 @@ class ConfirmationCodePage extends StatelessWidget {
         // Show an error message or handle invalid code length
       }
     }
+    cubit.update(confirmBusy: false);
   }
 
   void _showErrorDialog(BuildContext context, String message) {
@@ -140,7 +145,9 @@ class ConfirmationCodePage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  backgroundColor: const Color(0xff256C8D),
+                  backgroundColor: state.confirmBusy
+                      ? Color.fromARGB(255, 141, 160, 168)
+                      : const Color(0xff256C8D),
                 ),
                 child: const Text(
                   'Submit',
