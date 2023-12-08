@@ -28,7 +28,7 @@ class ChooseProfilePicture extends StatelessWidget {
         DateTime.now().millisecondsSinceEpoch.toString());
     userCubit.fromUserClass(userClass: state.user);
     userCubit.update(profilePictureUrl: s3url);
-    context.goNamed('confirmemail', queryParameters: {'email': state.email});
+    context.goNamed('confirmemail');
   }
 
   Widget _buildCreateAccBtn(

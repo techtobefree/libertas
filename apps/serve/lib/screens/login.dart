@@ -6,6 +6,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/cubits/pages/notifications/cubit.dart';
+import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/utilities/constants.dart';
 
@@ -313,18 +314,6 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> signInUser(String username, String password) async {
-    try {
-      final result = await Amplify.Auth.signIn(
-        username: username,
-        password: password,
-      );
-      await _handleSignInResult(result, username);
-    } on AuthException catch (e) {
-      safePrint('Error signing in: ${e.message}');
-    }
-  }
-
   Future<void> _handleSignInResult(SignInResult result, String username) async {
     switch (result.nextStep.signInStep) {
       //case AuthSignInStep.continueSignInWithMfaSelection:
@@ -340,7 +329,8 @@ class LoginScreenState extends State<LoginScreen> {
         _handleCodeDelivery(resendResult.codeDeliveryDetails);
 
         //update signUpCubit
-        context.goNamed('confirmemail', queryParameters: {'email': username});
+        BlocProvider.of<SignupCubit>(context).update(email: username);
+        context.goNamed('confirmemail');
         break;
 
       case AuthSignInStep.confirmSignInWithSmsMfaCode:
@@ -381,8 +371,16 @@ class LoginScreenState extends State<LoginScreen> {
   void tryLogin() async {
     print(emailController.text);
     print(passwordController.text);
-
-    await signInUser(emailController.text, passwordController.text);
+    final cubit = BlocProvider.of<UserCubit>(context);
+    cubit.update(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+    final signInResult =
+        await cubit.signInUser(emailController.text, passwordController.text);
+    if (signInResult.result != null) {
+      await _handleSignInResult(signInResult.result!, signInResult.username);
+    }
     // final user = await UserHandlers.getUserByEmail(emailController.text);
     final result = await isUserSignedIn();
     if (result) {

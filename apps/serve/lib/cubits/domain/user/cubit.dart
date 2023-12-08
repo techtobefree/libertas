@@ -113,16 +113,21 @@ class UserCubit extends Cubit<UserCubitState> {
 
   /// TODO: to make more secure we shouldn't save password in cubits.
 
-  Future<void> signInUser(String? username, String? password) async {
+  Future<SignInUserResult> signInUser(
+    String? username,
+    String? password,
+  ) async {
     try {
-      final _ = await Amplify.Auth.signIn(
+      final result = await Amplify.Auth.signIn(
         username: username ?? state.email,
         password: password ?? state.password,
       );
       print('signed in auth');
+      return SignInUserResult(result, username ?? state.email);
     } on AuthException catch (e) {
       safePrint('Error signing in: ${e.message}');
     }
+    return SignInUserResult.none();
   }
 
   Future<bool> isUserSignedIn() async {
@@ -137,4 +142,14 @@ class UserCubit extends Cubit<UserCubitState> {
     }
     return result.isSignedIn;
   }
+}
+
+class SignInUserResult {
+  final SignInResult? result;
+  final String username;
+
+  SignInUserResult(this.result, this.username);
+  factory SignInUserResult.none() => SignInUserResult(null, '');
+
+  bool get isNone => result == null;
 }
