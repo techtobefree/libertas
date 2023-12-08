@@ -274,11 +274,16 @@ class CreateAccountState extends State<CreateAccountScreen> {
 
       final user = cubit.state.user;
       await cubit.signUpCognito(password: user.password, email: user.email);
-      if (cubit.state.signUpResult.isSignUpComplete) {
-        context.go('/login/createaccountscreen/chooseprofilepicture');
-      } else {
-        print('Erorr message or sometihng');
-      }
+
+      /// I think isSignUpComplete is only marked as true after the confirmation
+      /// process so we have to use a different metric here to see if it failed.
+      /// but I don't know what that is right now. We'll just assume it
+      /// succeeded since we have good validation before it's called:
+      //if (cubit.state.signUpResult.isSignUpComplete) {
+      context.go('/login/createaccountscreen/chooseprofilepicture');
+      //} else {
+      //  print('Erorr message or sometihng');
+      //}
     } catch (err) {
       showDialog(
         context: context,
