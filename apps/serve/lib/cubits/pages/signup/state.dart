@@ -13,6 +13,7 @@ class SignupState extends Equatable {
 //final SignUpResult signUpResult; // import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
   final SignUpResult signUpResult;
   final bool imageBusy;
+  final bool signingUpBusy;
   const SignupState({
     this.id = '',
     this.email = '',
@@ -29,6 +30,7 @@ class SignupState extends Equatable {
       userId: null,
     ),
     this.imageBusy = false,
+    this.signingUpBusy = false,
   });
 
   @override
@@ -44,6 +46,7 @@ class SignupState extends Equatable {
         profilePicture,
         signUpResult,
         imageBusy,
+        signingUpBusy,
       ];
 
   UserClass get user => UserClass(

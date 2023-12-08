@@ -23,6 +23,7 @@ class SignupCubit extends Cubit<SignupState> {
     File? profilePicture,
     SignUpResult? signUpResult,
     bool? imageBusy,
+    bool? signingUpBusy,
   }) =>
       emit(SignupState(
         id: id ?? state.id,
@@ -36,6 +37,7 @@ class SignupCubit extends Cubit<SignupState> {
         profilePicture: profilePicture ?? state.profilePicture,
         signUpResult: signUpResult ?? state.signUpResult,
         imageBusy: imageBusy ?? state.imageBusy,
+        signingUpBusy: signingUpBusy ?? state.signingUpBusy,
       ));
 
   Future<void> signUpCognito({

@@ -100,18 +100,27 @@ class CreateAccountState extends State<CreateAccountScreen> {
     );
   }
 
-  Widget _buildCreateAccBtn() {
+  Widget _buildCreateAccBtn(SignupCubit cubit) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () => {tryCreate()},
+        onPressed: () async {
+          if (cubit.state.signingUpBusy) {
+            return;
+          }
+          cubit.update(signingUpBusy: true);
+          await tryCreate();
+          cubit.update(signingUpBusy: false);
+        },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(15.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12), // <-- Radius
           ),
-          backgroundColor: const Color(0xff256C8D),
+          backgroundColor: cubit.state.signingUpBusy
+              ? Color.fromARGB(255, 141, 160, 168)
+              : const Color(0xff256C8D),
         ),
         child: const Text(
           'Choose Profile Picture',
@@ -131,84 +140,85 @@ class CreateAccountState extends State<CreateAccountScreen> {
   Widget build(BuildContext context) {
     cubit = BlocProvider.of<SignupCubit>(context);
     return Scaffold(
-      backgroundColor: const Color(0xff001B48),
-      appBar: AppBar(
-        title: const Text('Create an Account'),
-        flexibleSpace: Container(),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: const BoxDecoration(color: Color(0xff001B48)),
-              ),
-              SizedBox(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 60.0,
+        backgroundColor: const Color(0xff001B48),
+        appBar: AppBar(
+          title: const Text('Create an Account'),
+          flexibleSpace: Container(),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: BlocBuilder<SignupCubit, SignupState>(builder: (context, state) {
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light,
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    height: double.infinity,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(color: Color(0xff001B48)),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Align(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 16.0),
-                          child: Text(
-                            'Welcome',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'OpenSans',
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold,
+                  SizedBox(
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 60.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 16.0),
+                              child: Text(
+                                'Welcome',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'OpenSans',
+                                  fontSize: 30.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      const Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          'There\'s just a few things we need from you',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'OpenSans',
-                            fontSize: 15.0,
+                          const Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'There\'s just a few things we need from you',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'OpenSans',
+                                fontSize: 15.0,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 30.0),
+                          _buildTF(UserField.firstName),
+                          const SizedBox(height: 20.0),
+                          _buildTF(UserField.lastName),
+                          const SizedBox(height: 20.0),
+                          _buildTF(UserField.email),
+                          const SizedBox(height: 20.0),
+                          _buildTF(UserField.password),
+                          const SizedBox(height: 20.0),
+                          _buildTF(UserField.confirmPassword),
+                          const SizedBox(
+                            height: 20.0,
+                          ),
+                          _buildCreateAccBtn(cubit),
+                        ],
                       ),
-                      const SizedBox(height: 30.0),
-                      _buildTF(UserField.firstName),
-                      const SizedBox(height: 20.0),
-                      _buildTF(UserField.lastName),
-                      const SizedBox(height: 20.0),
-                      _buildTF(UserField.email),
-                      const SizedBox(height: 20.0),
-                      _buildTF(UserField.password),
-                      const SizedBox(height: 20.0),
-                      _buildTF(UserField.confirmPassword),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      _buildCreateAccBtn(),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }));
   }
 
   showAlertDialog(BuildContext context) {
