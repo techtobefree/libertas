@@ -140,9 +140,10 @@ class ProjectsPageState extends State<ProjectsPage> {
                           ProjectAppbarDisplay(
                               subject: "Projects",
                               value: state.count.toString()),
-                          ProjectAppbarDisplay(
-                              subject: "Hours",
-                              value: state.hoursSpent.toInt().toString()),
+                          if (state.count > 0)
+                            ProjectAppbarDisplay(
+                                subject: "Hours",
+                                value: state.hoursSpent.toInt().toString()),
                         ],
                       ),
                     ],

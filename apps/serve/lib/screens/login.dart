@@ -319,19 +319,29 @@ class LoginScreenState extends State<LoginScreen> {
         username: username,
         password: password,
       );
-      await _handleSignInResult(result);
+      await _handleSignInResult(result, username);
     } on AuthException catch (e) {
       safePrint('Error signing in: ${e.message}');
     }
   }
 
-  Future<void> _handleSignInResult(SignInResult result) async {
+  Future<void> _handleSignInResult(SignInResult result, String username) async {
     switch (result.nextStep.signInStep) {
       //case AuthSignInStep.continueSignInWithMfaSelection:
       //case AuthSignInStep.continueSignInWithTotpSetup:
       //case AuthSignInStep.confirmSignInWithTotpMfaCode:
       //case AuthSignInStep.resetPassword:
       //case AuthSignInStep.confirmSignUp:
+      case AuthSignInStep.confirmSignUp:
+        // Resend the sign up code to the registered device.
+        final resendResult = await Amplify.Auth.resendSignUpCode(
+          username: username,
+        );
+        _handleCodeDelivery(resendResult.codeDeliveryDetails);
+
+        //update signUpCubit
+        context.goNamed('confirmemail', queryParameters: {'email': username});
+        break;
 
       case AuthSignInStep.confirmSignInWithSmsMfaCode:
         final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
