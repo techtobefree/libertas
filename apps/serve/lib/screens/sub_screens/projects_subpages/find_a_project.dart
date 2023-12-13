@@ -88,21 +88,23 @@ class _FindAProjectState extends State<FindAProject> {
               child: CircularProgressIndicator(),
             );
           }
+          final incompleteProjects = state.incompleteProjects.toList();
           return ListView.builder(
-            itemCount: state.projects.length,
+            itemCount: incompleteProjects.length,
             itemBuilder: (context, i) {
               // print(_searchQuery.toLowerCase());
               if (_searchQuery.length < 2) {
-                return ProjectCard.fromUProject(state.projects[i]);
+                return ProjectCard.fromUProject(incompleteProjects[i]);
               } else {
-                final city = state.projects[i].city?.toLowerCase() ?? '';
-                final usaState = state.projects[i].state?.toLowerCase() ?? '';
+                final city = incompleteProjects[i].city?.toLowerCase() ?? '';
+                final usaState =
+                    incompleteProjects[i].state?.toLowerCase() ?? '';
                 final combined = '$city, $usaState';
                 final query = _searchQuery.toLowerCase();
                 if (city.contains(query) ||
                     usaState.contains(query) ||
                     combined.contains(query)) {
-                  return ProjectCard.fromUProject(state.projects[i]);
+                  return ProjectCard.fromUProject(incompleteProjects[i]);
                 }
                 return const SizedBox
                     .shrink(); // or return null; to hide the card
