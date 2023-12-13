@@ -5,3 +5,7 @@ This is a time sheet for tracking hours. the first month (novemeber) was no trac
 year    mon day hrs
 2023    dec 2   4
 2023    dec 8   6
+2023    dec 12  1
+
+todo list:
+    caching - specifically for images.
