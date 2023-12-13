@@ -135,7 +135,7 @@ class SponsorProjectFormState extends State<SponsorProjectForm> {
                 ),
               const SizedBox(height: 20),
               SizedBox(
-                width: 200,
+                width: 300,
                 child: TextFormField(
                   controller: _amountController,
                   decoration: const InputDecoration(

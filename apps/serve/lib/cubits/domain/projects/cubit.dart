@@ -25,7 +25,7 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
   Future<void> loadProjects() async {
     try {
       update(busy: true);
-      update(projects: await _getProjects(), busy: true);
+      update(projects: await _getProjects(), busy: false);
     } catch (e) {
       // Handle the exception
       print('Failed to load projects: $e');
@@ -35,7 +35,7 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
   Future<void> loadMyProjects(String userId) async {
     try {
       update(busy: true);
-      update(projects: await _getMyProjects(userId), busy: true);
+      update(mine: await _getMyProjects(userId), busy: false);
     } catch (e) {
       // Handle the exception
       print('Failed to load projects: $e');
@@ -54,9 +54,10 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
 
   Future<List<UProject>> _getMyProjects(String userId) async {
     try {
-      return (await ProjectHandlers.getMyProjects(userId))
+      var projs = (await ProjectHandlers.getMyUProjects(userId))
           .whereType<UProject>()
           .toList();
+      return projs;
     } catch (e) {
       throw Exception('Failed to load projects $e');
     }

@@ -87,6 +87,24 @@ class ProjectHandlers {
     }
   }
 
+  static Future<List<UProject>> getMyUProjects(String id) async {
+    try {
+      var projects = await ProjectHandlers.getUProjects();
+      var myUProjs = <UProject>[];
+
+      for (var project in projects) {
+        if (project!.members!.contains(id)) {
+          myUProjs.add(project);
+        }
+      }
+
+      return myUProjs;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
+  }
+
   static Future<List<dynamic>> getMyProjects(id) async {
     var projects = await ProjectHandlers.getProjects();
     var myprojs = [];

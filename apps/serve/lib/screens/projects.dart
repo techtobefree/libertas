@@ -50,7 +50,9 @@ class ProjectsPageState extends State<ProjectsPage> {
     userCubit = BlocProvider.of<UserCubit>(context);
     usersCubit = BlocProvider.of<UsersCubit>(context);
     projectsCubit = BlocProvider.of<ProjectsCubit>(context);
+    projectsCubit.loadMyProjects(userCubit.state.id);
     projectsCubit.loadProjects();
+
     getNumUsers().then(
       (data) => {
         if (mounted)
@@ -208,17 +210,17 @@ class ProjectsPageState extends State<ProjectsPage> {
                       ),
                     ]),
                   ),
-                  if (state.projects.isNotEmpty)
-                    if (state.projects.length == 1)
+                  if (state.mine.isNotEmpty)
+                    if (state.mine.length == 1)
                       Container(
                         margin: const EdgeInsets.only(left: 20, right: 20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             MyProjectCard(
-                              projectName: state.projects.first.name,
-                              id: state.projects.first.id,
-                              projectPhoto: state.projects.first.projectPicture,
+                              projectName: state.mine.first.name,
+                              id: state.mine.first.id,
+                              projectPhoto: state.mine.first.projectPicture,
                             ),
                           ],
                         ),
@@ -230,14 +232,13 @@ class ProjectsPageState extends State<ProjectsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             MyProjectCard(
-                                projectName: state.projects.first.name,
-                                id: state.projects.first.id,
-                                projectPhoto:
-                                    state.projects.first.projectPicture),
+                                projectName: state.mine.first.name,
+                                id: state.mine.first.id,
+                                projectPhoto: state.mine.first.projectPicture),
                             MyProjectCard(
-                                projectName: state.projects[1].name,
-                                id: state.projects[1].id,
-                                projectPhoto: state.projects[1].projectPicture)
+                                projectName: state.mine[1].name,
+                                id: state.mine[1].id,
+                                projectPhoto: state.mine[1].projectPicture)
                           ],
                         ),
                       )
