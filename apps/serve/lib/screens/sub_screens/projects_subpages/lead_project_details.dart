@@ -62,9 +62,6 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                 newPosts[newPosts.length - 1]['content'];
             newPosts[newPosts.length - 1]['imageUrl'] =
                 newPosts[newPosts.length - 1]['user']['profilePictureUrl'];
-
-            // newPosts[newPosts.length - 1] =
-            //     convertDate(newPosts[newPosts.length - 1]['date']);
           }
         }
         jsonResponse['posts'] = newPosts;
@@ -144,10 +141,6 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
   @override
   Widget build(BuildContext context) {
     final currentUserID = BlocProvider.of<UserCubit>(context).state.id;
-
-    // unused?
-    //final members = projectData['members'] ?? [];
-    //final hasLeader = projectData['leader'] != null && projectData['leader'].isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
