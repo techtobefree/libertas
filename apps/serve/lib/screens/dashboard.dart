@@ -39,7 +39,10 @@ class DashboardPage extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
-          title: const Text('My Dashboard'),
+          title: const Text(
+            'My Dashboard',
+            style: TextStyle(color: Colors.white),
+          ),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(

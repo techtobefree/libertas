@@ -22,6 +22,17 @@ class ConfirmationCodePage extends StatelessWidget {
     if (cubit.state.confirmBusy) {
       return;
     }
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(
+            color: Colors.lightBlueAccent,
+          ),
+        );
+      },
+    );
     cubit.update(confirmBusy: true);
     if (cubit.state.confirmationCode.length == 6) {
       var confirmed = await cubit.confirmUser();
@@ -53,6 +64,7 @@ class ConfirmationCodePage extends StatelessWidget {
       }
     }
     cubit.update(confirmBusy: false);
+    Navigator.of(context).pop(); // Dismiss the progress indicator
   }
 
   void _showErrorDialog(BuildContext context, String message) {
@@ -109,6 +121,7 @@ class ConfirmationCodePage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: BlocBuilder<SignupCubit, SignupState>(builder: (context, state) {
         return Center(

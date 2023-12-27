@@ -287,7 +287,10 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                         Color.fromRGBO(16, 34, 65, 1),
                       ),
                     ),
-                    child: const Text('About'),
+                    child: const Text(
+                      'About',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   Visibility(
                     visible: projectData
@@ -307,7 +310,10 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                           const Color.fromARGB(255, 16, 34, 65),
                         ),
                       ),
-                      child: Text(buttonText),
+                      child: Text(
+                        buttonText,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
