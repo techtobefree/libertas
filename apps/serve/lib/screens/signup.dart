@@ -142,9 +142,12 @@ class CreateAccountState extends State<CreateAccountScreen> {
     return Scaffold(
         backgroundColor: const Color(0xff001B48),
         appBar: AppBar(
-          title: const Text('Create an Account'),
+          title: const Text(
+            'Create an Account',
+            style: TextStyle(color: Colors.white),
+          ),
           flexibleSpace: Container(),
-          backgroundColor: Colors.transparent,
+          backgroundColor: const Color.fromARGB(0, 210, 206, 206),
           elevation: 0,
         ),
         body: BlocBuilder<SignupCubit, SignupState>(builder: (context, state) {

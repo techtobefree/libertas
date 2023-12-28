@@ -40,7 +40,8 @@ class MenuPage extends StatelessWidget {
           preferredSize:
               const Size.fromHeight(150.0), // Set the height of the AppBar
           child: AppBar(
-            title: const Text("SERVE TO BE FREE"),
+            title: const Text("SERVE TO BE FREE",
+                style: TextStyle(color: Colors.white)),
             flexibleSpace: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(

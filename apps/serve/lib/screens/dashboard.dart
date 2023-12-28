@@ -39,7 +39,10 @@ class DashboardPage extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
-          title: const Text('My Dashboard'),
+          title: const Text(
+            'My Dashboard',
+            style: TextStyle(color: Colors.white),
+          ),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -78,9 +81,13 @@ class DashboardPage extends StatelessWidget {
                             ),
                             child: DashboardUserDisplay(
                               dimension: 80.0,
-                              name: state.dashboardUsers[0].name ?? "",
-                              url: state.dashboardUsers[0].pictureUrl ?? "",
-                              id: state.dashboardUsers[0].id ?? "",
+                              name: BlocProvider.of<UserCubit>(context)
+                                  .state
+                                  .name,
+                              url: BlocProvider.of<UserCubit>(context)
+                                  .state
+                                  .profilePictureUrl,
+                              id: BlocProvider.of<UserCubit>(context).state.id,
                             ),
                           ),
                           // Container(
