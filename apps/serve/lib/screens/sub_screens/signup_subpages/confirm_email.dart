@@ -26,7 +26,7 @@ class ConfirmationCodePage extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(
             color: Colors.lightBlueAccent,
           ),
@@ -159,7 +159,7 @@ class ConfirmationCodePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   backgroundColor: state.confirmBusy
-                      ? Color.fromARGB(255, 141, 160, 168)
+                      ? const Color.fromARGB(255, 141, 160, 168)
                       : const Color(0xff256C8D),
                 ),
                 child: const Text(
