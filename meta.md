@@ -1,4 +1,4 @@
-# time tracking for meta
+# meta
 
 todo list:
     web - make it work on web.
