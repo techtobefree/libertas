@@ -24,10 +24,24 @@ class ChooseProfilePicture extends StatelessWidget {
     UserCubit userCubit,
     SignupState state,
   ) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(
+            color: Colors.lightBlueAccent,
+          ),
+        );
+      },
+    );
+
     final s3url = await uploadProfileImageToS3(state.profilePicture!,
         DateTime.now().millisecondsSinceEpoch.toString());
     userCubit.fromUserClass(userClass: state.user);
     userCubit.update(profilePictureUrl: s3url);
+
+    Navigator.of(context).pop(); // Dismiss the progress indicator
     context.goNamed('confirmemail');
   }
 
@@ -88,6 +102,7 @@ class ChooseProfilePicture extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: BlocBuilder<SignupCubit, SignupState>(builder: (context, state) {
           return Center(

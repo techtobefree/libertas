@@ -15,7 +15,14 @@ class FinishProject extends StatelessWidget {
     projectsCubit.loadMyProjects(userCubit.state.id);
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Finish a Project'),
+          title: const Text(
+            'Finish a Project',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(

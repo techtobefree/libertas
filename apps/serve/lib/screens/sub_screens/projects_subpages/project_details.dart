@@ -180,7 +180,11 @@ class ProjectDetailsState extends State<ProjectDetails> {
     final joinButtonText = hasJoined ? 'Post' : 'Join';
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Project Dashboard'),
+          title: const Text(
+            'Project Dashboard',
+            style: TextStyle(color: Colors.white),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -323,7 +327,10 @@ class ProjectDetailsState extends State<ProjectDetails> {
                         const Color.fromARGB(255, 16, 34, 65),
                       ),
                     ),
-                    child: const Text('About'),
+                    child: const Text(
+                      'About',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   Visibility(
                     visible: projectData
@@ -340,7 +347,10 @@ class ProjectDetailsState extends State<ProjectDetails> {
                           const Color.fromARGB(255, 16, 34, 65),
                         ),
                       ),
-                      child: Text(joinButtonText),
+                      child: Text(
+                        joinButtonText,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],

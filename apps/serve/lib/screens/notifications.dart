@@ -1,12 +1,23 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:serve_to_be_free/data/notifications/notification.dart';
+
+import '../cubits/domain/user/cubit.dart';
+// import '../cubits/notifications/cubit.dart';
+import '../cubits/pages/notifications/cubit.dart';
+// import '../cubits/user/cubit.dart';
+import '../data/notifications/notification.dart';
+import '../widgets/leader_approval_card.dart';
+import '../widgets/message_card.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+// import 'package:serve_to_be_free/cubits/user/cubit.dart';
 import 'package:serve_to_be_free/widgets/leader_approval_card.dart';
-import 'package:serve_to_be_free/widgets/message_card.dart';
-import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
-import 'package:serve_to_be_free/cubits/pages/notifications/cubit.dart';
+// import 'package:serve_to_be_free/cubits/notifications/cubit.dart';
+import 'package:serve_to_be_free/data/notifications/notification.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({Key? key}) : super(key: key);
@@ -32,7 +43,8 @@ class NotificationsPageState extends State<NotificationsPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
         child: AppBar(
-          title: const Text("Notifications"),
+          title: const Text("Notifications",
+              style: TextStyle(color: Colors.white)),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -56,71 +68,81 @@ class NotificationsPageState extends State<NotificationsPage> {
             return Column(
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: notificationDataList.length,
-                    itemBuilder: (context, index) {
-                      final notificationData = notificationDataList[index];
-                      if (notificationData.projId == null) {
-                        return MessageCard(
-                            message: notificationData.message,
-                            date: notificationData.date,
-                            onDismiss: () {
-                              NotificationHandlers.updateNotificationStatus(
-                                  notificationData.id, {
-                                'status': "COMPLETE"
-                              }).then((value) =>
-                                  BlocProvider.of<NotificationsCubit>(context)
-                                      .loadNotifications(
-                                          userId: BlocProvider.of<UserCubit>(
-                                                  context)
-                                              .state
-                                              .id));
-                            },
-                            senderName: notificationData.senderName,
-                            profURL: notificationData.profURL ?? '',
-                            appId: notificationData.senderId);
-                      }
+                  child: notificationDataList.length > 0
+                      ? ListView.builder(
+                          itemCount: notificationDataList.length,
+                          itemBuilder: (context, index) {
+                            final notificationData =
+                                notificationDataList[index];
+                            if (notificationData.projId == null) {
+                              return MessageCard(
+                                  message: notificationData.message,
+                                  date: notificationData.date,
+                                  onDismiss: () {
+                                    NotificationHandlers
+                                        .updateNotificationStatus(
+                                            notificationData.id, {
+                                      'status': "COMPLETE"
+                                    }).then((value) => BlocProvider.of<
+                                            NotificationsCubit>(context)
+                                        .loadNotifications(
+                                            userId: BlocProvider.of<UserCubit>(
+                                                    context)
+                                                .state
+                                                .id));
+                                  },
+                                  senderName: notificationData.senderName,
+                                  profURL: notificationData.profURL ?? '',
+                                  appId: notificationData.senderId);
+                            }
 
-                      return LeaderApprovalCard(
-                        projName: notificationData.projName ?? "",
-                        message: notificationData.message,
-                        date: notificationData.date,
-                        profURL: notificationData.profURL ?? '',
-                        appId: notificationData.senderId,
-                        appName: notificationData.senderName,
-                        isRead: false,
-                        onApprove: () {
-                          try {
-                            // Handle the "Approve" button action here
+                            return LeaderApprovalCard(
+                              projName: notificationData.projName ?? "",
+                              message: notificationData.message,
+                              date: notificationData.date,
+                              profURL: notificationData.profURL ?? '',
+                              appId: notificationData.senderId,
+                              appName: notificationData.senderName,
+                              isRead: false,
+                              onApprove: () {
+                                try {
+                                  // Handle the "Approve" button action here
 
-                            showPopUp(
-                                notificationData.senderId,
-                                BlocProvider.of<UserCubit>(context).state.id,
-                                notificationData.id,
-                                {'status': "APPROVED"});
-                            ProjectHandlers.addLeader(
-                              notificationData.projId,
-                              notificationData.senderId,
+                                  showPopUp(
+                                      notificationData.senderId,
+                                      BlocProvider.of<UserCubit>(context)
+                                          .state
+                                          .id,
+                                      notificationData.id,
+                                      {'status': "APPROVED"});
+                                  ProjectHandlers.addLeader(
+                                    notificationData.projId,
+                                    notificationData.senderId,
+                                  );
+
+                                  print('Approved Notification ${index + 1}');
+                                } catch (err) {
+                                  print('approval failed $err');
+                                }
+                              },
+                              onDeny: () {
+                                // Handle the "Deny" button action here
+                                showPopUp(
+                                    notificationData.senderId,
+                                    BlocProvider.of<UserCubit>(context)
+                                        .state
+                                        .id,
+                                    notificationData.id,
+                                    {'status': "DENIED"});
+                                ;
+                                print('Denied Notification ${index + 1}');
+                              },
                             );
-
-                            print('Approved Notification ${index + 1}');
-                          } catch (err) {
-                            print('approval failed $err');
-                          }
-                        },
-                        onDeny: () {
-                          // Handle the "Deny" button action here
-                          showPopUp(
-                              notificationData.senderId,
-                              BlocProvider.of<UserCubit>(context).state.id,
-                              notificationData.id,
-                              {'status': "DENIED"});
-                          ;
-                          print('Denied Notification ${index + 1}');
-                        },
-                      );
-                    },
-                  ),
+                          },
+                        )
+                      : Center(
+                          child: Text('No notifications available'),
+                        ),
                 ),
               ],
             );
