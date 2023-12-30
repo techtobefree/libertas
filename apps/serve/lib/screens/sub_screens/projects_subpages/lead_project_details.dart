@@ -144,7 +144,11 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
 
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Project Dashboard'),
+          title: const Text(
+            'Project Dashboard',
+            style: TextStyle(color: Colors.white),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
