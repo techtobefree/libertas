@@ -14,6 +14,8 @@ import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 //import 'package:serve_to_be_free/screens/login.dart';
 import 'package:serve_to_be_free/amplifyconfiguration.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/services/dimensions.dart';
+import 'package:serve_to_be_free/widgets/responsive/resize.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
 
 void main() async {
@@ -120,7 +122,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    Dimensions.init(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      statusBarHeight: MediaQuery.of(context).padding.top,
+    );
+    return ResizeResponsiveWidget(
+        child: MaterialApp.router(
       //////////////////////////
       // useInheritedMediaQuery: true,
       // locale: DevicePreview.locale(context),
@@ -132,6 +140,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
-    );
+    ));
   }
 }

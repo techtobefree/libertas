@@ -1,9 +1,11 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/cubits/domain/users/cubit.dart';
+import 'package:serve_to_be_free/services/dimensions.dart';
 import 'package:serve_to_be_free/widgets/projects_appbar_display.dart';
 import 'package:serve_to_be_free/widgets/buttons/wide_border_button.dart';
 import 'package:serve_to_be_free/widgets/sponsor_card.dart';
@@ -103,7 +105,8 @@ class ProjectsPageState extends State<ProjectsPage> {
         builder: (BuildContext context, ProjectsCubitState state) => Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(192.0),
+              //preferredSize: const Size.fromHeight(192.0),
+              preferredSize: Size.fromHeight(dimensions.largeAppBarHeight),
               child: AppBar(
                 flexibleSpace: Container(
                   decoration: const BoxDecoration(
@@ -115,39 +118,45 @@ class ProjectsPageState extends State<ProjectsPage> {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                   )),
-                  padding: const EdgeInsets.only(top: 50),
+                  //padding: const EdgeInsets.only(top: 50),
                   // padding: EdgeInsets.only(bottom: 10)
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width - 10,
-                        height: (MediaQuery.of(context).size.width - 10) / 3.5,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                'assets/images/STBF_logo_horizontal_navy.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                      Container(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ProjectAppbarDisplay(
-                              subject: "Members",
-                              value: memberCount.toString()),
-                          ProjectAppbarDisplay(
-                              subject: "Projects",
-                              value: state.count.toString()),
-                          if (state.count > 0)
-                            ProjectAppbarDisplay(
-                                subject: "Hours",
-                                value: state.hoursSpent.toInt().toString()),
-                        ],
-                      ),
+                      Padding(
+                          padding:
+                              EdgeInsets.only(top: dimensions.statusBarHeight),
+                          child: Container(
+                            height: dimensions.largeAppBarHeight -
+                                50 -
+                                dimensions.padding,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/STBF_logo_horizontal_navy.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          )),
+                      SizedBox(
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ProjectAppbarDisplay(
+                                  subject: "Members",
+                                  value: memberCount.toString()),
+                              ProjectAppbarDisplay(
+                                  subject: "Projects",
+                                  value: state.count.toString()),
+                              if (state.count > 0)
+                                ProjectAppbarDisplay(
+                                    subject: "Hours",
+                                    value: state.hoursSpent.toInt().toString()),
+                            ],
+                          )),
+                      SizedBox(height: dimensions.padding),
                     ],
                   ),
                 ),
