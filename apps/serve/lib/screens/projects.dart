@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -105,7 +104,6 @@ class ProjectsPageState extends State<ProjectsPage> {
         builder: (BuildContext context, ProjectsCubitState state) => Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: PreferredSize(
-              //preferredSize: const Size.fromHeight(192.0),
               preferredSize: Size.fromHeight(dimensions.largeAppBarHeight),
               child: AppBar(
                 flexibleSpace: Container(

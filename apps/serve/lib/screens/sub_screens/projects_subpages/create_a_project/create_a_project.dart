@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serve_to_be_free/services/dimensions.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
 
 class CreateAProject extends StatelessWidget {
@@ -22,20 +23,27 @@ class CreateAProject extends StatelessWidget {
                 ),
               ),
             )),
-        body: Column(children: [
-          Container(
-            margin: const EdgeInsets.only(top: 40),
-            child: Image.asset("assets/images/19219.jpg"),
-          ),
-          Container(
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: const Text(
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                  "Anybody can create a project! Projects are a great way to connect with the people around you.")),
-          Container(
-              padding: const EdgeInsets.only(top: 40),
-              child: SolidRoundedButton("Start", path: projectFormPath))
-        ]));
+        body: Container(
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 40),
+                    height: dimensions.height * 0.3,
+                    child: Image.asset("assets/images/19219.jpg"),
+                  ),
+                  Container(
+                      margin:
+                          const EdgeInsets.only(left: 20, right: 20, top: 20),
+                      child: const Text(
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                          "Anybody can create a project! Projects are a great way to connect with the people around you.")),
+                  Container(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: SolidRoundedButton("Start", path: projectFormPath))
+                ])));
   }
 }
