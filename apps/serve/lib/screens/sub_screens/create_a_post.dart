@@ -8,6 +8,7 @@ import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/buttons/solid_rounded_button.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/repository/repository.dart';
 
 class CreateAPost extends StatefulWidget {
   const CreateAPost({Key? key}) : super(key: key);
@@ -64,7 +65,7 @@ class CreateAPostState extends State<CreateAPost> {
                     child: _selectedOption.url != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(5.0),
-                            child: Image.network(
+                            child: repo.image(
                               _selectedOption.url!,
                               fit: BoxFit.cover,
                               height: 40,
@@ -226,7 +227,7 @@ class CreateAPostState extends State<CreateAPost> {
                               borderRadius: BorderRadius.circular(5.0),
                               child:
                                   //padding: EdgeInsets.all(5),
-                                  Image.network(
+                                  repo.image(
                                 options[index].url ?? "",
                                 fit: BoxFit.cover,
                                 height: 30,

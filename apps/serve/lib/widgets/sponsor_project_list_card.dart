@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
+import 'package:serve_to_be_free/repository/repository.dart';
 
 class SponsorProjectListCard extends StatefulWidget {
   final String title;
@@ -109,7 +110,7 @@ class SponsorProjectListCardState extends State<SponsorProjectListCard> {
                   if (!_isImageError)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5),
-                      child: Image.network(
+                      child: repo.image(
                         widget.project['projectPicture'],
                         fit: BoxFit.cover,
                         width: 120,

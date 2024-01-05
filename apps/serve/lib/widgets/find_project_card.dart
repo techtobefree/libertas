@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
+import 'package:serve_to_be_free/repository/repository.dart';
 
 class ProjectCard extends StatelessWidget {
   final String title;
@@ -121,7 +122,7 @@ class ProjectCard extends StatelessWidget {
                       project['projectPicture'].isNotEmpty)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5),
-                      child: Image.network(
+                      child: repo.image(
                         project['projectPicture'],
                         fit: BoxFit.cover,
                         height: 130,
@@ -154,7 +155,7 @@ class ProjectCard extends StatelessWidget {
                       // width: 160,
 
                       //               ),
-                      // Image.network(
+                      // repo.image(
                       //   project['projectPicture'],
                       //   fit: BoxFit
                       //       .cover, // adjust the image to fit the widget

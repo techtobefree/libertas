@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/repository/repository.dart';
 
 class ProfilePicture extends StatelessWidget {
   final MaterialAccentColor borderColor;
@@ -37,7 +38,7 @@ class ProfilePicture extends StatelessWidget {
           border: Border.all(color: borderColor, width: 3),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
-        child: Image.network(
+        child: repo.image(
           url,
           fit: BoxFit.cover,
           loadingBuilder: (context, child, loadingProgress) {

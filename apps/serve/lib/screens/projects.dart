@@ -99,7 +99,7 @@ class ProjectsPageState extends State<ProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
-    precacheImage(const AssetImage("assets/images/19219.jpg"), context);
+    //precacheImage(const AssetImage("assets/images/19219.jpg"), context);
     return BlocBuilder<ProjectsCubit, ProjectsCubitState>(
         builder: (BuildContext context, ProjectsCubitState state) => Scaffold(
             resizeToAvoidBottomInset: false,

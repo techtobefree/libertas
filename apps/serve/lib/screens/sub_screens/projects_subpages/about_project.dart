@@ -5,6 +5,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/repository/repository.dart';
 
 class AboutProject extends StatefulWidget {
   final String? id;
@@ -108,7 +109,7 @@ class AboutProjectState extends State<AboutProject> {
                 ),
                 if (projectData.containsKey('projectPicture') &&
                     projectData['projectPicture'].isNotEmpty)
-                  Image.network(
+                  repo.image(
                     projectData['projectPicture'],
                     fit: BoxFit.cover, // adjust the image to fit the widget
                     width: 300, // set the width of the widget

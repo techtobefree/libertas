@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/repository/repository.dart';
 
 class SponsorProjectForm extends StatefulWidget {
   final String? projectId;
@@ -114,7 +115,7 @@ class SponsorProjectFormState extends State<SponsorProjectForm> {
               const SizedBox(height: 50),
               if (projectData.containsKey('projectPicture') &&
                   projectData['projectPicture'].isNotEmpty)
-                Image.network(
+                repo.image(
                   projectData['projectPicture'],
                   fit: BoxFit.cover,
                   width: 300,
