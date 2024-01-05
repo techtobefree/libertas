@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class ChooseProfilePicture extends StatelessWidget {
   const ChooseProfilePicture({super.key});
@@ -14,8 +16,13 @@ class ChooseProfilePicture extends StatelessWidget {
     final imagePicker = ImagePicker();
     final pickedImage =
         await imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      cubit.update(profilePicture: File(pickedImage.path));
+
+    if (kIsWeb) {
+      print("kis web");
+    } else {
+      if (pickedImage != null) {
+        cubit.update(profilePicture: File(pickedImage.path));
+      }
     }
   }
 

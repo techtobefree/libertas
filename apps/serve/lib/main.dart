@@ -17,6 +17,7 @@ import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/services/dimensions.dart';
 import 'package:serve_to_be_free/widgets/responsive/resize.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   //GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
@@ -24,6 +25,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await _configureAmplify();
+
+  if (kIsWeb) {
+    print("kis web");
+  }
+
   runApp(
     MultiBlocProvider(
       providers: [
