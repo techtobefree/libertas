@@ -127,7 +127,7 @@ class ProjectsPageState extends State<ProjectsPage> {
                               EdgeInsets.only(top: dimensions.statusBarHeight),
                           child: Container(
                             height: dimensions.largeAppBarHeight -
-                                50 -
+                                60 -
                                 dimensions.padding,
                             decoration: const BoxDecoration(
                               image: DecorationImage(
@@ -138,7 +138,7 @@ class ProjectsPageState extends State<ProjectsPage> {
                             ),
                           )),
                       SizedBox(
-                          height: 50,
+                          height: 60,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
