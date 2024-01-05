@@ -15,7 +15,6 @@ import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/amplifyconfiguration.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/services/dimensions.dart';
-import 'package:serve_to_be_free/services/platform.dart';
 import 'package:serve_to_be_free/widgets/responsive/resize.dart';
 //import 'package:serve_to_be_free/utilities/user_model.dart';
 
@@ -25,8 +24,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await _configureAmplify();
-
-  setPlatform();
 
   runApp(
     MultiBlocProvider(
