@@ -1,4 +1,7 @@
-import 'dart:io';
+// import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:serve_to_be_free/services/platform.dart';
+import 'package:universal_io/io.dart';
 import 'dart:core';
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,6 +50,8 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
   // final UProject proj = await ProjectHandlers.getUProjectById(id);
 
   late XFile? imageCache = null;
+
+  Uint8List? webProjImage;
 
   @override
   void initState() {
@@ -103,17 +108,25 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       // final response = await http.head(Uri.parse(url));
 
       final formData = _formKey.currentState!.value;
-      final selectedFile = formData['projectImage'][0];
 
       DateTime now = DateTime.now();
       String timestamp = now.millisecondsSinceEpoch.toString();
 
-      if (selectedFile != null) {
-        if (selectedFile != imageCache) {
-          final file = File(selectedFile.path);
+      if (isWeb()) {
+        if (webProjImage != null) {
+          uploadImageToS3Web(webProjImage!, 'servetobefree-images',
+              formData['projectName'], timestamp);
+        }
+      } else {
+        final selectedFile = formData['projectImage'][0];
 
-          await uploadImageToS3(
-              file, 'servetobefree-images', formData['projectName'], timestamp);
+        if (selectedFile != null) {
+          if (selectedFile != imageCache) {
+            final file = File(selectedFile.path);
+
+            await uploadImageToS3(file, 'servetobefree-images',
+                formData['projectName'], timestamp);
+          }
         }
       }
       final key = '/ProjectImages/${formData['projectName']}/$timestamp';
@@ -178,7 +191,20 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           leaderStr = "";
         }
 
-        if (selectedFile != imageCache) {
+        if (isWeb()) {
+          uprojectUpdate = uproject!.copyWith(
+            name: formData['projectName'],
+            description: formData['projectDescription'],
+            privacy: formData['privacy'],
+            date: formData['projectDate'].toString().split(' ')[0],
+            uUserProjectsId: "724a6ce3-47ed-402e-80c0-69e75601d2dd",
+            city: formData['city'],
+            state: formData['state'],
+            bio: formData['projectBio'],
+            leader: leaderStr,
+          );
+        }
+        if (formData['projectImage'][0] != imageCache) {
           uprojectUpdate = uproject!.copyWith(
             name: formData['projectName'],
             description: formData['projectDescription'],
@@ -230,6 +256,19 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
     final response = await http.put(Uri.parse(url),
         headers: {'Content-Type': 'image/jpeg'},
         body: await imageFile.readAsBytes());
+    if (response.statusCode != 200) {
+      throw Exception('Failed to upload image to S3');
+    }
+  }
+
+  Future<void> uploadImageToS3Web(Uint8List imageBytes, String bucketName,
+      String projName, String timestamp,
+      {String region = 'us-east-1'}) async {
+    final key = '/ProjectImages/$projName/$timestamp';
+    final url = 'https://servetobefree-images-dev.s3.amazonaws.com/$key'
+        .replaceAll('+', '%20');
+    final response = await http.put(Uri.parse(url),
+        headers: {'Content-Type': 'image/jpeg'}, body: imageBytes);
     if (response.statusCode != 200) {
       throw Exception('Failed to upload image to S3');
     }
@@ -287,6 +326,19 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       ),
       errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
     );
+  }
+
+  Future<void> _pickImage() async {
+    if (isWeb()) {
+      FilePickerResult? filePickerResult =
+          await FilePicker.platform.pickFiles();
+
+      if (filePickerResult != null) {
+        setState(() {
+          webProjImage = filePickerResult.files.first.bytes;
+        });
+      }
+    }
   }
 
   @override
@@ -476,36 +528,55 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       alignment: Alignment.topLeft,
                       // child: Container(
                       //   width: 100,
-                      child: FormBuilderImagePicker(
-                        name: "projectImage",
-                        initialValue: projectData.projectPicture.isNotEmpty
-                            ? [
-                                File(Uri.encodeFull(projectData.projectPicture))
-                              ] // Provide the initial image as a File
-                            : [], // Or an empty list if there's no initial image
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                          //errorText: 'Please select an image',
-                          // errorBorder: OutlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(10),
-                          //   borderSide:
-                          //       BorderSide(color: Colors.red, width: 2),
-                          // ),
-                        ),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(
-                            errorText: 'Please select an Image',
-                          ),
-                        ]),
+                      child: isWeb()
+                          ? GestureDetector(
+                              onTap: () => _pickImage(),
+                              child: Container(
+                                width: 160,
+                                height: 160,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: const Icon(
+                                  Icons.camera_alt,
+                                  size: 80,
+                                  color: Color.fromRGBO(0, 28, 72, 1.0),
+                                ),
+                              ),
+                            )
+                          : FormBuilderImagePicker(
+                              name: "projectImage",
+                              initialValue: projectData
+                                      .projectPicture.isNotEmpty
+                                  ? [
+                                      File(Uri.encodeFull(
+                                          projectData.projectPicture))
+                                    ] // Provide the initial image as a File
+                                  : [], // Or an empty list if there's no initial image
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                //errorText: 'Please select an image',
+                                // errorBorder: OutlineInputBorder(
+                                //   borderRadius: BorderRadius.circular(10),
+                                //   borderSide:
+                                //       BorderSide(color: Colors.red, width: 2),
+                                // ),
+                              ),
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(
+                                  errorText: 'Please select an Image',
+                                ),
+                              ]),
 
-                        // previewHeight: 100,
-                        // previewWidth: 100,
-                        //previewAutoSizeWidth: true,
-                        fit: BoxFit.cover,
-                        maxImages: 1,
-                      ),
+                              // previewHeight: 100,
+                              // previewWidth: 100,
+                              //previewAutoSizeWidth: true,
+                              fit: BoxFit.cover,
+                              maxImages: 1,
+                            ),
                     ),
                     //),
                   ],
