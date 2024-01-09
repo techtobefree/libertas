@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'dart:html' as html;
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,20 +9,24 @@ import 'package:image_picker/image_picker.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
 import 'package:serve_to_be_free/utilities/s3_image_utility.dart';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:serve_to_be_free/services/platform.dart';
 
 class ChooseProfilePicture extends StatelessWidget {
   const ChooseProfilePicture({super.key});
 
   Future<void> _pickImage(SignupCubit cubit) async {
-    final imagePicker = ImagePicker();
-    final pickedImage =
-        await imagePicker.pickImage(source: ImageSource.gallery);
+    if (isWeb()) {
+      FilePickerResult? filePickerResult =
+          await FilePicker.platform.pickFiles();
 
-    if (kIsWeb) {
-      print("kis web");
+      if (filePickerResult != null) {
+        cubit.update(webImage: filePickerResult.files.first.bytes);
+      }
     } else {
+      final imagePicker = ImagePicker();
+      final pickedImage =
+          await imagePicker.pickImage(source: ImageSource.gallery);
+
       if (pickedImage != null) {
         cubit.update(profilePicture: File(pickedImage.path));
       }
@@ -42,9 +49,14 @@ class ChooseProfilePicture extends StatelessWidget {
         );
       },
     );
-
-    final s3url = await uploadProfileImageToS3(state.profilePicture!,
-        DateTime.now().millisecondsSinceEpoch.toString());
+    String s3url;
+    if (isWeb()) {
+      s3url = await uploadProfileImageToS3Web(
+          state.webImage!, DateTime.now().millisecondsSinceEpoch.toString());
+    } else {
+      s3url = await uploadProfileImageToS3(state.profilePicture!,
+          DateTime.now().millisecondsSinceEpoch.toString());
+    }
     userCubit.fromUserClass(userClass: state.user);
     userCubit.update(profilePictureUrl: s3url);
 
@@ -125,7 +137,7 @@ class ChooseProfilePicture extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: cubit.state.profilePicture != null
+                    child: ((cubit.state.profilePicture != null) && (!isWeb()))
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(16),
                             child: Image.file(

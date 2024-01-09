@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +27,7 @@ class SignupCubit extends Cubit<SignupState> {
     bool? imageBusy,
     bool? signingUpBusy,
     bool? confirmBusy,
+    Uint8List? webImage,
   }) =>
       emit(SignupState(
         id: id ?? state.id,
@@ -42,6 +44,7 @@ class SignupCubit extends Cubit<SignupState> {
         imageBusy: imageBusy ?? state.imageBusy,
         signingUpBusy: signingUpBusy ?? state.signingUpBusy,
         confirmBusy: confirmBusy ?? state.confirmBusy,
+        webImage: webImage ?? state.webImage,
       ));
 
   Future<void> signUpCognito({

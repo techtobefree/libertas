@@ -33,6 +33,7 @@ dependencies:
   flutter:
     sdk: flutter
   # transparent_image: ^1.0.0
+  
   amplify_api: ^1.0.0
   amplify_auth_cognito: ^1.0.0
   amplify_authenticator: ^1.0.0
@@ -58,6 +59,7 @@ dependencies:
   provider: ^6.0.5 # was missing
   intl: ^0.18.0
   crypto: ^3.0.3
+  file_picker: ^6.1.1
 
 dev_dependencies:
   flutter_test:

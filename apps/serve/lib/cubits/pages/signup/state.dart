@@ -16,6 +16,7 @@ class SignupState extends Equatable {
   final bool imageBusy;
   final bool signingUpBusy;
   final bool confirmBusy;
+  final Uint8List? webImage;
   const SignupState({
     this.id = '',
     this.email = '',
@@ -35,6 +36,7 @@ class SignupState extends Equatable {
     this.imageBusy = false,
     this.signingUpBusy = false,
     this.confirmBusy = false,
+    this.webImage,
   });
 
   @override
@@ -53,6 +55,7 @@ class SignupState extends Equatable {
         imageBusy,
         signingUpBusy,
         confirmBusy,
+        webImage
       ];
 
   UserClass get user => UserClass(
