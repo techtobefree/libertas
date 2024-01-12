@@ -24,6 +24,8 @@ import 'package:serve_to_be_free/screens/tasks.dart';
 import 'package:serve_to_be_free/screens/sub_screens/create_a_post.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/about_page.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/my_account.dart';
+import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/edit_profile.dart';
+
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_project/project_details_form.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_project/create_a_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_a_project.dart';
@@ -229,11 +231,16 @@ final goRouter = GoRouter(
           ),
           routes: [
             GoRoute(
-              path: 'myprofile',
-              name: 'profile',
-              builder: (context, state) =>
-                  Profile(id: state.queryParameters['id']),
-            ),
+                path: 'myprofile',
+                name: 'profile',
+                builder: (context, state) =>
+                    Profile(id: state.queryParameters['id']),
+                routes: [
+                  GoRoute(
+                      path: 'editprofile',
+                      name: 'editprofile',
+                      builder: (context, state) => EditProfile())
+                ]),
             GoRoute(
               path: 'finishprojects',
               builder: (context, state) => const FinishProject(),
