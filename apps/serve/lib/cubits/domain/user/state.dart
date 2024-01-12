@@ -16,6 +16,8 @@ abstract class UserCubitState extends Equatable {
   final bool isLeader;
   final List<String> friendRequests;
   final bool busy;
+  final String city;
+  final String state;
   final List<UProject> projects;
   final List<UUser> friends;
   final List<UPost> posts;
@@ -28,6 +30,8 @@ abstract class UserCubitState extends Equatable {
     required this.password,
     required this.firstName,
     required this.lastName,
+    required this.state,
+    required this.city,
     required this.profilePictureUrl,
     required this.coverPictureUrl,
     required this.bio,
@@ -106,6 +110,8 @@ class UserState extends UserCubitState {
     required super.password,
     required super.firstName,
     required super.lastName,
+    required super.city,
+    required super.state,
     required super.profilePictureUrl,
     required super.bio,
     required super.coverPictureUrl,
@@ -130,6 +136,8 @@ class InitialUserState extends UserCubitState {
           lastName: '',
           profilePictureUrl: '',
           bio: '',
+          city: '',
+          state: '',
           coverPictureUrl: '',
           isLeader: false,
           friends: const [],

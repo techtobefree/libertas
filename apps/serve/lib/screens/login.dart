@@ -39,9 +39,10 @@ class LoginScreenState extends State<LoginScreen> {
             authUser.signInDetails as CognitoSignInDetailsApiBased;
         String email = apiBasedSignInDetails.username;
 
-        final user = await UserHandlers.getUserByEmail(email);
+        final user = await UserHandlers.getUUserByEmail(email);
+
         if (user != null) {
-          BlocProvider.of<UserCubit>(context).fromUserClass(userClass: user);
+          BlocProvider.of<UserCubit>(context).fromUUser(uUser: user);
         }
         context.go('/dashboard');
       }
