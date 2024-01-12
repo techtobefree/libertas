@@ -121,24 +121,25 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               ),
             SizedBox(height: 8), // Add some space between bio and location
 
-            ElevatedButton(
-              onPressed: () {
-                context.go('/menu/myprofile/editprofile');
-              },
-              child: Text(
-                'Edit Profile',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Open Sans',
-                  color: Colors.white,
+            if (currUser.id == BlocProvider.of<UserCubit>(context).state.id)
+              ElevatedButton(
+                onPressed: () {
+                  context.go('/menu/myprofile/editprofile');
+                },
+                child: Text(
+                  'Edit Profile',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Open Sans',
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromARGB(255, 16, 34, 65),
+                  ),
                 ),
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  const Color.fromARGB(255, 16, 34, 65),
-                ),
-              ),
-            ),
           ],
         ),
       ),

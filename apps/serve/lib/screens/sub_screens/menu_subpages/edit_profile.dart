@@ -96,7 +96,7 @@ class _EditProfileState extends State<EditProfile> {
 
                 context.go('/menu/myprofile');
               },
-              child: Text(
+              child: const Text(
                 'Submit',
                 style: TextStyle(
                   fontSize: 16,
