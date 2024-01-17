@@ -1,5 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -167,6 +168,56 @@ class UserHandlers {
       safePrint('Query failed: $e');
       return const [];
     }
+  }
+
+  static Future<UUser> modifyUser(
+    String id, {
+    String? password,
+    String? email,
+    String? firstName,
+    String? lastName,
+    String? profilePictureUrl,
+    String? coverPictureUrl,
+    List<UProject>? projects,
+    List<UUser>? friends,
+    List<UPost>? posts,
+    List<USponsor>? sponsors,
+    List<UNotification>? notificationsSent,
+    List<UNotification>? notificationsReceived,
+    String? bio,
+    String? city,
+    String? state,
+    String? uUserFriendsId,
+  }) async {
+    var user = await UserHandlers.getUUserById(id);
+    var newUser = user!.copyWith(
+      // password: password ?? user.password,
+      // email: email ?? user.email,
+      firstName: firstName ?? user.firstName,
+      lastName: lastName ?? user.lastName,
+      // profilePictureUrl: profilePictureUrl ?? user.profilePictureUrl,
+      // coverPictureUrl: coverPictureUrl ?? user.coverPictureUrl,
+      // projects: projects ?? user.projects,
+      // friends: friends ?? user.friends,
+      // posts: posts ?? user.posts,
+      // sponsors: sponsors ?? user.sponsors,
+      // notificationsSent: notificationsSent ?? user.notificationsSent,
+      // notificationsReceived:
+      // notificationsReceived ?? user.notificationsReceived,
+      bio: bio ?? user.bio,
+      city: city ?? user.city,
+      state: state ?? user.state,
+      // uUserFriendsId: uUserFriendsId ?? user.uUserFriendsId,
+    );
+
+    try {
+      final request = ModelMutations.update(newUser);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+    return newUser;
   }
 
   static Future<UserClass?> getUserByEmail(String email) async {

@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:go_router/go_router.dart';
-//import 'package:device_preview/device_preview.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-//import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:serve_to_be_free/config/routes/app_routes.dart';
 import 'package:serve_to_be_free/cubits/cubits.dart';
 
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
-//import 'package:serve_to_be_free/screens/login.dart';
 import 'package:serve_to_be_free/amplifyconfiguration.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/services/dimensions.dart';
 import 'package:serve_to_be_free/repository/repository.dart';
 import 'package:serve_to_be_free/widgets/responsive/resize.dart';
-//import 'package:serve_to_be_free/utilities/user_model.dart';
 
 void main() async {
-  //GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await _configureAmplify();
@@ -139,9 +132,9 @@ class MyApp extends StatelessWidget {
       // builder: DevicePreview.appBuilder,
       //////////////////////////
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      // theme: ThemeData(
+      //   primarySwatch: Colors.blue,
+      // ),
       debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
     ));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
@@ -87,15 +88,62 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           ]),
       Container(
         padding: const EdgeInsets.only(top: 10),
-        child: Text(
-          '${currUser.firstName} ${currUser.lastName}',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            fontFamily: 'Open Sans',
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              '${currUser.firstName} ${currUser.lastName}',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                fontFamily: 'Open Sans',
+              ),
+            ),
+            SizedBox(height: 8), // Add some space between name and bio
+
+            if (currUser.bio != null && currUser.bio!.isNotEmpty)
+              Text(
+                '${currUser.bio}',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Open Sans',
+                ),
+              ),
+            SizedBox(height: 8), // Add some space between bio and location
+
+            if (currUser.city != null && currUser.city!.isNotEmpty)
+              Text(
+                '${currUser.city}, ${currUser.state}',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Open Sans',
+                ),
+              ),
+            SizedBox(height: 8), // Add some space between bio and location
+
+            if (currUser.id == BlocProvider.of<UserCubit>(context).state.id)
+              ElevatedButton(
+                onPressed: () {
+                  context.go('/menu/myprofile/editprofile');
+                },
+                child: Text(
+                  'Edit Profile',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Open Sans',
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromARGB(255, 16, 34, 65),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
+
       // Container(
       //   child: Row(
       //     mainAxisAlignment: MainAxisAlignment.center,
