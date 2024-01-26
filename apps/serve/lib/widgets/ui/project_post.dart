@@ -74,8 +74,8 @@ class _ProjectPostState extends State<ProjectPost> {
               Container(
                   margin: const EdgeInsets.only(right: 15),
                   padding: const EdgeInsets.only(),
-                  child: ProfilePicture(getRandomAccentColor(), 60,
-                      widget.profURL, widget.userId)),
+                  child: ProfilePicture(
+                      Colors.blueAccent, 60, widget.profURL, widget.userId)),
 
             Expanded(
                 child: Column(

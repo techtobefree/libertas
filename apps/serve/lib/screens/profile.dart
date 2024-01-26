@@ -87,7 +87,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 ))
           ]),
       Container(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -104,6 +104,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             if (currUser.bio != null && currUser.bio!.isNotEmpty)
               Text(
                 '${currUser.bio}',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                   fontFamily: 'Open Sans',
