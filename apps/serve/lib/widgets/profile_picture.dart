@@ -35,7 +35,7 @@ class ProfilePicture extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         foregroundDecoration: BoxDecoration(
-          border: Border.all(color: borderColor, width: 3),
+          border: Border.all(color: Colors.blueAccent, width: 3),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: repo.image(
