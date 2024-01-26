@@ -30,6 +30,8 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_project/create_a_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_a_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_details.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_events.dart';
+
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/about_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/my_projects.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members.dart';
@@ -166,6 +168,11 @@ final goRouter = GoRouter(
               name: 'projectabout',
               builder: (context, state) =>
                   AboutProject(id: state.queryParameters['id']),
+            ),
+            GoRoute(
+              path: 'projectevents',
+              name: 'projectevents',
+              builder: (context, state) => ProjectEvents(),
             ),
             GoRoute(
               path: 'showmembers',

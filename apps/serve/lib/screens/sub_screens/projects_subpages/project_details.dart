@@ -135,12 +135,15 @@ class ProjectDetailsState extends State<ProjectDetails> {
     for (var i = 1; i < 4 && i < users.length; i++) {
       userWidgets.add(
         DashboardUserDisplay(
-          dimension: 60.0,
+          dimension: 55.0,
           name: users[i].firstName ?? "",
           url: users[i].profilePictureUrl ?? "",
           id: users[i].id ?? "",
         ),
       );
+      userWidgets.add(SizedBox(
+        width: 5,
+      ));
     }
     return userWidgets;
   }
@@ -204,7 +207,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 0),
               child: Column(
                 children: [
                   // Add horizontal margins
@@ -304,55 +307,185 @@ class ProjectDetailsState extends State<ProjectDetails> {
                           )),
                         ]),
                   ),
-                  const SizedBox(height: 10),
-                  if (sponsor > 0)
-                    Text(
-                        'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}'),
-                  const SizedBox(height: 10),
-                  if (projectData.containsKey('city'))
-                    Text('${projectData['city']}, ${projectData['state']}'),
-                  const SizedBox(height: 10),
-                  if (projectData.containsKey('bio')) Text(projectData['bio']),
-
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      // navigate to about page
-                      context.pushNamed("projectabout",
-                          queryParameters: {'id': projectData['id']},
-                          pathParameters: {'id': projectData['id']});
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color.fromARGB(255, 16, 34, 65),
-                      ),
-                    ),
-                    child: const Text(
-                      'About',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  Visibility(
-                    visible: projectData
-                        .isNotEmpty, // Show the button when hasJoined is not null
-                    child: ElevatedButton(
-                      onPressed: () => {
-                        if (!projectData['members'].contains(currentUserID))
-                          {addMember()}
-                        else
-                          {onPostClick(currentUserID)}
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(255, 16, 34, 65),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        height: 30,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.pushNamed("projectabout",
+                                queryParameters: {'id': projectData['id']},
+                                pathParameters: {'id': projectData['id']});
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                                255, 198, 198, 198), // Background color
+                            foregroundColor: Colors.black, // Text color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  20.0), // Rounded corners
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          child: const Text(
+                            'About',
+                            style: TextStyle(fontSize: 13),
+                          ),
                         ),
                       ),
-                      child: Text(
-                        joinButtonText,
-                        style: const TextStyle(color: Colors.white),
+                      SizedBox(
+                        height: 30,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Button action goes here
+                            context.pushNamed(
+                              "projectevents",
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                                255, 198, 198, 198), // Background color
+                            foregroundColor: Colors.black, // Text color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  20.0), // Rounded corners
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          child: Text(
+                            "Events",
+                            style: TextStyle(fontSize: 13),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 15),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(0, 28, 72, 1.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset:
+                              const Offset(0, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    height: 50,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //Inkwell
+                          Container(
+                              padding: const EdgeInsets.all(10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  // _showDropdown(context);
+                                  // Add your click action here
+                                  // For example, you can show a dialog, navigate to a new screen, etc.
+                                },
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.sort,
+                                      color: Colors.white,
+                                      size: 24, // Adjust the size as needed
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Container(
+                                      padding: const EdgeInsets.all(5),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      child: Text(
+                                        "All Posts",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          letterSpacing: -0.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                          //Inkewell
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            color: const Color.fromRGBO(35, 107, 140, 1.0),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                Container(
+                                  width: 5,
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      onPostClick(currentUserID);
+                                    },
+                                    child: const Text(
+                                      "Create a Post",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          letterSpacing: -.5),
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ]),
+                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     // navigate to about page
+                  //     context.pushNamed("projectabout",
+                  //         queryParameters: {'id': projectData['id']},
+                  //         pathParameters: {'id': projectData['id']});
+                  //   },
+                  //   style: ButtonStyle(
+                  //     backgroundColor: MaterialStateProperty.all<Color>(
+                  //       const Color.fromARGB(255, 16, 34, 65),
+                  //     ),
+                  //   ),
+                  //   child: const Text(
+                  //     'About',
+                  //     style: TextStyle(color: Colors.white),
+                  //   ),
+                  // ),
+                  // Visibility(
+                  //   visible: projectData
+                  //       .isNotEmpty, // Show the button when hasJoined is not null
+                  //   child: ElevatedButton(
+                  //     onPressed: () => {
+                  //       if (!projectData['members'].contains(currentUserID))
+                  //         {addMember()}
+                  //       else
+                  //         {onPostClick(currentUserID)}
+                  //     },
+                  //     style: ButtonStyle(
+                  //       backgroundColor: MaterialStateProperty.all<Color>(
+                  //         const Color.fromARGB(255, 16, 34, 65),
+                  //       ),
+                  //     ),
+                  //     child: Text(
+                  //       joinButtonText,
+                  //       style: const TextStyle(color: Colors.white),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -393,7 +526,32 @@ class ProjectDetailsState extends State<ProjectDetails> {
 
   void onPostClick(currentUserID) async {
     if (!projectData['members'].contains(currentUserID)) {
-      addMember();
+      // addMember();
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Join project to post',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Dismiss the dialog
+                  },
+                  child: Text('Dismiss'),
+                ),
+              ],
+            ),
+          ); // Custom dialog widget
+        },
+      );
     } else {
       await showDialog(
         context: context,
@@ -423,56 +581,5 @@ class ProjectDetailsState extends State<ProjectDetails> {
       return name;
     }
     return '';
-  }
-
-  Future<void> addMember() async {
-    UProject? uproject =
-        await ProjectHandlers.getUProjectById(projectData['id']);
-    var uprojectMems = uproject!.members;
-    var memID = BlocProvider.of<UserCubit>(context).state.id;
-    if (uprojectMems != null) {
-      uprojectMems.add(memID);
-    }
-
-    final addedMemUProj = uproject.copyWith(members: uprojectMems);
-
-    try {
-      final request = ModelMutations.update(addedMemUProj);
-      final response = await Amplify.API.mutate(request: request).response;
-      safePrint('Response: $response');
-      if (response.data!.members!.isNotEmpty) {
-        setState(() {
-          projectData['members'] = projectData['members'] != null
-              ? [...projectData['members'], memID]
-              : [memID];
-        });
-      }
-    } catch (e) {
-      throw Exception('Failed to update project: $e');
-    }
-    // final url = Uri.parse(
-    //     'http://44.203.120.103:3000/projects/${projectData['_id']}/member');
-    // final Map<String, dynamic> data = {
-    //   'memberId': Provider.of<UserProvider>(context, listen: false).id
-    // };
-    // final response = await http.put(
-    //   url,
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: jsonEncode(data),
-    // );
-
-    // if (response.statusCode == 200) {
-    //   // API call successful\
-    // setState(() {
-    //   projectData['members'] = projectData['members'] != null
-    //       ? [...projectData['members'], data['memberId']]
-    //       : [data['memberId']];
-    //   });
-    // } else {
-    //   // API call unsuccessful
-    //   print('Failed to fetch data ${response.body}');
-    // }
   }
 }

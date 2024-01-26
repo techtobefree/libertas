@@ -30,7 +30,11 @@ class ShowMembersState extends State<ShowMembers> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
-        title: const Text('Members'),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Members',
+          style: TextStyle(color: Colors.white),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
