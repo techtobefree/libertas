@@ -1,7 +1,10 @@
 // import 'dart:js';
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/models/UProject.dart';
 import 'package:serve_to_be_free/screens/signup.dart';
 import 'package:serve_to_be_free/screens/dashboard.dart';
 import 'package:serve_to_be_free/screens/groups.dart';
@@ -11,6 +14,7 @@ import 'package:serve_to_be_free/screens/messages.dart';
 import 'package:serve_to_be_free/screens/notifications.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details_form.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/choose_profile_picture.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/confirm_email.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/how_it_works.dart';
@@ -170,9 +174,16 @@ final goRouter = GoRouter(
                   AboutProject(id: state.queryParameters['id']),
             ),
             GoRoute(
-              path: 'projectevents',
+              path: 'projectevents/:projectId',
               name: 'projectevents',
-              builder: (context, state) => ProjectEvents(),
+              builder: (context, state) =>
+                  ProjectEvents(projectId: state.queryParameters['projectId']!),
+            ),
+            GoRoute(
+              path: 'eventdetailsform/:projectId',
+              name: 'eventdetailsform',
+              builder: (context, state) => EventDetailsForm(
+                  projectId: state.queryParameters['projectId']!),
             ),
             GoRoute(
               path: 'showmembers',

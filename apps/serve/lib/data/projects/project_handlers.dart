@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
@@ -237,29 +238,36 @@ class ProjectHandlers {
         } catch (e) {
           throw Exception('Failed to update project: $e');
         }
-        print(proj);
       } else {
         print("failed");
       }
     }
-    // final url =
-    //     Uri.parse('http://44.203.120.103:3000/projects/$projId/sponsors');
-    // //final Map<String, dynamic> data = {'amount': '', 'user': userId};
-    // final response = await http.put(
-    //   url,
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: jsonEncode(sponsorData),
-    // );
+  }
 
-    // if (response.statusCode == 201) {
-    //   // Sponsor created successfully
-    //   final sponsorId = jsonDecode(response.body)['_id'];
-    //   print('Sponsor created successfully with ID: $sponsorId');
-    // } else {
-    //   // Failed to create sponsor
-    //   print('Failed to create sponsor');
-    // }
+  static Future<void> addEvent(String projId, UEvent event) async {
+    UProject? project = await ProjectHandlers.getUProjectById(projId);
+    UEvent? createdEvent = await EventHandlers.createUEvent(event);
+
+    if (createdEvent != null) {
+      if (project != null) {
+        var events = project.events ?? [];
+
+        events.add(createdEvent);
+
+        final addedEventUProj = project.copyWith(events: events);
+
+        try {
+          final request = ModelMutations.update(addedEventUProj);
+          final response = await Amplify.API.mutate(request: request).response;
+          safePrint('Response: $response');
+        } catch (e) {
+          throw Exception('Failed to update project: $e');
+        }
+      } else {
+        print("project loading failed");
+      }
+    } else {
+      print("failed");
+    }
   }
 }

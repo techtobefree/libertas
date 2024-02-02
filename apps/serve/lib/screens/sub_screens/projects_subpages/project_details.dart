@@ -26,7 +26,9 @@ class ProjectDetails extends StatefulWidget {
 
 class ProjectDetailsState extends State<ProjectDetails> {
   Map<String, dynamic> projectData = {};
+  UProject? uproject;
   List<dynamic> users = [];
+  bool isLoading = true;
 
   var sponsor = 0.0;
 
@@ -44,6 +46,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
       // var response = await http.get(url);
       // if (response.statusCode == 200) {
       var jsonResponse = response.data!.items[0]!.toJson();
+      jsonResponse['uproject'] = response.data!.items[0];
 
       // print(jsonResponse['sponsors']);
       // if (jsonResponse.containsKey('sponsors') &&
@@ -80,6 +83,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
             //     convertDate(newPosts[newPosts.length - 1]['date']);
           }
         }
+        print(jsonResponse['uproject']);
         jsonResponse['posts'] = newPosts;
       }
       return jsonResponse;
@@ -151,25 +155,39 @@ class ProjectDetailsState extends State<ProjectDetails> {
   @override
   void initState() {
     super.initState();
-    getProjects().then((data) {
+    loadData();
+  }
+
+  void loadData() async {
+    try {
+      var data = await getProjects();
       setState(() {
         projectData = data;
-        // print(projectData);
       });
-      getMembers(data['members']).then((value) {
-        setState(() {
-          users = value;
-        });
+
+      var members = await getMembers(data['members']);
+      setState(() {
+        users = members;
       });
+
       var id = widget.id;
       if (id != null) {
-        SponsorHandlers.getUSponsorAmountByProject(id).then(
-          (value) {
-            setState(() => sponsor = value);
-          },
-        );
+        var sponsorAmount =
+            await SponsorHandlers.getUSponsorAmountByProject(id);
+        setState(() {
+          sponsor = sponsorAmount;
+        });
       }
-    });
+
+      // Set isLoading to false to enable the screen
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      // Handle any errors that occur during data fetching
+      print('Error: $e');
+      // Optionally, you can also show an error message to the user
+    }
   }
 
   @override
@@ -181,345 +199,360 @@ class ProjectDetailsState extends State<ProjectDetails> {
     final hasJoined = members.contains(currentUserID);
 
     final joinButtonText = hasJoined ? 'Post' : 'Join';
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text(
-            'Project Dashboard',
-            style: TextStyle(color: Colors.white),
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(0, 28, 72, 1.0),
-                  Color.fromRGBO(35, 107, 140, 1.0),
-                ],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
+    if (isLoading) {
+      // Return a loading indicator or a splash screen while data is being fetched
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+            title: const Text(
+              'Project Dashboard',
+              style: TextStyle(color: Colors.white),
             ),
-          )),
-      body: SingleChildScrollView(
-        // Wrap your Column with SingleChildScrollView
+            iconTheme: const IconThemeData(color: Colors.white),
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(0, 28, 72, 1.0),
+                    Color.fromRGBO(35, 107, 140, 1.0),
+                  ],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+              ),
+            )),
+        body: SingleChildScrollView(
+          // Wrap your Column with SingleChildScrollView
 
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
-              child: Column(
-                children: [
-                  // Add horizontal margins
-                  const SizedBox(height: 20),
-                  Text(
-                    projectData['name'] ?? '',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 5),
-
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${projectData['members']?.length ?? ''} Members',
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        const SizedBox(width: 5),
-                        const SizedBox(
-                            width:
-                                5), // Add spacing between the members count and the dot
-                        const Text(
-                          '•', // Horizontal dot separator
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        const SizedBox(
-                            width:
-                                5), // Add spacing between the "Members" text and the hyperlink
-                        GestureDetector(
-                          onTap: () {
-                            print("view members");
-                            context.pushNamed("showmembers", queryParameters: {
-                              'projectId': projectData['id'],
-                            });
-                          },
-                          child: const Text(
-                            'View Members',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  if (projectData.containsKey('date'))
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 0),
+                child: Column(
+                  children: [
+                    // Add horizontal margins
+                    const SizedBox(height: 20),
                     Text(
-                      '${projectData['date']}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                      ),
+                      projectData['name'] ?? '',
+                      style: const TextStyle(fontSize: 20),
                     ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 20, bottom: 10),
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    const SizedBox(height: 5),
+
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.only(right: 10, left: 10),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                right: BorderSide(
-                                  width: 3.0,
-                                  color: Colors.grey.withOpacity(0.5),
-                                ),
+                          Text(
+                            '${projectData['members']?.length ?? ''} Members',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          const SizedBox(width: 5),
+                          const SizedBox(
+                              width:
+                                  5), // Add spacing between the members count and the dot
+                          const Text(
+                            '•', // Horizontal dot separator
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          const SizedBox(
+                              width:
+                                  5), // Add spacing between the "Members" text and the hyperlink
+                          GestureDetector(
+                            onTap: () {
+                              print("view members");
+                              context
+                                  .pushNamed("showmembers", queryParameters: {
+                                'projectId': projectData['id'],
+                              });
+                            },
+                            child: const Text(
+                              'View Members',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                                fontSize: 12,
                               ),
                             ),
-                            child: DashboardUserDisplay(
-                              dimension: 80.0,
-                              name: users.isNotEmpty
-                                  ? users[0].firstName ?? ""
-                                  : "",
-                              url: users.isNotEmpty
-                                  ? users[0].profilePictureUrl ?? ""
-                                  : "",
-                              id: users.isNotEmpty ? users[0].id ?? "" : "",
-                            ),
                           ),
-                          // Container(
-                          //   padding: EdgeInsets.all(20),
-                          //   width: 1, // Set the width of the divider
-                          //   height: 90, // Set the height of the divider
-                          //   color: Colors.grey,
-                          // ),
-                          Expanded(
-                              child: Container(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: generateUserWidgets(users),
-                            ),
-                          )),
-                        ]),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.pushNamed("projectabout",
-                                queryParameters: {'id': projectData['id']},
-                                pathParameters: {'id': projectData['id']});
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(
-                                255, 198, 198, 198), // Background color
-                            foregroundColor: Colors.black, // Text color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  20.0), // Rounded corners
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                          child: const Text(
-                            'About',
-                            style: TextStyle(fontSize: 13),
-                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    if (projectData.containsKey('date'))
+                      Text(
+                        '${projectData['date']}',
+                        style: const TextStyle(
+                          fontSize: 12,
                         ),
                       ),
-                      SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Button action goes here
-                            context.pushNamed(
-                              "projectevents",
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(
-                                255, 198, 198, 198), // Background color
-                            foregroundColor: Colors.black, // Text color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  20.0), // Rounded corners
+                    Container(
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(right: 10, left: 10),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  right: BorderSide(
+                                    width: 3.0,
+                                    color: Colors.grey.withOpacity(0.5),
+                                  ),
+                                ),
+                              ),
+                              child: DashboardUserDisplay(
+                                dimension: 80.0,
+                                name: users.isNotEmpty
+                                    ? users[0].firstName ?? ""
+                                    : "",
+                                url: users.isNotEmpty
+                                    ? users[0].profilePictureUrl ?? ""
+                                    : "",
+                                id: users.isNotEmpty ? users[0].id ?? "" : "",
+                              ),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                          child: Text(
-                            "Events",
-                            style: TextStyle(fontSize: 13),
+                            // Container(
+                            //   padding: EdgeInsets.all(20),
+                            //   width: 1, // Set the width of the divider
+                            //   height: 90, // Set the height of the divider
+                            //   color: Colors.grey,
+                            // ),
+                            Expanded(
+                                child: Container(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: generateUserWidgets(users),
+                              ),
+                            )),
+                          ]),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          height: 30,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context.pushNamed("projectabout",
+                                  queryParameters: {'id': projectData['id']},
+                                  pathParameters: {'id': projectData['id']});
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromARGB(
+                                  255, 198, 198, 198), // Background color
+                              foregroundColor: Colors.black, // Text color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    20.0), // Rounded corners
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                            ),
+                            child: const Text(
+                              'About',
+                              style: TextStyle(fontSize: 13),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(0, 28, 72, 1.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset:
-                              const Offset(0, 4), // changes position of shadow
+                        SizedBox(
+                          height: 30,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Button action goes here
+                              context
+                                  .pushNamed("projectevents", queryParameters: {
+                                'projectId': projectData['id'],
+                              }, pathParameters: {
+                                'projectId': projectData['id']
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromARGB(
+                                  255, 198, 198, 198), // Background color
+                              foregroundColor: Colors.black, // Text color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    20.0), // Rounded corners
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                            ),
+                            child: Text(
+                              "Events",
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    height: 50,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //Inkwell
-                          Container(
-                              padding: const EdgeInsets.all(10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  // _showDropdown(context);
-                                  // Add your click action here
-                                  // For example, you can show a dialog, navigate to a new screen, etc.
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.sort,
-                                      color: Colors.white,
-                                      size: 24, // Adjust the size as needed
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Container(
-                                      padding: const EdgeInsets.all(5),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      child: Text(
-                                        "All Posts",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          letterSpacing: -0.5,
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(0, 28, 72, 1.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(
+                                0, 4), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      height: 50,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            //Inkwell
+                            Container(
+                                padding: const EdgeInsets.all(10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // _showDropdown(context);
+                                    // Add your click action here
+                                    // For example, you can show a dialog, navigate to a new screen, etc.
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.sort,
+                                        color: Colors.white,
+                                        size: 24, // Adjust the size as needed
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Container(
+                                        padding: const EdgeInsets.all(5),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
+                                        child: Text(
+                                          "All Posts",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            letterSpacing: -0.5,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                          //Inkewell
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            color: const Color.fromRGBO(35, 107, 140, 1.0),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                                Container(
-                                  width: 5,
-                                ),
-                                InkWell(
-                                    onTap: () {
-                                      onPostClick(currentUserID);
-                                    },
-                                    child: const Text(
-                                      "Create a Post",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          letterSpacing: -.5),
-                                    )),
-                              ],
+                                    ],
+                                  ),
+                                )),
+                            //Inkewell
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              color: const Color.fromRGBO(35, 107, 140, 1.0),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                  Container(
+                                    width: 5,
+                                  ),
+                                  InkWell(
+                                      onTap: () {
+                                        onPostClick(currentUserID);
+                                      },
+                                      child: const Text(
+                                        "Create a Post",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            letterSpacing: -.5),
+                                      )),
+                                ],
+                              ),
                             ),
-                          ),
-                        ]),
-                  ),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     // navigate to about page
-                  //     context.pushNamed("projectabout",
-                  //         queryParameters: {'id': projectData['id']},
-                  //         pathParameters: {'id': projectData['id']});
-                  //   },
-                  //   style: ButtonStyle(
-                  //     backgroundColor: MaterialStateProperty.all<Color>(
-                  //       const Color.fromARGB(255, 16, 34, 65),
-                  //     ),
-                  //   ),
-                  //   child: const Text(
-                  //     'About',
-                  //     style: TextStyle(color: Colors.white),
-                  //   ),
-                  // ),
-                  // Visibility(
-                  //   visible: projectData
-                  //       .isNotEmpty, // Show the button when hasJoined is not null
-                  //   child: ElevatedButton(
-                  //     onPressed: () => {
-                  //       if (!projectData['members'].contains(currentUserID))
-                  //         {addMember()}
-                  //       else
-                  //         {onPostClick(currentUserID)}
-                  //     },
-                  //     style: ButtonStyle(
-                  //       backgroundColor: MaterialStateProperty.all<Color>(
-                  //         const Color.fromARGB(255, 16, 34, 65),
-                  //       ),
-                  //     ),
-                  //     child: Text(
-                  //       joinButtonText,
-                  //       style: const TextStyle(color: Colors.white),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+                          ]),
+                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     // navigate to about page
+                    //     context.pushNamed("projectabout",
+                    //         queryParameters: {'id': projectData['id']},
+                    //         pathParameters: {'id': projectData['id']});
+                    //   },
+                    //   style: ButtonStyle(
+                    //     backgroundColor: MaterialStateProperty.all<Color>(
+                    //       const Color.fromARGB(255, 16, 34, 65),
+                    //     ),
+                    //   ),
+                    //   child: const Text(
+                    //     'About',
+                    //     style: TextStyle(color: Colors.white),
+                    //   ),
+                    // ),
+                    // Visibility(
+                    //   visible: projectData
+                    //       .isNotEmpty, // Show the button when hasJoined is not null
+                    //   child: ElevatedButton(
+                    //     onPressed: () => {
+                    //       if (!projectData['members'].contains(currentUserID))
+                    //         {addMember()}
+                    //       else
+                    //         {onPostClick(currentUserID)}
+                    //     },
+                    //     style: ButtonStyle(
+                    //       backgroundColor: MaterialStateProperty.all<Color>(
+                    //         const Color.fromARGB(255, 16, 34, 65),
+                    //       ),
+                    //     ),
+                    //     child: Text(
+                    //       joinButtonText,
+                    //       style: const TextStyle(color: Colors.white),
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
               ),
-            ),
-            // Expanded(
-            // child:
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: projectData['posts']?.length ?? 0,
-              itemBuilder: (context, index) {
-                final reversedIndex = projectData['posts'].length -
-                    index -
-                    1; // compute the index of the reversed list
-                return ProjectPost(
-                  id: '',
-                  name:
-                      '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
-                  postText: projectData['posts'][reversedIndex]['text'],
-                  profURL:
-                      projectData['posts'][reversedIndex]['imageUrl'] ?? '',
-                  date: projectData['posts'][reversedIndex]['date'] ?? '',
-                  userId:
-                      projectData['posts'][reversedIndex]['user']['id'] ?? '',
-                );
-                // return DashboardUserDisplay(
-                //     dimension: 60.0,
-                //     name: projectData['posts']?[index]['text']);
-              },
-              // ),
-            ),
-          ],
+              // Expanded(
+              // child:
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: projectData['posts']?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final reversedIndex = projectData['posts'].length -
+                      index -
+                      1; // compute the index of the reversed list
+                  return ProjectPost(
+                    id: '',
+                    name:
+                        '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
+                    postText: projectData['posts'][reversedIndex]['text'],
+                    profURL:
+                        projectData['posts'][reversedIndex]['imageUrl'] ?? '',
+                    date: projectData['posts'][reversedIndex]['date'] ?? '',
+                    userId:
+                        projectData['posts'][reversedIndex]['user']['id'] ?? '',
+                  );
+                  // return DashboardUserDisplay(
+                  //     dimension: 60.0,
+                  //     name: projectData['posts']?[index]['text']);
+                },
+                // ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void updatePosts(List<dynamic> newPosts) {}

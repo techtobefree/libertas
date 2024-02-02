@@ -36,6 +36,19 @@ type UProject @model @auth(rules: [{ allow: public }]){
   sponsors: [USponsor] @hasMany
   notifications: [UNotification] @hasMany
   isCompleted: Boolean!
+  events: [UEvent] @hasMany
+}
+
+type UEvent @model @auth(rules: [{ allow: public }]){
+  id: ID!
+  name: String!
+  details: String
+  date: String
+  time: String
+  membersAttending: [UUser] @hasMany
+  membersNotAttending: [UUser] @hasMany
+  project: UProject! @belongsTo
+  eventPicture: String
 }
 
 type USponsor @model @auth(rules: [{ allow: public }]){
