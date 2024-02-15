@@ -37,8 +37,11 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_d
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_events.dart';
 
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/about_project.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/my_projects.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members_attending.dart';
+
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_project_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project.dart';
 import 'package:serve_to_be_free/widgets/ui/my_scaffold.dart';
@@ -168,10 +171,11 @@ final goRouter = GoRouter(
                   LeadProjectDetails(id: state.queryParameters['id']),
             ),
             GoRoute(
-              path: 'projectabout/:id',
-              name: 'projectabout',
-              builder: (context, state) =>
-                  AboutProject(id: state.queryParameters['id']),
+              path: 'eventdetails/:id',
+              name: 'eventdetails',
+              builder: (context, state) => EventDetailsPage(
+                eventId: state.queryParameters['id']!,
+              ),
             ),
             GoRoute(
               path: 'projectevents/:projectId',
@@ -190,6 +194,13 @@ final goRouter = GoRouter(
               name: 'showmembers',
               builder: (context, state) => ShowMembers(
                 projectId: state.queryParameters['projectId'],
+              ),
+            ),
+            GoRoute(
+              path: 'showmembersattending',
+              name: 'showmembersattending',
+              builder: (context, state) => ShowMembersAttending(
+                eventId: state.queryParameters['eventId'],
               ),
             ),
           ],

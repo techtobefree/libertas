@@ -68,6 +68,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
             where: queryPredicate,
           );
           final response = await Amplify.API.query(request: request).response;
+          print(response);
 
           if (response.data!.items.isNotEmpty) {
             newPosts.add(response.data!.items[0]!.toJson());
@@ -159,35 +160,34 @@ class ProjectDetailsState extends State<ProjectDetails> {
   }
 
   void loadData() async {
-    try {
-      var data = await getProjects();
-      setState(() {
-        projectData = data;
-      });
+    // try {
+    var data = await getProjects();
+    setState(() {
+      projectData = data;
+    });
 
-      var members = await getMembers(data['members']);
-      setState(() {
-        users = members;
-      });
+    var members = await getMembers(data['members']);
+    setState(() {
+      users = members;
+    });
 
-      var id = widget.id;
-      if (id != null) {
-        var sponsorAmount =
-            await SponsorHandlers.getUSponsorAmountByProject(id);
-        setState(() {
-          sponsor = sponsorAmount;
-        });
-      }
-
-      // Set isLoading to false to enable the screen
+    var id = widget.id;
+    if (id != null) {
+      var sponsorAmount = await SponsorHandlers.getUSponsorAmountByProject(id);
       setState(() {
-        isLoading = false;
+        sponsor = sponsorAmount;
       });
-    } catch (e) {
-      // Handle any errors that occur during data fetching
-      print('Error: $e');
-      // Optionally, you can also show an error message to the user
     }
+
+    // Set isLoading to false to enable the screen
+    setState(() {
+      isLoading = false;
+    });
+    // } catch (e) {
+    //   // Handle any errors that occur during data fetching
+    //   print('Error: $e');
+    //   // Optionally, you can also show an error message to the user
+    // }
   }
 
   @override
@@ -371,7 +371,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                                   .pushNamed("projectevents", queryParameters: {
                                 'projectId': projectData['id'],
                               }, pathParameters: {
-                                'projectId': projectData['id']
+                                'projectId': projectData['id'],
                               });
                             },
                             style: ElevatedButton.styleFrom(

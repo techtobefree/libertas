@@ -108,6 +108,8 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
           details: eventDetails,
           date: '$year-$month-$day',
           time: '$hour:$minute',
+          membersAttending: [],
+          membersNotAttending: [],
           project: _project);
       await ProjectHandlers.addEvent(widget.projectId, uevent);
 
