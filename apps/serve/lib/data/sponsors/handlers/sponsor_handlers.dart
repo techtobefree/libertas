@@ -97,34 +97,4 @@ class SponsorHandlers {
     }
     return amount;
   }
-
-  // static Future<Sponsor?> createSponsorForProject(
-  //     String projectId, Sponsor sponsor, double amount) async {
-  //   final url = Uri.parse('$_baseUrl/projects/$projectId/sponsors');
-  //   final headers = <String, String>{
-  //     'Content-Type': 'application/json; charset=UTF-8',
-  //   };
-
-  //   // Include the amount in the sponsor object
-  //   sponsor.amount = amount;
-
-  //   final body = jsonEncode(sponsor.toJson());
-
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       headers: headers,
-  //       body: body,
-  //     );
-
-  //     if (response.statusCode == 201) {
-  //       final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-  //       return Sponsor.fromJson(jsonResponse);
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Failed to create sponsor: $e');
-  //   }
-  // }
 }

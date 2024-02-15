@@ -132,9 +132,8 @@ class MyApp extends StatelessWidget {
       // builder: DevicePreview.appBuilder,
       //////////////////////////
       title: 'Flutter Demo',
-      // theme: ThemeData(
-      //   primarySwatch: Colors.blue,
-      // ),
+      theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent)),
       debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
     ));
