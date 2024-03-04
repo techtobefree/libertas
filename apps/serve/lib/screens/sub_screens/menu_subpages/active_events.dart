@@ -9,22 +9,16 @@ import 'package:serve_to_be_free/widgets/event_project_card.dart';
 
 import '../../../models/ModelProvider.dart';
 
-class ProjectEvents extends StatefulWidget {
-  final String projectId;
+class ActiveEvents extends StatefulWidget {
+  final String? userId;
 
-  const ProjectEvents({Key? key, required this.projectId}) : super(key: key);
+  const ActiveEvents({Key? key, required this.userId}) : super(key: key);
 
   @override
   _ProjectEventsState createState() => _ProjectEventsState();
 }
 
-class _ProjectEventsState extends State<ProjectEvents> {
-  UProject _project = UProject(
-      name: '',
-      privacy: '',
-      description: '',
-      projectPicture: '',
-      isCompleted: false);
+class _ProjectEventsState extends State<ActiveEvents> {
   bool _isLoading = false;
   List<UEvent?> events = [];
 
@@ -40,12 +34,11 @@ class _ProjectEventsState extends State<ProjectEvents> {
       _isLoading = true;
     });
     // Assume fetchData() is an asynchronous method in UProject class
-    UProject? project = await ProjectHandlers.getUProjectById(widget.projectId);
-    List<UEvent?> uevents =
-        await EventHandlers.getUEventsByProject(widget.projectId);
+    List<UEvent?> ueventsactive =
+        await EventHandlers.getUUserActiveEvents(widget.userId);
 
     setState(() {
-      events.addAll(uevents);
+      events.addAll(ueventsactive);
       events = sortByDate(events);
       _isLoading = false;
     });
@@ -76,17 +69,13 @@ class _ProjectEventsState extends State<ProjectEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Project Events'),
+        title: const Text('My Active Events'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             // Define the behavior when the back button is pressed
             // For example, navigate back to the previous screen
-            context.pushNamed("projectdetails", queryParameters: {
-              'id': widget.projectId,
-            }, pathParameters: {
-              'id': widget.projectId,
-            });
+            context.push("/menu");
           },
         ),
       ),
@@ -111,28 +100,30 @@ class _ProjectEventsState extends State<ProjectEvents> {
                           //             .inHours <
                           //         24) {
                           return EventCard(
-                            dateString: events[index]!.date ?? '',
-                            timeString: events[index]!.time ?? '',
-                            name: events[index]!.name,
-                            eventId: events[index]!.id,
-                            memberStatus: EventHandlers.getMemberStatusNotAsync(
-                                events[index]!,
-                                BlocProvider.of<UserCubit>(context).state.id),
-                            projId: widget.projectId,
-                          );
+                              dateString: events[index]!.date ?? '',
+                              timeString: events[index]!.time ?? '',
+                              name: events[index]!.name,
+                              eventId: events[index]!.id,
+                              memberStatus:
+                                  EventHandlers.getMemberStatusNotAsync(
+                                      events[index]!,
+                                      BlocProvider.of<UserCubit>(context)
+                                          .state
+                                          .id),
+                              projId: events[index]!.project.id);
                           // }
                         }) // Display message if no events are found
                     : Text('No events found.'),
-            ElevatedButton(
-              onPressed: () {
-                context.pushNamed("eventdetailsform", queryParameters: {
-                  'projectId': widget.projectId,
-                }, pathParameters: {
-                  'projectId': widget.projectId
-                });
-              },
-              child: Text('Create New Event'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     context.pushNamed("eventdetailsform", queryParameters: {
+            //       'projectId': widget.projectId,
+            //     }, pathParameters: {
+            //       'projectId': widget.projectId
+            //     });
+            //   },
+            //   child: Text('Create New Event'),
+            // ),
           ],
         ),
       ),

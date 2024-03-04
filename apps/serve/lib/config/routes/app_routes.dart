@@ -14,6 +14,8 @@ import 'package:serve_to_be_free/screens/messages.dart';
 import 'package:serve_to_be_free/screens/notifications.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/active_events.dart';
+import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/friends.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details_form.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/choose_profile_picture.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/confirm_email.dart';
@@ -37,8 +39,11 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_d
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_events.dart';
 
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/about_project.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/my_projects.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members_attending.dart';
+
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_project_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project.dart';
 import 'package:serve_to_be_free/widgets/ui/my_scaffold.dart';
@@ -168,16 +173,23 @@ final goRouter = GoRouter(
                   LeadProjectDetails(id: state.queryParameters['id']),
             ),
             GoRoute(
-              path: 'projectabout/:id',
-              name: 'projectabout',
-              builder: (context, state) =>
-                  AboutProject(id: state.queryParameters['id']),
+              path: 'eventdetails/:id',
+              name: 'eventdetails',
+              builder: (context, state) => EventDetailsPage(
+                eventId: state.queryParameters['id']!,
+              ),
             ),
             GoRoute(
               path: 'projectevents/:projectId',
               name: 'projectevents',
               builder: (context, state) =>
                   ProjectEvents(projectId: state.queryParameters['projectId']!),
+            ),
+            GoRoute(
+              path: 'projectabout/:id',
+              name: 'projectabout',
+              builder: (context, state) =>
+                  AboutProject(id: state.queryParameters['id']!),
             ),
             GoRoute(
               path: 'eventdetailsform/:projectId',
@@ -190,6 +202,13 @@ final goRouter = GoRouter(
               name: 'showmembers',
               builder: (context, state) => ShowMembers(
                 projectId: state.queryParameters['projectId'],
+              ),
+            ),
+            GoRoute(
+              path: 'showmembersattending',
+              name: 'showmembersattending',
+              builder: (context, state) => ShowMembersAttending(
+                eventId: state.queryParameters['eventId'],
               ),
             ),
           ],
@@ -259,6 +278,20 @@ final goRouter = GoRouter(
                       name: 'editprofile',
                       builder: (context, state) => EditProfile())
                 ]),
+            GoRoute(
+              path: 'friends/:userId',
+              name: 'friends',
+              builder: (context, state) => Friends(
+                userId: state.queryParameters['userId'],
+              ),
+            ),
+            GoRoute(
+              path: 'activeevents/:userId',
+              name: 'activeevents',
+              builder: (context, state) => ActiveEvents(
+                userId: state.queryParameters['userId'],
+              ),
+            ),
             GoRoute(
               path: 'finishprojects',
               builder: (context, state) => const FinishProject(),

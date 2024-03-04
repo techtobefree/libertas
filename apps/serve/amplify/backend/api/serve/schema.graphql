@@ -9,7 +9,7 @@ type UUser @model {
   profilePictureUrl: String
   coverPictureUrl: String
   projects: [UProject] @hasMany
-  friends: [UUser] @hasMany
+  friends: [String] 
   posts: [UPost] @hasMany
   sponsors: [USponsor] @hasMany
   notificationsSent: [UNotification] @hasMany
@@ -77,15 +77,16 @@ type UComment @model @auth(rules: [{ allow: public }]){
   post: UPost @belongsTo
 }
 
-# type ULeaderRequest @model {
+# type UOrganization @model @auth(rules: [{ allow: public }]){
 #   id: ID!
-#   owner: UUser! @belongsTo
-#   applicant: UUser! @belongsTo
-#   project: UProject! @belongsTo
-#   date: String!
-#   message: String!
-#   status: String!
+#   name: String!
+
+#   admin: [UUser]
+#   members: [UUser]
 # }
+
+# type UHoursReporting
+
 
 type UNotification @model {
   id: ID!

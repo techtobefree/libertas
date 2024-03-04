@@ -370,6 +370,17 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void tryLogin() async {
+    // Show circular loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent user from dismissing the dialog
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
     print(emailController.text);
     print(passwordController.text);
     final cubit = BlocProvider.of<UserCubit>(context);
@@ -384,69 +395,14 @@ class LoginScreenState extends State<LoginScreen> {
     }
     // final user = await UserHandlers.getUserByEmail(emailController.text);
     final result = await isUserSignedIn();
+
+    // Dismiss the loading indicator
+    Navigator.pop(context);
+
     if (result) {
       onSignInSuccessful();
-    } else {}
-
-    // if (user == null) {
-    //   showAlertDialog(context);
-    //   return;
-    // }
-
-    // // bool isAuthenticated =
-    // //     await authenticateUser(user!.email, passwordController.text);
-    // // if (isAuthenticated || passwordController.text == user.password) {
-    //   Provider.of<UserProvider>(context, listen: false).email = user.email;
-    //   Provider.of<UserProvider>(context, listen: false).id = user.id;
-    //   Provider.of<UserProvider>(context, listen: false).firstName =
-    //       user.firstName;
-    //   Provider.of<UserProvider>(context, listen: false).lastName =
-    //       user.lastName;
-    //   Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-    //       user.profilePictureUrl;
-    //   context.go('/dashboard');
-    // } else {
-    //   showAlertDialog(context);
-    // }
+    } else {
+      showAlertDialog(context);
+    }
   }
-//   Future<void> tryLogin() async {
-//     final url = Uri.parse(
-//         'http://44.203.120.103:3000/users/email/${emailController.text}');
-//     // 'http://localhost:3000/users/email/${emailController.text}');
-//     print(url);
-
-//     final response = await http.get(url);
-
-//     if (response.statusCode == 200) {
-//       // API call successful\
-
-//       final res = json.decode(response.body);
-//       print(response.body);
-//       print(passwordController.text);
-
-//       bool isAuthenticated =
-//           await authenticateUser(res['email'], passwordController.text);
-//       if (isAuthenticated || passwordController.text == res['password']) {
-//         Provider.of<UserProvider>(context, listen: false).email = res['email'];
-//         Provider.of<UserProvider>(context, listen: false).id = res['_id'];
-//         Provider.of<UserProvider>(context, listen: false).firstName =
-//             res['firstName'];
-//         Provider.of<UserProvider>(context, listen: false).lastName =
-//             res['lastName'];
-//         if (res['profilePictureUrl'] != null) {
-//           Provider.of<UserProvider>(context, listen: false).profilePictureUrl =
-//               res['profilePictureUrl'];
-//         }
-//         context.go('/dashboard');
-//       } else {
-//         // do something else
-//         showAlertDialog(context);
-//       }
-
-//     } else {
-//       // API call unsuccessful
-//       showAlertDialog(context);
-//       print('Failed to fetch data');
-//     }
-//   }
 }

@@ -61,6 +61,10 @@ dependencies:
   crypto: ^3.0.3
   file_picker: ^6.1.1
 
+  # payments
+  flutter_stripe: ^9.5.0+1
+  http: ^0.13.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

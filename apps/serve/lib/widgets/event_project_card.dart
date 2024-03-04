@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 
 class EventCard extends StatelessWidget {
   final String dateString;
   final String timeString;
   final String name;
+  final String eventId;
+  final String memberStatus;
+  final String projId;
 
-  EventCard({
-    required this.dateString,
-    required this.timeString,
-    required this.name,
-  });
+  const EventCard(
+      {super.key,
+      required this.dateString,
+      required this.timeString,
+      required this.name,
+      required this.eventId,
+      required this.memberStatus,
+      required this.projId});
 
   static DateTime _parseDate(String dateString) {
     // Split the date string by '-' and convert to integers
@@ -37,12 +47,19 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: double.infinity,
-        height: 160.0,
-        child: GestureDetector(
-          onTap: () {},
+    return GestureDetector(
+      onTap: () {
+        print('x');
+        context.pushNamed("eventdetails", queryParameters: {
+          'id': eventId,
+        }, pathParameters: {
+          'id': eventId,
+        });
+      },
+      child: Center(
+        child: SizedBox(
+          width: double.infinity,
+          height: 160.0,
           child: Card(
             elevation: 5,
             margin: EdgeInsets.all(8.0),
@@ -85,19 +102,60 @@ class EventCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () => {},
-                      child: Text('Going'),
+                if (memberStatus == 'UNDECIDED')
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ElevatedButton(
+                        onPressed: () async {
+                          await EventHandlers.addAttendee(eventId,
+                              BlocProvider.of<UserCubit>(context).state.id);
+                          context.pushNamed("projectevents", queryParameters: {
+                            'projectId': projId,
+                          }, pathParameters: {
+                            'projectId': projId,
+                          });
+                        },
+                        child: Text('Going'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await EventHandlers.addNonAttendee(eventId,
+                              BlocProvider.of<UserCubit>(context).state.id);
+                          context.pushNamed("projectevents", queryParameters: {
+                            'projectId': projId,
+                          }, pathParameters: {
+                            'projectId': projId,
+                          });
+                        },
+                        child: Text('Not Going'),
+                      ),
+                    ],
+                  ),
+                if (memberStatus == 'ATTENDING')
+                  Center(
+                      child: Column(children: [
+                    SizedBox(
+                      height: 7,
                     ),
-                    ElevatedButton(
-                      onPressed: () => {},
-                      child: Text('Not Going'),
+                    Text(
+                      'Attending',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
-                  ],
-                ),
+                  ])),
+                if (memberStatus == 'NOTATTENDING')
+                  Center(
+                      child: Column(children: [
+                    SizedBox(
+                      height: 7,
+                    ),
+                    Text(
+                      'Not Attending',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ])),
               ],
             ),
           ),

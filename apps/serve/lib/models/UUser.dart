@@ -35,7 +35,7 @@ class UUser extends amplify_core.Model {
   final String? _profilePictureUrl;
   final String? _coverPictureUrl;
   final List<UProject>? _projects;
-  final List<UUser>? _friends;
+  final List<String>? _friends;
   final List<UPost>? _posts;
   final List<USponsor>? _sponsors;
   final List<UNotification>? _notificationsSent;
@@ -45,9 +45,6 @@ class UUser extends amplify_core.Model {
   final String? _state;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
-  final String? _uUserFriendsId;
-  final String? _uEventMembersAttendingId;
-  final String? _uEventMembersNotAttendingId;
 
   @override
   getInstanceType() => classType;
@@ -126,7 +123,7 @@ class UUser extends amplify_core.Model {
     return _projects;
   }
   
-  List<UUser>? get friends {
+  List<String>? get friends {
     return _friends;
   }
   
@@ -166,21 +163,9 @@ class UUser extends amplify_core.Model {
     return _updatedAt;
   }
   
-  String? get uUserFriendsId {
-    return _uUserFriendsId;
-  }
+  const UUser._internal({required this.id, required password, required email, required firstName, required lastName, profilePictureUrl, coverPictureUrl, projects, friends, posts, sponsors, notificationsSent, notificationsReceived, bio, city, state, createdAt, updatedAt}): _password = password, _email = email, _firstName = firstName, _lastName = lastName, _profilePictureUrl = profilePictureUrl, _coverPictureUrl = coverPictureUrl, _projects = projects, _friends = friends, _posts = posts, _sponsors = sponsors, _notificationsSent = notificationsSent, _notificationsReceived = notificationsReceived, _bio = bio, _city = city, _state = state, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  String? get uEventMembersAttendingId {
-    return _uEventMembersAttendingId;
-  }
-  
-  String? get uEventMembersNotAttendingId {
-    return _uEventMembersNotAttendingId;
-  }
-  
-  const UUser._internal({required this.id, required password, required email, required firstName, required lastName, profilePictureUrl, coverPictureUrl, projects, friends, posts, sponsors, notificationsSent, notificationsReceived, bio, city, state, createdAt, updatedAt, uUserFriendsId, uEventMembersAttendingId, uEventMembersNotAttendingId}): _password = password, _email = email, _firstName = firstName, _lastName = lastName, _profilePictureUrl = profilePictureUrl, _coverPictureUrl = coverPictureUrl, _projects = projects, _friends = friends, _posts = posts, _sponsors = sponsors, _notificationsSent = notificationsSent, _notificationsReceived = notificationsReceived, _bio = bio, _city = city, _state = state, _createdAt = createdAt, _updatedAt = updatedAt, _uUserFriendsId = uUserFriendsId, _uEventMembersAttendingId = uEventMembersAttendingId, _uEventMembersNotAttendingId = uEventMembersNotAttendingId;
-  
-  factory UUser({String? id, required String password, required String email, required String firstName, required String lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<UUser>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state, String? uUserFriendsId, String? uEventMembersAttendingId, String? uEventMembersNotAttendingId}) {
+  factory UUser({String? id, required String password, required String email, required String firstName, required String lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<String>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state}) {
     return UUser._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       password: password,
@@ -190,17 +175,14 @@ class UUser extends amplify_core.Model {
       profilePictureUrl: profilePictureUrl,
       coverPictureUrl: coverPictureUrl,
       projects: projects != null ? List<UProject>.unmodifiable(projects) : projects,
-      friends: friends != null ? List<UUser>.unmodifiable(friends) : friends,
+      friends: friends != null ? List<String>.unmodifiable(friends) : friends,
       posts: posts != null ? List<UPost>.unmodifiable(posts) : posts,
       sponsors: sponsors != null ? List<USponsor>.unmodifiable(sponsors) : sponsors,
       notificationsSent: notificationsSent != null ? List<UNotification>.unmodifiable(notificationsSent) : notificationsSent,
       notificationsReceived: notificationsReceived != null ? List<UNotification>.unmodifiable(notificationsReceived) : notificationsReceived,
       bio: bio,
       city: city,
-      state: state,
-      uUserFriendsId: uUserFriendsId,
-      uEventMembersAttendingId: uEventMembersAttendingId,
-      uEventMembersNotAttendingId: uEventMembersNotAttendingId);
+      state: state);
   }
   
   bool equals(Object other) {
@@ -226,10 +208,7 @@ class UUser extends amplify_core.Model {
       DeepCollectionEquality().equals(_notificationsReceived, other._notificationsReceived) &&
       _bio == other._bio &&
       _city == other._city &&
-      _state == other._state &&
-      _uUserFriendsId == other._uUserFriendsId &&
-      _uEventMembersAttendingId == other._uEventMembersAttendingId &&
-      _uEventMembersNotAttendingId == other._uEventMembersNotAttendingId;
+      _state == other._state;
   }
   
   @override
@@ -247,20 +226,18 @@ class UUser extends amplify_core.Model {
     buffer.write("lastName=" + "$_lastName" + ", ");
     buffer.write("profilePictureUrl=" + "$_profilePictureUrl" + ", ");
     buffer.write("coverPictureUrl=" + "$_coverPictureUrl" + ", ");
+    buffer.write("friends=" + (_friends != null ? _friends!.toString() : "null") + ", ");
     buffer.write("bio=" + "$_bio" + ", ");
     buffer.write("city=" + "$_city" + ", ");
     buffer.write("state=" + "$_state" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
-    buffer.write("uUserFriendsId=" + "$_uUserFriendsId" + ", ");
-    buffer.write("uEventMembersAttendingId=" + "$_uEventMembersAttendingId" + ", ");
-    buffer.write("uEventMembersNotAttendingId=" + "$_uEventMembersNotAttendingId");
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  UUser copyWith({String? password, String? email, String? firstName, String? lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<UUser>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state, String? uUserFriendsId, String? uEventMembersAttendingId, String? uEventMembersNotAttendingId}) {
+  UUser copyWith({String? password, String? email, String? firstName, String? lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<String>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state}) {
     return UUser._internal(
       id: id,
       password: password ?? this.password,
@@ -277,10 +254,7 @@ class UUser extends amplify_core.Model {
       notificationsReceived: notificationsReceived ?? this.notificationsReceived,
       bio: bio ?? this.bio,
       city: city ?? this.city,
-      state: state ?? this.state,
-      uUserFriendsId: uUserFriendsId ?? this.uUserFriendsId,
-      uEventMembersAttendingId: uEventMembersAttendingId ?? this.uEventMembersAttendingId,
-      uEventMembersNotAttendingId: uEventMembersNotAttendingId ?? this.uEventMembersNotAttendingId);
+      state: state ?? this.state);
   }
   
   UUser copyWithModelFieldValues({
@@ -291,17 +265,14 @@ class UUser extends amplify_core.Model {
     ModelFieldValue<String?>? profilePictureUrl,
     ModelFieldValue<String?>? coverPictureUrl,
     ModelFieldValue<List<UProject>?>? projects,
-    ModelFieldValue<List<UUser>?>? friends,
+    ModelFieldValue<List<String>?>? friends,
     ModelFieldValue<List<UPost>?>? posts,
     ModelFieldValue<List<USponsor>?>? sponsors,
     ModelFieldValue<List<UNotification>?>? notificationsSent,
     ModelFieldValue<List<UNotification>?>? notificationsReceived,
     ModelFieldValue<String?>? bio,
     ModelFieldValue<String?>? city,
-    ModelFieldValue<String?>? state,
-    ModelFieldValue<String?>? uUserFriendsId,
-    ModelFieldValue<String?>? uEventMembersAttendingId,
-    ModelFieldValue<String?>? uEventMembersNotAttendingId
+    ModelFieldValue<String?>? state
   }) {
     return UUser._internal(
       id: id,
@@ -319,10 +290,7 @@ class UUser extends amplify_core.Model {
       notificationsReceived: notificationsReceived == null ? this.notificationsReceived : notificationsReceived.value,
       bio: bio == null ? this.bio : bio.value,
       city: city == null ? this.city : city.value,
-      state: state == null ? this.state : state.value,
-      uUserFriendsId: uUserFriendsId == null ? this.uUserFriendsId : uUserFriendsId.value,
-      uEventMembersAttendingId: uEventMembersAttendingId == null ? this.uEventMembersAttendingId : uEventMembersAttendingId.value,
-      uEventMembersNotAttendingId: uEventMembersNotAttendingId == null ? this.uEventMembersNotAttendingId : uEventMembersNotAttendingId.value
+      state: state == null ? this.state : state.value
     );
   }
   
@@ -340,12 +308,7 @@ class UUser extends amplify_core.Model {
           .map((e) => UProject.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
-      _friends = json['friends'] is List
-        ? (json['friends'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UUser.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
+      _friends = json['friends']?.cast<String>(),
       _posts = json['posts'] is List
         ? (json['posts'] as List)
           .where((e) => e?['serializedData'] != null)
@@ -374,13 +337,10 @@ class UUser extends amplify_core.Model {
       _city = json['city'],
       _state = json['state'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
-      _uUserFriendsId = json['uUserFriendsId'],
-      _uEventMembersAttendingId = json['uEventMembersAttendingId'],
-      _uEventMembersNotAttendingId = json['uEventMembersNotAttendingId'];
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'password': _password, 'email': _email, 'firstName': _firstName, 'lastName': _lastName, 'profilePictureUrl': _profilePictureUrl, 'coverPictureUrl': _coverPictureUrl, 'projects': _projects?.map((UProject? e) => e?.toJson()).toList(), 'friends': _friends?.map((UUser? e) => e?.toJson()).toList(), 'posts': _posts?.map((UPost? e) => e?.toJson()).toList(), 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'notificationsSent': _notificationsSent?.map((UNotification? e) => e?.toJson()).toList(), 'notificationsReceived': _notificationsReceived?.map((UNotification? e) => e?.toJson()).toList(), 'bio': _bio, 'city': _city, 'state': _state, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserFriendsId': _uUserFriendsId, 'uEventMembersAttendingId': _uEventMembersAttendingId, 'uEventMembersNotAttendingId': _uEventMembersNotAttendingId
+    'id': id, 'password': _password, 'email': _email, 'firstName': _firstName, 'lastName': _lastName, 'profilePictureUrl': _profilePictureUrl, 'coverPictureUrl': _coverPictureUrl, 'projects': _projects?.map((UProject? e) => e?.toJson()).toList(), 'friends': _friends, 'posts': _posts?.map((UPost? e) => e?.toJson()).toList(), 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'notificationsSent': _notificationsSent?.map((UNotification? e) => e?.toJson()).toList(), 'notificationsReceived': _notificationsReceived?.map((UNotification? e) => e?.toJson()).toList(), 'bio': _bio, 'city': _city, 'state': _state, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -401,10 +361,7 @@ class UUser extends amplify_core.Model {
     'city': _city,
     'state': _state,
     'createdAt': _createdAt,
-    'updatedAt': _updatedAt,
-    'uUserFriendsId': _uUserFriendsId,
-    'uEventMembersAttendingId': _uEventMembersAttendingId,
-    'uEventMembersNotAttendingId': _uEventMembersNotAttendingId
+    'updatedAt': _updatedAt
   };
 
   static final amplify_core.QueryModelIdentifier<UUserModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<UUserModelIdentifier>();
@@ -418,9 +375,7 @@ class UUser extends amplify_core.Model {
   static final PROJECTS = amplify_core.QueryField(
     fieldName: "projects",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UProject'));
-  static final FRIENDS = amplify_core.QueryField(
-    fieldName: "friends",
-    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UUser'));
+  static final FRIENDS = amplify_core.QueryField(fieldName: "friends");
   static final POSTS = amplify_core.QueryField(
     fieldName: "posts",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UPost'));
@@ -436,9 +391,6 @@ class UUser extends amplify_core.Model {
   static final BIO = amplify_core.QueryField(fieldName: "bio");
   static final CITY = amplify_core.QueryField(fieldName: "city");
   static final STATE = amplify_core.QueryField(fieldName: "state");
-  static final UUSERFRIENDSID = amplify_core.QueryField(fieldName: "uUserFriendsId");
-  static final UEVENTMEMBERSATTENDINGID = amplify_core.QueryField(fieldName: "uEventMembersAttendingId");
-  static final UEVENTMEMBERSNOTATTENDINGID = amplify_core.QueryField(fieldName: "uEventMembersNotAttendingId");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UUser";
     modelSchemaDefinition.pluralName = "UUsers";
@@ -488,11 +440,11 @@ class UUser extends amplify_core.Model {
       associatedKey: UProject.UUSERPROJECTSID
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UUser.FRIENDS,
       isRequired: false,
-      ofModelName: 'UUser',
-      associatedKey: UUser.UUSERFRIENDSID
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
@@ -553,24 +505,6 @@ class UUser extends amplify_core.Model {
       isRequired: false,
       isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: UUser.UUSERFRIENDSID,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: UUser.UEVENTMEMBERSATTENDINGID,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: UUser.UEVENTMEMBERSNOTATTENDINGID,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }
