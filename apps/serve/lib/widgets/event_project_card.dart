@@ -12,6 +12,7 @@ class EventCard extends StatelessWidget {
   final String eventId;
   final String memberStatus;
   final String projId;
+  final bool checkInButon;
 
   const EventCard(
       {super.key,
@@ -20,7 +21,8 @@ class EventCard extends StatelessWidget {
       required this.name,
       required this.eventId,
       required this.memberStatus,
-      required this.projId});
+      required this.projId,
+      this.checkInButon = false});
 
   static DateTime _parseDate(String dateString) {
     // Split the date string by '-' and convert to integers
@@ -102,7 +104,21 @@ class EventCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (memberStatus == 'UNDECIDED')
+                if (checkInButon)
+                  ElevatedButton(
+                    onPressed: () async {
+                      await EventHandlers.checkInUEventFromIds(eventId,
+                          BlocProvider.of<UserCubit>(context).state.id);
+                      // ignore: use_build_context_synchronously
+                      context.pushNamed("activeevents", queryParameters: {
+                        'userId': BlocProvider.of<UserCubit>(context).state.id
+                      }, pathParameters: {
+                        'userId': BlocProvider.of<UserCubit>(context).state.id
+                      });
+                    },
+                    child: const Text('Check In'),
+                  ),
+                if (memberStatus == 'UNDECIDED' && !checkInButon)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -132,7 +148,7 @@ class EventCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                if (memberStatus == 'ATTENDING')
+                if (memberStatus == 'ATTENDING' && !checkInButon)
                   Center(
                       child: Column(children: [
                     SizedBox(
@@ -144,7 +160,7 @@ class EventCard extends StatelessWidget {
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ])),
-                if (memberStatus == 'NOTATTENDING')
+                if (memberStatus == 'NOTATTENDING' && !checkInButon)
                   Center(
                       child: Column(children: [
                     SizedBox(

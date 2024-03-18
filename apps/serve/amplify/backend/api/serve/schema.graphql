@@ -49,8 +49,16 @@ type UEvent @model @auth(rules: [{ allow: public }]){
   time: String
   membersAttending: [String]
   membersNotAttending: [String]
+  # membersCheckedIn: [String]
   project: UProject! @belongsTo
   eventPicture: String
+}
+type UEventCheckIn @model @auth (rules: [{ allow: public }]){
+  id: ID! 
+  event: UEvent! @hasOne
+  user: UUser! @hasOne
+  datetime: String!
+  details: String
 }
 
 type USponsor @model @auth(rules: [{ allow: public }]){

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:serve_to_be_free/data/eventcheckin/handlers/eventcheckin_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -59,6 +60,30 @@ class EventHandlers {
       safePrint('Query failed: $e');
       return const [];
     }
+  }
+
+  static Future<UEventCheckIn?> checkInUEventFromIds(
+      String eventId, String userId,
+      {String? details}) async {
+    UUser? user = await UserHandlers.getUUserById(userId);
+    UEvent? event = await getUEventById(eventId);
+    if ((user != null) && (event != null)) {
+      return await checkInUEvent(event, user, details);
+    } else {
+      return null;
+    }
+  }
+
+  static Future<UEventCheckIn?> checkInUEvent(
+      UEvent event, UUser user, String? details) async {
+    UEventCheckIn eventCheckIn = UEventCheckIn(
+        event: event,
+        user: user,
+        datetime: DateTime.now().toString(),
+        uEventCheckInEventId: event.id,
+        uEventCheckInUserId: user.id,
+        details: details);
+    return await EventCheckInHandlers.createCheckIn(eventCheckIn);
   }
 
   static Future<List<UEvent?>> getUEventsByProject(String projId) async {

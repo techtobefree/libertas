@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/data/eventcheckin/handlers/eventcheckin_handlers.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/event_project_card.dart';
@@ -21,6 +22,7 @@ class ActiveEvents extends StatefulWidget {
 class _ProjectEventsState extends State<ActiveEvents> {
   bool _isLoading = false;
   List<UEvent?> events = [];
+  List<String> checkedInEventIds = [];
 
   @override
   void initState() {
@@ -36,9 +38,16 @@ class _ProjectEventsState extends State<ActiveEvents> {
     // Assume fetchData() is an asynchronous method in UProject class
     List<UEvent?> ueventsactive =
         await EventHandlers.getUUserActiveEvents(widget.userId);
+    List<UEvent?> checkedInActiveEvents =
+        await EventCheckInHandlers.getCheckedInActiveEvents(widget.userId!);
 
     setState(() {
       events.addAll(ueventsactive);
+      for (var event in ueventsactive) {
+        if (checkedInActiveEvents.contains(event)) {
+          checkedInEventIds.add(event!.id);
+        }
+      }
       events = sortByDate(events);
       _isLoading = false;
     });
@@ -100,17 +109,17 @@ class _ProjectEventsState extends State<ActiveEvents> {
                           //             .inHours <
                           //         24) {
                           return EventCard(
-                              dateString: events[index]!.date ?? '',
-                              timeString: events[index]!.time ?? '',
-                              name: events[index]!.name,
-                              eventId: events[index]!.id,
-                              memberStatus:
-                                  EventHandlers.getMemberStatusNotAsync(
-                                      events[index]!,
-                                      BlocProvider.of<UserCubit>(context)
-                                          .state
-                                          .id),
-                              projId: events[index]!.project.id);
+                            dateString: events[index]!.date ?? '',
+                            timeString: events[index]!.time ?? '',
+                            name: events[index]!.name,
+                            eventId: events[index]!.id,
+                            memberStatus: EventHandlers.getMemberStatusNotAsync(
+                                events[index]!,
+                                BlocProvider.of<UserCubit>(context).state.id),
+                            projId: events[index]!.project.id,
+                            checkInButon:
+                                !checkedInEventIds.contains(events[index]!.id),
+                          );
                           // }
                         }) // Display message if no events are found
                     : Text('No events found.'),

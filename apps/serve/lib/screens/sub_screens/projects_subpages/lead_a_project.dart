@@ -25,7 +25,10 @@ class _LeadAProjectState extends State<LeadAProject> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
-        title: const Text('Lead a Project'),
+        title: const Text(
+          'Lead a Project',
+          style: TextStyle(color: Colors.white),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
