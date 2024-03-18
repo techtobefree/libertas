@@ -19,7 +19,7 @@ abstract class UserCubitState extends Equatable {
   final String city;
   final String state;
   final List<UProject> projects;
-  final List<UUser> friends;
+  final List<String> friends;
   final List<UPost> posts;
   final List<USponsor> sponsors;
   final String uUserFriendsId; // what is this?
@@ -77,7 +77,6 @@ abstract class UserCubitState extends Equatable {
         friends: friends,
         posts: posts,
         sponsors: sponsors,
-        uUserFriendsId: uUserFriendsId,
       );
 
   UserClass get userClass => UserClass(
@@ -91,7 +90,7 @@ abstract class UserCubitState extends Equatable {
         profilePictureUrl: profilePictureUrl,
         coverPictureUrl: coverPictureUrl,
         isLeader: isLeader,
-        friends: [for (final f in friends) ObjectId.tryParse(f.id)]
+        friends: [for (final f in friends) ObjectId.tryParse(f)]
             .whereType<ObjectId>()
             .toList(),
         friendRequests: [for (final f in friendRequests) ObjectId.tryParse(f)]

@@ -21,6 +21,8 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   UUser currUser = UUser(password: "", email: "", firstName: "", lastName: "");
   List<UProject> projs = [];
+  bool isConnected = false;
+  bool isButtonDisabled = false;
 
   @override
   void initState() {
@@ -139,6 +141,75 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   backgroundColor: MaterialStateProperty.all<Color>(
                     const Color.fromARGB(255, 16, 34, 65),
                   ),
+                ),
+              ),
+            if (!BlocProvider.of<UserCubit>(context)
+                    .state
+                    .friends
+                    .contains(currUser.id) &&
+                (BlocProvider.of<UserCubit>(context).state.id != currUser.id))
+              isConnected
+                  ? const Text(
+                      'Connected',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Open Sans',
+                        color: Colors.blue,
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: isButtonDisabled
+                          ? null
+                          : () async {
+                              showDialog(
+                                context: context,
+                                barrierDismissible:
+                                    false, // Prevent user from dismissing dialog
+                                builder: (BuildContext context) {
+                                  return Center(
+                                    child:
+                                        CircularProgressIndicator(), // Loading indicator
+                                  );
+                                },
+                              );
+
+                              setState(() {
+                                isButtonDisabled = true;
+                              });
+
+                              await UserHandlers.addFriend(
+                                currUser.id,
+                                BlocProvider.of<UserCubit>(context).state.id,
+                              );
+
+                              // Update the state to indicate that the button is now connected
+                              setState(() {
+                                isConnected = true;
+                              });
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromARGB(255, 16, 34, 65),
+                        ),
+                      ),
+                      child: Text(
+                        'Press to Connect',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+            if (BlocProvider.of<UserCubit>(context)
+                .state
+                .friends
+                .contains(currUser.id))
+              const Text(
+                'Connected',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Open Sans',
+                  color: Colors.blue,
                 ),
               ),
           ],

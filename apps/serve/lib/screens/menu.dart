@@ -105,9 +105,39 @@ class MenuPage extends StatelessWidget {
                     ),
                     "About Serve To Be Free",
                     aboutPath),
+
+                MenuButton(
+                    Icon(
+                      Icons.man,
+                      size: 25,
+                      color: Colors.lightBlue[900],
+                    ),
+                    "Friends",
+                    '',
+                    onTapReplacement: () => context
+                            .pushNamed("friends", queryParameters: {
+                          'userId': BlocProvider.of<UserCubit>(context).state.id
+                        }, pathParameters: {
+                          'userId': BlocProvider.of<UserCubit>(context).state.id
+                        })),
                 const SizedBox(
                     height:
                         20), // Add some space between the last item and the logout button
+                MenuButton(
+                    Icon(
+                      Icons.account_box,
+                      size: 25,
+                      color: Colors.lightBlue[900],
+                    ),
+                    "Active Events",
+                    '',
+                    onTapReplacement: () => context
+                            .pushNamed("activeevents", queryParameters: {
+                          'userId': BlocProvider.of<UserCubit>(context).state.id
+                        }, pathParameters: {
+                          'userId': BlocProvider.of<UserCubit>(context).state.id
+                        })),
+                const SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
                     // Handle Logout action

@@ -20,7 +20,6 @@ class UserHandlers {
         firstName: user.firstName,
         lastName: user.lastName,
         profilePictureUrl: user.profilePictureUrl,
-        uUserFriendsId: "724a6ce3-47ed-402e-80c0-69e75601d2dd",
         projects: const [], // Provide an empty list or add actual UProject instances
         friends: const [], // Provide an empty list or add actual UUser instances
         posts: const [], // Provide an empty list or add actual UPost instances
@@ -115,6 +114,13 @@ class UserHandlers {
     return null;
   }
 
+  static Future<List<String>> getFriendsIds(String userId) async {
+    var uuser = await getUUserById(userId);
+
+    // print(jsonResponse);
+    return uuser!.friends ?? [];
+  }
+
   static Future<List<dynamic>> getUsers() async {
     var jsonResponse = await getUUsers();
     var projects = [];
@@ -139,6 +145,38 @@ class UserHandlers {
     }
 
     return null;
+  }
+
+  static Future<void> addFriend(String friendId, userId) async {
+    UUser? user = await UserHandlers.getUUserById(userId);
+    UUser? friend = await getUUserById(friendId);
+
+    var userFriends = user!.friends ?? [];
+    userFriends.add(friendId);
+
+    final addedFriendUUser = user.copyWith(friends: userFriends);
+
+    try {
+      final request = ModelMutations.update(addedFriendUUser);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: ${response}');
+
+      user = await UserHandlers.getUUserById(userId);
+
+      var friendFriends = friend!.friends ?? [];
+      friendFriends.add(userId);
+      final addedFriendFriend = friend.copyWith(friends: friendFriends);
+
+      try {
+        final request = ModelMutations.update(addedFriendFriend);
+        final response = await Amplify.API.mutate(request: request).response;
+        safePrint('Response: $response');
+      } catch (e) {
+        throw Exception('Failed to update project: $e');
+      }
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
   }
 
   static Future<void> signInUser(String username, String password) async {

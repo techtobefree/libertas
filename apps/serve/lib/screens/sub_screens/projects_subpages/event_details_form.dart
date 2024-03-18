@@ -94,8 +94,8 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
 
       // Extract date and time
       int year = eventDateTime.year;
-      int month = eventDateTime.month;
-      int day = eventDateTime.day;
+      String month = eventDateTime.month.toString().padLeft(2, '0');
+      String day = eventDateTime.day.toString().padLeft(2, '0');
       int hour = eventDateTime.hour;
       int minute = eventDateTime.minute;
 

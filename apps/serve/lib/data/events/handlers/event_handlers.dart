@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:serve_to_be_free/data/eventcheckin/handlers/eventcheckin_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -21,6 +22,68 @@ class EventHandlers {
     } catch (exeption) {
       throw Exception('Failed to get events: $exeption');
     }
+  }
+
+  static Future<List<UEvent>> getUUserActiveEvents(String? userId) async {
+    try {
+      if (userId == null) {
+        return [];
+      }
+      final request = ModelQueries.list(UEvent.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final uevents = response.data?.items;
+      if (uevents == null) {
+        safePrint('errors: ${response.errors}');
+        return const [];
+      }
+      List<UEvent> activeEvents = [];
+      for (var event in uevents) {
+        if (event!.membersAttending!.contains(userId)) {
+          activeEvents.add(event);
+        }
+      }
+      DateTime currentDate = DateTime.now();
+
+      // Filter out items with date equal to the current date
+      List<UEvent> filteredEvents = activeEvents.where((event) {
+        // Parse string date to DateTime
+        DateTime eventDate = DateTime.parse(event.date!);
+        // Check if the date matches the current date
+        return eventDate.year == currentDate.year &&
+            eventDate.month == currentDate.month &&
+            eventDate.day == currentDate.day;
+      }).toList();
+
+      return filteredEvents;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
+  }
+
+  static Future<UEventCheckIn?> checkInUEventFromIds(
+      String eventId, String userId,
+      {String? details}) async {
+    UUser? user = await UserHandlers.getUUserById(userId);
+    UEvent? event = await getUEventById(eventId);
+    if ((user != null) && (event != null)) {
+      return await checkInUEvent(event, user, details);
+    } else {
+      return null;
+    }
+  }
+
+  static Future<UEventCheckIn?> checkInUEvent(
+      UEvent event, UUser user, String? details) async {
+    UEventCheckIn eventCheckIn = UEventCheckIn(
+        event: event,
+        user: user,
+        datetime: DateTime.now().toString(),
+        uEventCheckInEventId: event.id,
+        uEventCheckInUserId: user.id,
+        details: details);
+    return await EventCheckInHandlers.createCheckIn(eventCheckIn);
   }
 
   static Future<List<UEvent?>> getUEventsByProject(String projId) async {

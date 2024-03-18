@@ -14,6 +14,8 @@ import 'package:serve_to_be_free/screens/messages.dart';
 import 'package:serve_to_be_free/screens/notifications.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/active_events.dart';
+import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/friends.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details_form.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/choose_profile_picture.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/confirm_email.dart';
@@ -184,6 +186,12 @@ final goRouter = GoRouter(
                   ProjectEvents(projectId: state.queryParameters['projectId']!),
             ),
             GoRoute(
+              path: 'projectabout/:id',
+              name: 'projectabout',
+              builder: (context, state) =>
+                  AboutProject(id: state.queryParameters['id']!),
+            ),
+            GoRoute(
               path: 'eventdetailsform/:projectId',
               name: 'eventdetailsform',
               builder: (context, state) => EventDetailsForm(
@@ -270,6 +278,20 @@ final goRouter = GoRouter(
                       name: 'editprofile',
                       builder: (context, state) => EditProfile())
                 ]),
+            GoRoute(
+              path: 'friends/:userId',
+              name: 'friends',
+              builder: (context, state) => Friends(
+                userId: state.queryParameters['userId'],
+              ),
+            ),
+            GoRoute(
+              path: 'activeevents/:userId',
+              name: 'activeevents',
+              builder: (context, state) => ActiveEvents(
+                userId: state.queryParameters['userId'],
+              ),
+            ),
             GoRoute(
               path: 'finishprojects',
               builder: (context, state) => const FinishProject(),

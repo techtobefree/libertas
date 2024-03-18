@@ -31,7 +31,7 @@ class UserCubit extends Cubit<UserCubitState> {
     List<String>? friendRequests,
     SignUpResult? signUpResult,
     List<UProject>? projects,
-    List<UUser>? friends,
+    List<String>? friends,
     List<UPost>? posts,
     List<USponsor>? sponsors,
     String? uUserFriendsId,
@@ -83,7 +83,6 @@ class UserCubit extends Cubit<UserCubitState> {
         projects: uUser.projects,
         posts: uUser.posts,
         sponsors: uUser.sponsors,
-        uUserFriendsId: uUser.uUserFriendsId,
         busy: busy ?? state.busy,
       );
 
@@ -92,7 +91,7 @@ class UserCubit extends Cubit<UserCubitState> {
     List<String>? friendRequests,
     SignUpResult? signUpResult,
     List<UProject>? projects,
-    List<UUser>? friends,
+    List<String>? friends,
     List<UPost>? posts,
     List<USponsor>? sponsors,
     String? uUserFriendsId,
