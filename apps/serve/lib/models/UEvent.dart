@@ -34,10 +34,14 @@ class UEvent extends amplify_core.Model {
   final String? _time;
   final List<String>? _membersAttending;
   final List<String>? _membersNotAttending;
+  final UUser? _owner;
+  final UUser? _leader;
   final UProject? _project;
   final String? _eventPicture;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
+  final String? _uEventOwnerId;
+  final String? _uEventLeaderId;
 
   @override
   getInstanceType() => classType;
@@ -85,6 +89,14 @@ class UEvent extends amplify_core.Model {
     return _membersNotAttending;
   }
   
+  UUser? get owner {
+    return _owner;
+  }
+  
+  UUser? get leader {
+    return _leader;
+  }
+  
   UProject get project {
     try {
       return _project!;
@@ -110,9 +122,17 @@ class UEvent extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const UEvent._internal({required this.id, required name, details, date, time, membersAttending, membersNotAttending, required project, eventPicture, createdAt, updatedAt}): _name = name, _details = details, _date = date, _time = time, _membersAttending = membersAttending, _membersNotAttending = membersNotAttending, _project = project, _eventPicture = eventPicture, _createdAt = createdAt, _updatedAt = updatedAt;
+  String? get uEventOwnerId {
+    return _uEventOwnerId;
+  }
   
-  factory UEvent({String? id, required String name, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, required UProject project, String? eventPicture}) {
+  String? get uEventLeaderId {
+    return _uEventLeaderId;
+  }
+  
+  const UEvent._internal({required this.id, required name, details, date, time, membersAttending, membersNotAttending, owner, leader, required project, eventPicture, createdAt, updatedAt, uEventOwnerId, uEventLeaderId}): _name = name, _details = details, _date = date, _time = time, _membersAttending = membersAttending, _membersNotAttending = membersNotAttending, _owner = owner, _leader = leader, _project = project, _eventPicture = eventPicture, _createdAt = createdAt, _updatedAt = updatedAt, _uEventOwnerId = uEventOwnerId, _uEventLeaderId = uEventLeaderId;
+  
+  factory UEvent({String? id, required String name, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, UUser? owner, UUser? leader, required UProject project, String? eventPicture, String? uEventOwnerId, String? uEventLeaderId}) {
     return UEvent._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
@@ -121,8 +141,12 @@ class UEvent extends amplify_core.Model {
       time: time,
       membersAttending: membersAttending != null ? List<String>.unmodifiable(membersAttending) : membersAttending,
       membersNotAttending: membersNotAttending != null ? List<String>.unmodifiable(membersNotAttending) : membersNotAttending,
+      owner: owner,
+      leader: leader,
       project: project,
-      eventPicture: eventPicture);
+      eventPicture: eventPicture,
+      uEventOwnerId: uEventOwnerId,
+      uEventLeaderId: uEventLeaderId);
   }
   
   bool equals(Object other) {
@@ -140,8 +164,12 @@ class UEvent extends amplify_core.Model {
       _time == other._time &&
       DeepCollectionEquality().equals(_membersAttending, other._membersAttending) &&
       DeepCollectionEquality().equals(_membersNotAttending, other._membersNotAttending) &&
+      _owner == other._owner &&
+      _leader == other._leader &&
       _project == other._project &&
-      _eventPicture == other._eventPicture;
+      _eventPicture == other._eventPicture &&
+      _uEventOwnerId == other._uEventOwnerId &&
+      _uEventLeaderId == other._uEventLeaderId;
   }
   
   @override
@@ -162,13 +190,15 @@ class UEvent extends amplify_core.Model {
     buffer.write("project=" + (_project != null ? _project!.toString() : "null") + ", ");
     buffer.write("eventPicture=" + "$_eventPicture" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
+    buffer.write("uEventOwnerId=" + "$_uEventOwnerId" + ", ");
+    buffer.write("uEventLeaderId=" + "$_uEventLeaderId");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  UEvent copyWith({String? name, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, UProject? project, String? eventPicture}) {
+  UEvent copyWith({String? name, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, UUser? owner, UUser? leader, UProject? project, String? eventPicture, String? uEventOwnerId, String? uEventLeaderId}) {
     return UEvent._internal(
       id: id,
       name: name ?? this.name,
@@ -177,8 +207,12 @@ class UEvent extends amplify_core.Model {
       time: time ?? this.time,
       membersAttending: membersAttending ?? this.membersAttending,
       membersNotAttending: membersNotAttending ?? this.membersNotAttending,
+      owner: owner ?? this.owner,
+      leader: leader ?? this.leader,
       project: project ?? this.project,
-      eventPicture: eventPicture ?? this.eventPicture);
+      eventPicture: eventPicture ?? this.eventPicture,
+      uEventOwnerId: uEventOwnerId ?? this.uEventOwnerId,
+      uEventLeaderId: uEventLeaderId ?? this.uEventLeaderId);
   }
   
   UEvent copyWithModelFieldValues({
@@ -188,8 +222,12 @@ class UEvent extends amplify_core.Model {
     ModelFieldValue<String?>? time,
     ModelFieldValue<List<String>?>? membersAttending,
     ModelFieldValue<List<String>?>? membersNotAttending,
+    ModelFieldValue<UUser?>? owner,
+    ModelFieldValue<UUser?>? leader,
     ModelFieldValue<UProject>? project,
-    ModelFieldValue<String?>? eventPicture
+    ModelFieldValue<String?>? eventPicture,
+    ModelFieldValue<String?>? uEventOwnerId,
+    ModelFieldValue<String?>? uEventLeaderId
   }) {
     return UEvent._internal(
       id: id,
@@ -199,8 +237,12 @@ class UEvent extends amplify_core.Model {
       time: time == null ? this.time : time.value,
       membersAttending: membersAttending == null ? this.membersAttending : membersAttending.value,
       membersNotAttending: membersNotAttending == null ? this.membersNotAttending : membersNotAttending.value,
+      owner: owner == null ? this.owner : owner.value,
+      leader: leader == null ? this.leader : leader.value,
       project: project == null ? this.project : project.value,
-      eventPicture: eventPicture == null ? this.eventPicture : eventPicture.value
+      eventPicture: eventPicture == null ? this.eventPicture : eventPicture.value,
+      uEventOwnerId: uEventOwnerId == null ? this.uEventOwnerId : uEventOwnerId.value,
+      uEventLeaderId: uEventLeaderId == null ? this.uEventLeaderId : uEventLeaderId.value
     );
   }
   
@@ -212,15 +254,23 @@ class UEvent extends amplify_core.Model {
       _time = json['time'],
       _membersAttending = json['membersAttending']?.cast<String>(),
       _membersNotAttending = json['membersNotAttending']?.cast<String>(),
+      _owner = json['owner']?['serializedData'] != null
+        ? UUser.fromJson(new Map<String, dynamic>.from(json['owner']['serializedData']))
+        : null,
+      _leader = json['leader']?['serializedData'] != null
+        ? UUser.fromJson(new Map<String, dynamic>.from(json['leader']['serializedData']))
+        : null,
       _project = json['project']?['serializedData'] != null
         ? UProject.fromJson(new Map<String, dynamic>.from(json['project']['serializedData']))
         : null,
       _eventPicture = json['eventPicture'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
+      _uEventOwnerId = json['uEventOwnerId'],
+      _uEventLeaderId = json['uEventLeaderId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'details': _details, 'date': _date, 'time': _time, 'membersAttending': _membersAttending, 'membersNotAttending': _membersNotAttending, 'project': _project?.toJson(), 'eventPicture': _eventPicture, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'details': _details, 'date': _date, 'time': _time, 'membersAttending': _membersAttending, 'membersNotAttending': _membersNotAttending, 'owner': _owner?.toJson(), 'leader': _leader?.toJson(), 'project': _project?.toJson(), 'eventPicture': _eventPicture, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uEventOwnerId': _uEventOwnerId, 'uEventLeaderId': _uEventLeaderId
   };
   
   Map<String, Object?> toMap() => {
@@ -231,10 +281,14 @@ class UEvent extends amplify_core.Model {
     'time': _time,
     'membersAttending': _membersAttending,
     'membersNotAttending': _membersNotAttending,
+    'owner': _owner,
+    'leader': _leader,
     'project': _project,
     'eventPicture': _eventPicture,
     'createdAt': _createdAt,
-    'updatedAt': _updatedAt
+    'updatedAt': _updatedAt,
+    'uEventOwnerId': _uEventOwnerId,
+    'uEventLeaderId': _uEventLeaderId
   };
 
   static final amplify_core.QueryModelIdentifier<UEventModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<UEventModelIdentifier>();
@@ -245,10 +299,18 @@ class UEvent extends amplify_core.Model {
   static final TIME = amplify_core.QueryField(fieldName: "time");
   static final MEMBERSATTENDING = amplify_core.QueryField(fieldName: "membersAttending");
   static final MEMBERSNOTATTENDING = amplify_core.QueryField(fieldName: "membersNotAttending");
+  static final OWNER = amplify_core.QueryField(
+    fieldName: "owner",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UUser'));
+  static final LEADER = amplify_core.QueryField(
+    fieldName: "leader",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UUser'));
   static final PROJECT = amplify_core.QueryField(
     fieldName: "project",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UProject'));
   static final EVENTPICTURE = amplify_core.QueryField(fieldName: "eventPicture");
+  static final UEVENTOWNERID = amplify_core.QueryField(fieldName: "uEventOwnerId");
+  static final UEVENTLEADERID = amplify_core.QueryField(fieldName: "uEventLeaderId");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UEvent";
     modelSchemaDefinition.pluralName = "UEvents";
@@ -304,6 +366,20 @@ class UEvent extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasOne(
+      key: UEvent.OWNER,
+      isRequired: false,
+      ofModelName: 'UUser',
+      associatedKey: UUser.ID
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasOne(
+      key: UEvent.LEADER,
+      isRequired: false,
+      ofModelName: 'UUser',
+      associatedKey: UUser.ID
+    ));
+    
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
       key: UEvent.PROJECT,
       isRequired: true,
@@ -329,6 +405,18 @@ class UEvent extends amplify_core.Model {
       isRequired: false,
       isReadOnly: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UEvent.UEVENTOWNERID,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UEvent.UEVENTLEADERID,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
   });
 }

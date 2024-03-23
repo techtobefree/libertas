@@ -21,6 +21,10 @@ class EventDetailsPage extends StatefulWidget {
 class _EventDetailsPageState extends State<EventDetailsPage> {
   Map<String, dynamic> eventData = {};
   String currentUserID = "";
+  bool isGoing = false;
+  bool isNotGoing = false;
+  bool isEventActive = false;
+  bool isCheckedIn = false;
 
   @override
   void initState() {
@@ -38,9 +42,35 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     final response = await Amplify.API.query(request: request).response;
 
     if (response.data!.items.isNotEmpty) {
+      String rsvpStatus = await EventHandlers.getMemberStatus(
+          response.data!.items[0]!.id,
+          BlocProvider.of<UserCubit>(context).state.id);
+      if (rsvpStatus == "ATTENDING") {
+        setState(() {
+          isGoing = true;
+        });
+      }
+      if (rsvpStatus == "NOTATTENDING") {
+        setState(() {
+          isNotGoing = true;
+        });
+      }
+      bool activeStatus = false;
+      bool isCheckedInEvent = false;
+      if (isGoing) {
+        activeStatus =
+            await EventHandlers.isEventActive(response.data!.items[0]!.id);
+        if (activeStatus) {
+          isCheckedInEvent = await EventHandlers.isCheckedInEvent(
+              BlocProvider.of<UserCubit>(context).state.id,
+              response.data!.items[0]!.id);
+        }
+      }
       var jsonResponse = response.data!.items[0]!.toJson();
 
       setState(() {
+        isEventActive = activeStatus;
+        isCheckedIn = isCheckedInEvent;
         eventData = jsonResponse;
       });
     } else {
@@ -188,6 +218,48 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 SizedBox(height: 10),
                 if (eventData.containsKey('description'))
                   Text('${eventData['description']}'),
+                (!isGoing && !isNotGoing)
+                    ? Column(children: [
+                        ElevatedButton(
+                            onPressed: () async {
+                              await EventHandlers.addAttendee(eventData['id'],
+                                  BlocProvider.of<UserCubit>(context).state.id);
+                              context
+                                  .pushNamed("eventdetails", queryParameters: {
+                                'id': eventData['id'],
+                              }, pathParameters: {
+                                'id': eventData['id'],
+                              });
+                            },
+                            child: const Text('Going')),
+                        ElevatedButton(
+                            onPressed: () async {
+                              await EventHandlers.addNonAttendee(
+                                  eventData['id'],
+                                  BlocProvider.of<UserCubit>(context).state.id);
+                              context
+                                  .pushNamed("eventdetails", queryParameters: {
+                                'id': eventData['id'],
+                              }, pathParameters: {
+                                'id': eventData['id'],
+                              });
+                            },
+                            child: const Text('Not Going'))
+                      ])
+                    : const SizedBox(),
+                (isGoing && isEventActive && !isCheckedIn)
+                    ? ElevatedButton(
+                        onPressed: () {
+                          EventHandlers.checkInUEventFromIds(eventData['id'],
+                              BlocProvider.of<UserCubit>(context).state.id);
+                          context.pushNamed("eventdetails", queryParameters: {
+                            'id': eventData['id'],
+                          }, pathParameters: {
+                            'id': eventData['id'],
+                          });
+                        },
+                        child: const Text('Check In'))
+                    : const SizedBox(),
               ],
             ),
           ),

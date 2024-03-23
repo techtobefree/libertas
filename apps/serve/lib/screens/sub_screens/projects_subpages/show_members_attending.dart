@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
+import 'package:serve_to_be_free/widgets/ui/authorized_event_member_card.dart';
 import 'package:serve_to_be_free/widgets/ui/member_card.dart'; // Import your event handlers
 
 class ShowMembersAttending extends StatefulWidget {
@@ -13,13 +16,33 @@ class ShowMembersAttending extends StatefulWidget {
 
 class ShowMembersAttendingState extends State<ShowMembersAttending> {
   List<String>? eventMems;
+  bool authorized = false;
+  bool active = false;
+  List<bool> isCheckedInBools = [];
 
   @override
   void initState() {
     super.initState();
-    EventHandlers.getUEventById(widget.eventId!).then((proj) {
+    EventHandlers.getUEventById(widget.eventId!).then((event) {
+      EventHandlers.getOwnedEvents(BlocProvider.of<UserCubit>(context).state.id)
+          .then((ownedEvents) {
+        if (ownedEvents.contains(event)) {
+          setState(() {
+            active = EventHandlers.isEventActiveFromUEvent(event!);
+
+            authorized = true;
+          });
+        }
+      });
       setState(() {
-        eventMems = proj?.membersAttending;
+        eventMems = event?.membersAttending;
+        for (var member in eventMems!) {
+          EventHandlers.isCheckedInEvent(member, event!.id).then((value) {
+            setState(() {
+              isCheckedInBools.add(value);
+            });
+          });
+        }
       });
     });
   }
@@ -57,7 +80,15 @@ class ShowMembersAttendingState extends State<ShowMembersAttending> {
           : ListView.builder(
               itemCount: eventMems!.length,
               itemBuilder: (context, index) {
-                return MemberCard(userId: eventMems![index]);
+                if (!(authorized && active)) {
+                  return MemberCard(userId: eventMems![index]);
+                } else {
+                  return AuthorizedEventMemberCard(
+                    userId: eventMems![index],
+                    eventId: widget.eventId!,
+                    isCheckedIn: isCheckedInBools[index],
+                  );
+                }
               },
             ),
     );

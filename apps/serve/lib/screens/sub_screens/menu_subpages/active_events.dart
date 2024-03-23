@@ -10,18 +10,20 @@ import 'package:serve_to_be_free/widgets/event_project_card.dart';
 
 import '../../../models/ModelProvider.dart';
 
-class ActiveEvents extends StatefulWidget {
+class MyEvents extends StatefulWidget {
   final String? userId;
 
-  const ActiveEvents({Key? key, required this.userId}) : super(key: key);
+  const MyEvents({Key? key, required this.userId}) : super(key: key);
 
   @override
   _ProjectEventsState createState() => _ProjectEventsState();
 }
 
-class _ProjectEventsState extends State<ActiveEvents> {
+class _ProjectEventsState extends State<MyEvents> {
   bool _isLoading = false;
-  List<UEvent?> events = [];
+  List<UEvent?> myevents = [];
+  List<bool> areMyEventsActive = [];
+  List<UEvent?> activeevents = [];
   List<String> checkedInEventIds = [];
 
   @override
@@ -36,19 +38,22 @@ class _ProjectEventsState extends State<ActiveEvents> {
       _isLoading = true;
     });
     // Assume fetchData() is an asynchronous method in UProject class
-    List<UEvent?> ueventsactive =
-        await EventHandlers.getUUserActiveEvents(widget.userId);
+    List<UEvent?> uevents =
+        await EventHandlers.getUUserRSVPEvents(widget.userId);
+
     List<UEvent?> checkedInActiveEvents =
-        await EventCheckInHandlers.getCheckedInActiveEvents(widget.userId!);
+        await EventCheckInHandlers.getCheckedInFromEvents(
+            widget.userId!, uevents);
 
     setState(() {
-      events.addAll(ueventsactive);
-      for (var event in ueventsactive) {
+      myevents.addAll(sortByDate(uevents));
+
+      for (var event in myevents) {
         if (checkedInActiveEvents.contains(event)) {
           checkedInEventIds.add(event!.id);
         }
       }
-      events = sortByDate(events);
+      activeevents = sortByDate(activeevents);
       _isLoading = false;
     });
   }
@@ -78,7 +83,7 @@ class _ProjectEventsState extends State<ActiveEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Active Events'),
+        title: const Text('My Events'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -94,12 +99,12 @@ class _ProjectEventsState extends State<ActiveEvents> {
           children: [
             _isLoading
                 ? const CircularProgressIndicator() // Display loading indicator while data is being fetched
-                : events.isNotEmpty
+                : myevents.isNotEmpty
                     ? ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
-                        itemCount: events.length,
+                        itemCount: myevents.length,
                         itemBuilder: (context, index) {
                           // if (DateTime.now().isBefore(
                           //         _parseDate(events[index]!.date ?? '')) ||
@@ -109,16 +114,19 @@ class _ProjectEventsState extends State<ActiveEvents> {
                           //             .inHours <
                           //         24) {
                           return EventCard(
-                            dateString: events[index]!.date ?? '',
-                            timeString: events[index]!.time ?? '',
-                            name: events[index]!.name,
-                            eventId: events[index]!.id,
+                            dateString: myevents[index]!.date ?? '',
+                            timeString: myevents[index]!.time ?? '',
+                            name: myevents[index]!.name,
+                            eventId: myevents[index]!.id,
                             memberStatus: EventHandlers.getMemberStatusNotAsync(
-                                events[index]!,
+                                myevents[index]!,
                                 BlocProvider.of<UserCubit>(context).state.id),
-                            projId: events[index]!.project.id,
+                            projId: myevents[index]!.project.id,
                             checkInButon:
-                                !checkedInEventIds.contains(events[index]!.id),
+                                (EventHandlers.isEventActiveFromUEvent(
+                                        myevents[index]!) &&
+                                    !checkedInEventIds
+                                        .contains(myevents[index]!.id)),
                           );
                           // }
                         }) // Display message if no events are found

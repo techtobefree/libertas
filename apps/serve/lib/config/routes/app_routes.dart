@@ -286,9 +286,9 @@ final goRouter = GoRouter(
               ),
             ),
             GoRoute(
-              path: 'activeevents/:userId',
-              name: 'activeevents',
-              builder: (context, state) => ActiveEvents(
+              path: 'myevents/:userId',
+              name: 'myevents',
+              builder: (context, state) => MyEvents(
                 userId: state.queryParameters['userId'],
               ),
             ),
