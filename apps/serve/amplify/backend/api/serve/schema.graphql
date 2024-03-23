@@ -50,6 +50,8 @@ type UEvent @model @auth(rules: [{ allow: public }]){
   membersAttending: [String]
   membersNotAttending: [String]
   # membersCheckedIn: [String]
+  owner: UUser @hasOne
+  leader: UUser @hasOne
   project: UProject! @belongsTo
   eventPicture: String
 }

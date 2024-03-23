@@ -1,9 +1,12 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class EventDetailsForm extends StatefulWidget {
@@ -104,6 +107,9 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
       print('Date: $year-$month-$day');
       print('Time: $hour:$minute');
       UEvent uevent = UEvent(
+          owner: await UserHandlers.getUUserById(
+              BlocProvider.of<UserCubit>(context).state.id),
+          uEventOwnerId: BlocProvider.of<UserCubit>(context).state.id,
           name: eventName,
           details: eventDetails,
           date: '$year-$month-$day',

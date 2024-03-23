@@ -129,10 +129,10 @@ class MenuPage extends StatelessWidget {
                       size: 25,
                       color: Colors.lightBlue[900],
                     ),
-                    "Active Events",
+                    "My Events",
                     '',
                     onTapReplacement: () => context
-                            .pushNamed("activeevents", queryParameters: {
+                            .pushNamed("myevents", queryParameters: {
                           'userId': BlocProvider.of<UserCubit>(context).state.id
                         }, pathParameters: {
                           'userId': BlocProvider.of<UserCubit>(context).state.id

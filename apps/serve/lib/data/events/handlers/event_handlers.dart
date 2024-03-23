@@ -24,31 +24,95 @@ class EventHandlers {
     }
   }
 
-  static Future<List<UEvent>> getUUserActiveEvents(String? userId) async {
+  static Future<bool> isCheckedInEvent(String userId, String eventId) async {
+    final queryPredicateEvent = UEventCheckIn.UEVENTCHECKINEVENTID.eq(eventId);
+    final queryPredicateUser = UEventCheckIn.UEVENTCHECKINUSERID.eq(userId);
+
+    final queryPredicate = queryPredicateEvent.and(queryPredicateUser);
+
+    final request = ModelQueries.list<UEventCheckIn>(
+      UEventCheckIn.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+    if (response.data != null) {
+      return (response.data?.items.isNotEmpty) ?? false;
+    } else {
+      print('get events failed');
+      return false;
+    }
+  }
+
+  static Future<List<UEvent?>> getOwnedEvents(String userId) async {
+    // UUser? user = await UserHandlers.getUUserById(userId);
+
+    final queryPredicate = UEvent.UEVENTOWNERID.eq(userId);
+
+    final request = ModelQueries.list<UEvent>(
+      UEvent.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+    if (response.data != null) {
+      return response.data?.items ?? [];
+    } else {
+      print('get owned events failed');
+      return [];
+    }
+  }
+
+  static Future<bool> isEventActive(String eventId) async {
+    UEvent? event = await getUEventById(eventId);
+    DateTime currentDate = DateTime.now();
+
+    DateTime eventDate = DateTime.parse(event!.date!);
+    return eventDate.year == currentDate.year &&
+        eventDate.month == currentDate.month &&
+        eventDate.day == currentDate.day;
+  }
+
+  static bool isEventActiveFromUEvent(UEvent event) {
+    DateTime currentDate = DateTime.now();
+
+    DateTime eventDate = DateTime.parse(event.date!);
+    return eventDate.year == currentDate.year &&
+        eventDate.month == currentDate.month &&
+        eventDate.day == currentDate.day;
+  }
+
+  static Future<List<UEvent?>> getUUserRSVPEvents(String? userId) async {
     try {
       if (userId == null) {
         return [];
       }
-      final request = ModelQueries.list(UEvent.classType);
+
+      final queryPredicate = UEvent.MEMBERSATTENDING.contains(userId);
+
+      final request =
+          ModelQueries.list(UEvent.classType, where: queryPredicate);
       final response = await Amplify.API.query(request: request).response;
 
-      final uevents = response.data?.items;
-      if (uevents == null) {
-        safePrint('errors: ${response.errors}');
-        return const [];
+      return response.data?.items ?? [];
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
+  }
+
+  static Future<List<UEvent?>> getUUserActiveEvents(String? userId) async {
+    try {
+      if (userId == null) {
+        return [];
       }
-      List<UEvent> activeEvents = [];
-      for (var event in uevents) {
-        if (event!.membersAttending!.contains(userId)) {
-          activeEvents.add(event);
-        }
-      }
+
+      List<UEvent?> activeEvents = await getUUserRSVPEvents(userId);
+
       DateTime currentDate = DateTime.now();
 
       // Filter out items with date equal to the current date
-      List<UEvent> filteredEvents = activeEvents.where((event) {
+      List<UEvent?> filteredEvents = activeEvents.where((event) {
         // Parse string date to DateTime
-        DateTime eventDate = DateTime.parse(event.date!);
+        DateTime eventDate = DateTime.parse(event!.date!);
         // Check if the date matches the current date
         return eventDate.year == currentDate.year &&
             eventDate.month == currentDate.month &&
@@ -223,17 +287,37 @@ class EventHandlers {
         if (event.membersAttending!.contains(memberId)) {
           return 'ATTENDING';
         }
-      } else if (event.membersNotAttending != null) {
+      }
+      if (event.membersNotAttending != null) {
         if (event.membersNotAttending!.contains(memberId)) {
           return 'NOTATTENDING';
-        }
-      } else {
-        if (event.membersNotAttending!.contains(memberId)) {
-          return 'UNDECIDED';
         }
       }
     }
     return 'UNDECIDED';
+  }
+
+  static Future<void> addLeader(eventId, leaderId) async {
+    UEvent? uevent = await getUEventById(eventId);
+    UUser? leader = await UserHandlers.getUUserById(leaderId);
+    var ueventMems = uevent!.membersAttending;
+    var memID = leaderId;
+    if (ueventMems != null) {
+      if (!ueventMems.contains(memID)) {
+        ueventMems.add(memID);
+      }
+    }
+
+    final addedMemUEvent = uevent.copyWith(
+        membersAttending: ueventMems, leader: leader, uEventLeaderId: leaderId);
+
+    try {
+      final request = ModelMutations.update(addedMemUEvent);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
   }
 
   static String getMemberStatusNotAsync(UEvent event, String memberId) {

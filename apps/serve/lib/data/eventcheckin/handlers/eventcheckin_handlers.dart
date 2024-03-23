@@ -30,7 +30,7 @@ class EventCheckInHandlers {
     if (user != null) {
       checkIns = await getUserCheckedIns(user);
     }
-    List<UEvent> activeevents =
+    List<UEvent?> activeevents =
         await EventHandlers.getUUserActiveEvents(userId);
     List<UEvent> checkedInActiveEvents = [];
     for (var event in activeevents) {
@@ -38,11 +38,30 @@ class EventCheckInHandlers {
         UEvent? checkInEvent =
             await EventHandlers.getUEventById(checkIn!.uEventCheckInEventId);
         if (checkInEvent == event) {
-          checkedInActiveEvents.add(event);
+          checkedInActiveEvents.add(event!);
         }
       }
     }
     return checkedInActiveEvents;
+  }
+
+  static Future<List<UEvent>> getCheckedInFromEvents(
+      String userId, List<UEvent?> activeEvents) async {
+    final user = await UserHandlers.getUUserById(userId);
+    List<UEventCheckIn?> checkIns = [];
+    if (user != null) {
+      checkIns = await getUserCheckedIns(user);
+    }
+
+    List<UEvent> checkedInEvents = [];
+    for (var event in activeEvents) {
+      for (var checkIn in checkIns) {
+        if (checkIn?.uEventCheckInEventId == event!.id) {
+          checkedInEvents.add(event);
+        }
+      }
+    }
+    return checkedInEvents;
   }
 
   // static Future<List<UEventCheckIn?>> getUserCheckedIns(UUser user) async {
