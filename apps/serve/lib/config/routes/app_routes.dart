@@ -16,7 +16,10 @@ import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/active_events.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/friends.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/checked_in.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details_form.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/qr_display.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/qr_scan.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/choose_profile_picture.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/confirm_email.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/how_it_works.dart';
@@ -177,6 +180,28 @@ final goRouter = GoRouter(
               name: 'eventdetails',
               builder: (context, state) => EventDetailsPage(
                 eventId: state.queryParameters['id']!,
+              ),
+            ),
+            GoRoute(
+              path: 'qrdisplay/:code',
+              name: 'qrdisplay',
+              builder: (context, state) => QRDisplay(
+                code: state.queryParameters['code']!,
+              ),
+            ),
+            GoRoute(
+              path: 'checkedin',
+              name: 'checkedin',
+              builder: (context, state) => CheckedIn(
+                eventId: state.queryParameters['eventId']!,
+              ),
+            ),
+            GoRoute(
+              path: 'qrscan/:code',
+              name: 'qrscan',
+              builder: (context, state) => QRScan(
+                code: state.queryParameters['code']!,
+                eventId: state.queryParameters['eventId']!,
               ),
             ),
             GoRoute(

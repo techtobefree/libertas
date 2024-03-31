@@ -60,6 +60,8 @@ dependencies:
   intl: ^0.18.0
   crypto: ^3.0.3
   file_picker: ^6.1.1
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^4.0.1
 
   # payments
   flutter_stripe: ^9.5.0+1

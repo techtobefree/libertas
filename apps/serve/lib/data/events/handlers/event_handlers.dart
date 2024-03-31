@@ -5,11 +5,19 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:serve_to_be_free/data/eventcheckin/handlers/eventcheckin_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'dart:math';
 
 class EventHandlers {
   static Future<UEvent?> createUEvent(UEvent event) async {
     try {
-      final request = ModelMutations.create(event);
+      String checkInCodeGen;
+      if (event.checkInCode == null) {
+        checkInCodeGen = (1000 + Random.secure().nextInt(9000)).toString();
+      } else {
+        checkInCodeGen = event.checkInCode!;
+      }
+      UEvent eventWithCode = event.copyWith(checkInCode: checkInCodeGen);
+      final request = ModelMutations.create(eventWithCode);
       final response = await Amplify.API.mutate(request: request).response;
 
       final createdEvent = response.data;
