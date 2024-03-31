@@ -64,12 +64,26 @@ class _ProjectEventsState extends State<MyEvents> {
 
     // Sort the events by date
     events.sort((a, b) {
+      // Parse dates
       DateTime dateA = _parseDate(a!.date!);
       DateTime dateB = _parseDate(b!.date!);
-      return dateA.compareTo(dateB);
+
+      // Compare dates
+      if (_isBeforeToday(dateA) && !_isBeforeToday(dateB)) {
+        return 1; // a comes after b
+      } else if (!_isBeforeToday(dateA) && _isBeforeToday(dateB)) {
+        return -1; // b comes after a
+      } else {
+        return dateA.compareTo(dateB); // compare normally
+      }
     });
 
     return events;
+  }
+
+  static bool _isBeforeToday(DateTime date) {
+    final now = DateTime.now();
+    return date.isBefore(DateTime(now.year, now.month, now.day));
   }
 
   static DateTime _parseDate(String dateString) {
@@ -127,6 +141,7 @@ class _ProjectEventsState extends State<MyEvents> {
                                         myevents[index]!) &&
                                     !checkedInEventIds
                                         .contains(myevents[index]!.id)),
+                            eventCode: myevents[index]!.checkInCode ?? "0000",
                           );
                           // }
                         }) // Display message if no events are found

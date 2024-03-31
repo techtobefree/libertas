@@ -54,7 +54,9 @@ type UEvent @model @auth(rules: [{ allow: public }]){
   leader: UUser @hasOne
   project: UProject! @belongsTo
   eventPicture: String
+  checkInCode: String  #4 digits
 }
+
 type UEventCheckIn @model @auth (rules: [{ allow: public }]){
   id: ID! 
   event: UEvent! @hasOne

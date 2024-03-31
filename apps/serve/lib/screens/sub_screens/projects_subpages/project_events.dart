@@ -119,6 +119,7 @@ class _ProjectEventsState extends State<ProjectEvents> {
                                 events[index]!,
                                 BlocProvider.of<UserCubit>(context).state.id),
                             projId: widget.projectId,
+                            eventCode: events[index]!.checkInCode ?? "0000",
                           );
                           // }
                         }) // Display message if no events are found

@@ -21,6 +21,7 @@ class EventDetailsPage extends StatefulWidget {
 class _EventDetailsPageState extends State<EventDetailsPage> {
   Map<String, dynamic> eventData = {};
   String currentUserID = "";
+  bool isAuthorized = false;
   bool isGoing = false;
   bool isNotGoing = false;
   bool isEventActive = false;
@@ -67,8 +68,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         }
       }
       var jsonResponse = response.data!.items[0]!.toJson();
+      var ownerId = response.data!.items[0]!.uEventOwnerId;
 
       setState(() {
+        if (ownerId == BlocProvider.of<UserCubit>(context).state.id) {
+          isAuthorized = true;
+        }
         isEventActive = activeStatus;
         isCheckedIn = isCheckedInEvent;
         eventData = jsonResponse;
@@ -218,6 +223,31 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 SizedBox(height: 10),
                 if (eventData.containsKey('description'))
                   Text('${eventData['description']}'),
+                if (eventData.containsKey('checkInCode') && isAuthorized)
+                  Column(
+                    children: [
+                      Text('Event Check in Code: ${eventData['checkInCode']}'),
+                      ElevatedButton(
+                          onPressed: () async {
+                            context.pushNamed("qrdisplay", queryParameters: {
+                              'code': eventData['checkInCode'],
+                            }, pathParameters: {
+                              'code': eventData['checkInCode'],
+                            });
+                          },
+                          child: const Text('Generate QR code')),
+                    ],
+                  ),
+
+                if (isAuthorized && isEventActive)
+                  ElevatedButton(
+                      onPressed: () async {
+                        context.pushNamed("showmembersattending",
+                            queryParameters: {
+                              'eventId': widget.eventId,
+                            });
+                      },
+                      child: const Text('Check In Members')),
                 (!isGoing && !isNotGoing)
                     ? Column(children: [
                         ElevatedButton(
@@ -248,23 +278,98 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       ])
                     : const SizedBox(),
                 (isGoing && isEventActive && !isCheckedIn)
-                    ? ElevatedButton(
-                        onPressed: () {
-                          EventHandlers.checkInUEventFromIds(eventData['id'],
-                              BlocProvider.of<UserCubit>(context).state.id);
-                          context.pushNamed("eventdetails", queryParameters: {
-                            'id': eventData['id'],
-                          }, pathParameters: {
-                            'id': eventData['id'],
-                          });
-                        },
-                        child: const Text('Check In'))
+                    ? Column(children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              _showCodeInputDialog(
+                                  context, eventData['checkInCode'] ?? "0000");
+                            },
+                            child: const Text('Check In')),
+                        ElevatedButton(
+                            onPressed: () {
+                              context.pushNamed("qrscan", queryParameters: {
+                                'code': eventData['checkInCode'],
+                                'eventId': eventData['id'],
+                              }, pathParameters: {
+                                'code': eventData['checkInCode'],
+                              });
+                            },
+                            child: const Text('Scan QR Code'))
+                      ])
                     : const SizedBox(),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showCodeInputDialog(
+      BuildContext context, String eventCode) async {
+    String code = ''; // Initialize an empty string to hold the code
+    if (isAuthorized) {
+      await EventHandlers.checkInUEventFromIds(
+          eventData['id'], BlocProvider.of<UserCubit>(context).state.id);
+      context.pushNamed("checkedin", queryParameters: {
+        'eventId': eventData['id'],
+      });
+      return;
+    }
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter 4-Digit Code'),
+          content: TextFormField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: 'Enter 4-digit code',
+            ),
+            onChanged: (value) {
+              code = value; // Update the code when the user enters text
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (code.length == 4) {
+                  // Check if the entered code is 4 digits
+                  print('Entered code: $code');
+                  if (code == eventCode) {
+                    await EventHandlers.checkInUEventFromIds(eventData['id'],
+                        BlocProvider.of<UserCubit>(context).state.id);
+                    context.pushNamed("checkedin", queryParameters: {
+                      'eventId': eventData['id'],
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Code does not match'),
+                      ),
+                    );
+                  }
+                  Navigator.of(context).pop(); // Close the dialog
+                } else {
+                  // Show an error message if the code is not 4 digits
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please enter a 4-digit code.'),
+                    ),
+                  );
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
     );
   }
 

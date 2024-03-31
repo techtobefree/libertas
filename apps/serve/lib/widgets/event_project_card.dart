@@ -13,6 +13,7 @@ class EventCard extends StatelessWidget {
   final String memberStatus;
   final String projId;
   final bool checkInButon;
+  final String eventCode;
 
   const EventCard(
       {super.key,
@@ -22,11 +23,14 @@ class EventCard extends StatelessWidget {
       required this.eventId,
       required this.memberStatus,
       required this.projId,
+      required this.eventCode,
       this.checkInButon = false});
 
   static DateTime _parseDate(String dateString) {
-    // Split the date string by '-' and convert to integers
     List<int> dateParts = dateString.split('-').map(int.parse).toList();
+    print(DateTime(dateParts[0], dateParts[1], dateParts[2]));
+    print(DateTime.now());
+
     return DateTime(dateParts[0], dateParts[1], dateParts[2]);
   }
 
@@ -105,20 +109,48 @@ class EventCard extends StatelessWidget {
                   ),
                 ),
                 if (checkInButon)
-                  ElevatedButton(
-                    onPressed: () async {
-                      await EventHandlers.checkInUEventFromIds(eventId,
-                          BlocProvider.of<UserCubit>(context).state.id);
-                      // ignore: use_build_context_synchronously
-                      context.pushNamed("activeevents", queryParameters: {
-                        'userId': BlocProvider.of<UserCubit>(context).state.id
-                      }, pathParameters: {
-                        'userId': BlocProvider.of<UserCubit>(context).state.id
-                      });
-                    },
-                    child: const Text('Check In'),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _showCodeInputDialog(context, eventCode);
+                        },
+                        child: const Text('Check In'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.pushNamed("qrscan", queryParameters: {
+                            'code': eventCode,
+                            'eventId': eventId,
+                          }, pathParameters: {
+                            'code': eventCode,
+                          });
+                        },
+                        child: const Text('Scan QR code'),
+                      ),
+                    ],
                   ),
-                if (memberStatus == 'UNDECIDED' && !checkInButon)
+                if (_parseDate(dateString).isBefore(DateTime.now()) &&
+                    !checkInButon)
+                  Center(
+                      child: Column(children: [
+                    SizedBox(
+                      height: 7,
+                    ),
+                    Text(
+                      'Completed',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ])),
+                if (memberStatus == 'UNDECIDED' &&
+                    !checkInButon &&
+                    DateTime(
+                            _parseDate(dateString).year,
+                            _parseDate(dateString).month,
+                            _parseDate(dateString).day)
+                        .isAfter(DateTime(DateTime.now().year,
+                            DateTime.now().month, DateTime.now().day)))
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -148,7 +180,9 @@ class EventCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                if (memberStatus == 'ATTENDING' && !checkInButon)
+                if (memberStatus == 'ATTENDING' &&
+                    !checkInButon &&
+                    _parseDate(dateString).isAfter(DateTime.now()))
                   Center(
                       child: Column(children: [
                     SizedBox(
@@ -160,7 +194,9 @@ class EventCard extends StatelessWidget {
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ])),
-                if (memberStatus == 'NOTATTENDING' && !checkInButon)
+                if (memberStatus == 'NOTATTENDING' &&
+                    !checkInButon &&
+                    _parseDate(dateString).isAfter(DateTime.now()))
                   Center(
                       child: Column(children: [
                     SizedBox(
@@ -177,6 +213,67 @@ class EventCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showCodeInputDialog(
+      BuildContext context, String eventCode) async {
+    String code = ''; // Initialize an empty string to hold the code
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter 4-Digit Code'),
+          content: TextFormField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: 'Enter 4-digit code',
+            ),
+            onChanged: (value) {
+              code = value; // Update the code when the user enters text
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (code.length == 4) {
+                  // Check if the entered code is 4 digits
+                  print('Entered code: $code');
+                  if (code == eventCode) {
+                    await EventHandlers.checkInUEventFromIds(
+                        eventId, BlocProvider.of<UserCubit>(context).state.id);
+                    context.pushNamed("checkedin", queryParameters: {
+                      'eventId': eventId,
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Code does not match'),
+                      ),
+                    );
+                  }
+                  Navigator.of(context).pop(); // Close the dialog
+                } else {
+                  // Show an error message if the code is not 4 digits
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please enter a 4-digit code.'),
+                    ),
+                  );
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
