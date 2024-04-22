@@ -5,14 +5,17 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 class EventDetailsForm extends StatefulWidget {
   final String projectId;
+  final String eventId;
 
-  const EventDetailsForm({Key? key, required this.projectId}) : super(key: key);
+  const EventDetailsForm({Key? key, required this.projectId, this.eventId = ''})
+      : super(key: key);
 
   @override
   _EventDetailsFormState createState() => _EventDetailsFormState();
@@ -21,23 +24,43 @@ class EventDetailsForm extends StatefulWidget {
 class _EventDetailsFormState extends State<EventDetailsForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   late UProject _project;
+  UEvent? _event;
+  @override
   void initState() {
     super.initState();
-    _fetchProjectData();
+    _fetchProjectandEventData();
   }
 
-  Future<void> _fetchProjectData() async {
+  Future<void> _fetchProjectandEventData() async {
     // Simulating asynchronous data fetching
 
     // Assume fetchData() is an asynchronous method in UProject class
     UProject? project = await ProjectHandlers.getUProjectById(widget.projectId);
+    UEvent? event;
+    if (widget.eventId != '') {
+      event = await EventHandlers.getUEventById(widget.eventId);
+    }
     setState(() {
       if (project != null) {
         _project = project;
       } else {
         safePrint('project not found event page');
       }
+      if (event != null) {
+        _event = event;
+      } else {
+        safePrint('event not found');
+      }
     });
+    if (_event != null) {
+      DateTime eventDate =
+          DateTime.parse('${_event!.date ?? ''} ${_event!.time ?? ''}');
+      _formKey.currentState?.patchValue({
+        'eventName': _event!.name,
+        'eventDetails': _event!.details,
+        'eventDateTime': eventDate,
+      });
+    }
   }
 
   @override
@@ -99,25 +122,37 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
       int year = eventDateTime.year;
       String month = eventDateTime.month.toString().padLeft(2, '0');
       String day = eventDateTime.day.toString().padLeft(2, '0');
-      int hour = eventDateTime.hour;
-      int minute = eventDateTime.minute;
+      String hour = eventDateTime.hour.toString().padLeft(2, '0');
+      String minute = eventDateTime.minute.toString().padLeft(2, '0');
 
       print('Event Name: $eventName');
       print('Event Details: $eventDetails');
       print('Date: $year-$month-$day');
       print('Time: $hour:$minute');
-      UEvent uevent = UEvent(
-          owner: await UserHandlers.getUUserById(
-              BlocProvider.of<UserCubit>(context).state.id),
-          uEventOwnerId: BlocProvider.of<UserCubit>(context).state.id,
+
+      if (_event != null) {
+        UEvent updatedEvent = _event!.copyWith(
           name: eventName,
           details: eventDetails,
           date: '$year-$month-$day',
           time: '$hour:$minute',
-          membersAttending: [],
-          membersNotAttending: [],
-          project: _project);
-      await ProjectHandlers.addEvent(widget.projectId, uevent);
+        );
+        await EventHandlers.updateUEvent(updatedEvent);
+      } else {
+        UEvent uevent = UEvent(
+            owner: await UserHandlers.getUUserById(
+                BlocProvider.of<UserCubit>(context).state.id),
+            uEventOwnerId: BlocProvider.of<UserCubit>(context).state.id,
+            name: eventName,
+            details: eventDetails,
+            date: '$year-$month-$day',
+            time: '$hour:$minute',
+            membersAttending: [],
+            membersNotAttending: [],
+            project: _project);
+
+        await ProjectHandlers.addEvent(widget.projectId, uevent);
+      }
 
       // Button action goes here
       // ignore: use_build_context_synchronously

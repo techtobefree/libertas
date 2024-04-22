@@ -14,6 +14,7 @@ class EventCard extends StatelessWidget {
   final String projId;
   final bool checkInButon;
   final String eventCode;
+  final bool eventAuthorized;
 
   const EventCard(
       {super.key,
@@ -24,7 +25,8 @@ class EventCard extends StatelessWidget {
       required this.memberStatus,
       required this.projId,
       required this.eventCode,
-      this.checkInButon = false});
+      this.checkInButon = false,
+      this.eventAuthorized = false});
 
   static DateTime _parseDate(String dateString) {
     List<int> dateParts = dateString.split('-').map(int.parse).toList();
@@ -55,7 +57,6 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('x');
         context.pushNamed("eventdetails", queryParameters: {
           'id': eventId,
         }, pathParameters: {
@@ -65,7 +66,13 @@ class EventCard extends StatelessWidget {
       child: Center(
         child: SizedBox(
           width: double.infinity,
-          height: 160.0,
+          height: (eventAuthorized &&
+                  !DateTime.parse(dateString).isBefore(DateTime(
+                      DateTime.now().year,
+                      DateTime.now().month,
+                      DateTime.now().day)))
+              ? 200.0
+              : 160,
           child: Card(
             elevation: 5,
             margin: EdgeInsets.all(8.0),
@@ -111,11 +118,17 @@ class EventCard extends StatelessWidget {
                 if (checkInButon)
                   Row(
                     children: [
+                      SizedBox(
+                        width: 10,
+                      ),
                       ElevatedButton(
                         onPressed: () {
                           _showCodeInputDialog(context, eventCode);
                         },
                         child: const Text('Check In'),
+                      ),
+                      SizedBox(
+                        width: 10,
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -130,59 +143,76 @@ class EventCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                if (_parseDate(dateString).isBefore(DateTime.now()) &&
-                    !checkInButon)
+
+                // if (_parseDate(dateString).isBefore(DateTime.now() ) &&
+                //     !checkInButon)
+                //   Center(
+                //       child: Column(children: [
+                //     SizedBox(
+                //       height: 7,
+                //     ),
+                //     Text(
+                //       'Completed',
+                //       style:
+                //           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                //     ),
+                //   ])),
+                if (memberStatus == 'UNDECIDED' && !checkInButon
+                    // &&
+                    // DateTime(
+                    //         _parseDate(dateString).year,
+                    //         _parseDate(dateString).month,
+                    //         _parseDate(dateString).day)
+                    //     .isAfter(DateTime(DateTime.now().year,
+                    //         DateTime.now().month, DateTime.now().day))
+
+                    )
                   Center(
-                      child: Column(children: [
-                    SizedBox(
-                      height: 7,
+                    child: Row(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await EventHandlers.addAttendee(eventId,
+                                BlocProvider.of<UserCubit>(context).state.id);
+                            context
+                                .pushNamed("projectevents", queryParameters: {
+                              'projectId': projId,
+                            }, pathParameters: {
+                              'projectId': projId,
+                            });
+                          },
+                          child: Text('Going'),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await EventHandlers.addNonAttendee(eventId,
+                                BlocProvider.of<UserCubit>(context).state.id);
+                            context
+                                .pushNamed("projectevents", queryParameters: {
+                              'projectId': projId,
+                            }, pathParameters: {
+                              'projectId': projId,
+                            });
+                          },
+                          child: Text('Not Going'),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Completed',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                  ])),
-                if (memberStatus == 'UNDECIDED' &&
-                    !checkInButon &&
-                    DateTime(
-                            _parseDate(dateString).year,
-                            _parseDate(dateString).month,
-                            _parseDate(dateString).day)
-                        .isAfter(DateTime(DateTime.now().year,
-                            DateTime.now().month, DateTime.now().day)))
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () async {
-                          await EventHandlers.addAttendee(eventId,
-                              BlocProvider.of<UserCubit>(context).state.id);
-                          context.pushNamed("projectevents", queryParameters: {
-                            'projectId': projId,
-                          }, pathParameters: {
-                            'projectId': projId,
-                          });
-                        },
-                        child: Text('Going'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await EventHandlers.addNonAttendee(eventId,
-                              BlocProvider.of<UserCubit>(context).state.id);
-                          context.pushNamed("projectevents", queryParameters: {
-                            'projectId': projId,
-                          }, pathParameters: {
-                            'projectId': projId,
-                          });
-                        },
-                        child: Text('Not Going'),
-                      ),
-                    ],
                   ),
                 if (memberStatus == 'ATTENDING' &&
                     !checkInButon &&
-                    _parseDate(dateString).isAfter(DateTime.now()))
+                    !DateTime.parse(dateString).isBefore(DateTime(
+                        DateTime.now().year,
+                        DateTime.now().month,
+                        DateTime.now().day)))
                   Center(
                       child: Column(children: [
                     SizedBox(
@@ -208,6 +238,28 @@ class EventCard extends StatelessWidget {
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ])),
+                if (eventAuthorized &&
+                    !DateTime.parse(dateString).isBefore(DateTime(
+                        DateTime.now().year,
+                        DateTime.now().month,
+                        DateTime.now().day)))
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          context.pushNamed("qrdisplay", queryParameters: {
+                            'code': eventCode,
+                          }, pathParameters: {
+                            'code': eventCode,
+                          });
+                        },
+                        child: Text('Generate QR code'),
+                      ),
+                    ],
+                  )
               ],
             ),
           ),

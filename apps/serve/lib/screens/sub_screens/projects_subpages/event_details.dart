@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
@@ -206,7 +207,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   endIndent: 0,
                 ),
                 if (eventData.containsKey('date'))
-                  Text('${eventData['date']}, ${eventData['time']}'),
+                  Text(
+                      '${eventData['date']}, ${_formatTime(eventData['time'])}'),
                 SizedBox(height: 10),
                 if (eventData.containsKey('bio')) Text('${eventData['bio']}'),
                 SizedBox(height: 10),
@@ -238,7 +240,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           child: const Text('Generate QR code')),
                     ],
                   ),
-
+                if (isAuthorized)
+                  ElevatedButton(
+                      onPressed: () async {
+                        context.pushNamed("eventdetailsform", queryParameters: {
+                          'projectId': eventData['project']['id'],
+                          'eventId': eventData['id'],
+                        }, pathParameters: {
+                          'projectId': eventData['project']['id'],
+                        });
+                        print(eventData['project']['id']);
+                      },
+                      child: const Text('Edit Event')),
                 if (isAuthorized && isEventActive)
                   ElevatedButton(
                       onPressed: () async {
@@ -303,6 +316,19 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         ),
       ),
     );
+  }
+
+  String _formatTime(String time) {
+    // Splitting the time string into hours and minutes
+    List<String> parts = time.split(':');
+    int hours = int.parse(parts[0]);
+    int minutes = int.parse(parts[1]);
+
+    // Formatting the time with AM/PM and leading zeros
+    String formattedTime =
+        DateFormat('hh:mm a').format(DateTime(0, 0, 0, hours, minutes));
+
+    return formattedTime;
   }
 
   Future<void> _showCodeInputDialog(
