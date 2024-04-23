@@ -118,9 +118,10 @@ class _AuthorizedEventMemberCardState extends State<AuthorizedEventMemberCard> {
                       ),
                       !widget.isCheckedIn
                           ? ElevatedButton(
-                              onPressed: () {
-                                EventHandlers.checkInUEventFromIds(
+                              onPressed: () async {
+                                await EventHandlers.checkInUEventFromIds(
                                     widget.eventId, widget.userId);
+                                // ignore: use_build_context_synchronously
                                 context.pushNamed("showmembersattending",
                                     queryParameters: {
                                       'eventId': widget.eventId,

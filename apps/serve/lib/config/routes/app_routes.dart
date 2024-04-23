@@ -18,6 +18,7 @@ import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/active_events
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/friends.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/checked_in.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details_form.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/past_events.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/qr_display.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/qr_scan.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/choose_profile_picture.dart';
@@ -211,6 +212,12 @@ final goRouter = GoRouter(
                   ProjectEvents(projectId: state.queryParameters['projectId']!),
             ),
             GoRoute(
+              path: 'pastevents/:projectId',
+              name: 'pastevents',
+              builder: (context, state) =>
+                  PastEvents(projectId: state.queryParameters['projectId']!),
+            ),
+            GoRoute(
               path: 'projectabout/:id',
               name: 'projectabout',
               builder: (context, state) =>
@@ -220,7 +227,9 @@ final goRouter = GoRouter(
               path: 'eventdetailsform/:projectId',
               name: 'eventdetailsform',
               builder: (context, state) => EventDetailsForm(
-                  projectId: state.queryParameters['projectId']!),
+                projectId: state.queryParameters['projectId']!,
+                eventId: state.queryParameters['eventId'] ?? '',
+              ),
             ),
             GoRoute(
               path: 'showmembers',
