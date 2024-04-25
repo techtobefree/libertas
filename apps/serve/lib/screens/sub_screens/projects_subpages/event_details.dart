@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
-import 'package:serve_to_be_free/repository/repository.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final String eventId;
