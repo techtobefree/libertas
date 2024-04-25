@@ -213,8 +213,11 @@ class AboutProjectState extends State<AboutProject> {
                   Text(
                       'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}'),
                 const SizedBox(height: 10),
-                if (projectData.containsKey('city'))
-                  Text('${projectData['city']}, ${projectData['state']}'),
+                if (projectData.containsKey('city') &&
+                    projectData.containsKey('state') &&
+                    projectData.containsKey('zipCode'))
+                  Text(
+                      '${projectData['city']}, ${projectData['state']}  ${projectData['zipCode']}'),
                 const SizedBox(height: 10),
                 if (projectData.containsKey('bio'))
                   Text('${projectData['bio']}'),

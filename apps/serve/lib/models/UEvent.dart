@@ -29,6 +29,10 @@ class UEvent extends amplify_core.Model {
   static const classType = const _UEventModelType();
   final String id;
   final String? _name;
+  final String? _streetAddress;
+  final String? _state;
+  final String? _city;
+  final String? _zipCode;
   final String? _details;
   final String? _date;
   final String? _time;
@@ -68,6 +72,22 @@ class UEvent extends amplify_core.Model {
           underlyingException: e.toString()
           );
     }
+  }
+  
+  String? get streetAddress {
+    return _streetAddress;
+  }
+  
+  String? get state {
+    return _state;
+  }
+  
+  String? get city {
+    return _city;
+  }
+  
+  String? get zipCode {
+    return _zipCode;
   }
   
   String? get details {
@@ -135,12 +155,16 @@ class UEvent extends amplify_core.Model {
     return _uEventLeaderId;
   }
   
-  const UEvent._internal({required this.id, required name, details, date, time, membersAttending, membersNotAttending, owner, leader, required project, eventPicture, checkInCode, createdAt, updatedAt, uEventOwnerId, uEventLeaderId}): _name = name, _details = details, _date = date, _time = time, _membersAttending = membersAttending, _membersNotAttending = membersNotAttending, _owner = owner, _leader = leader, _project = project, _eventPicture = eventPicture, _checkInCode = checkInCode, _createdAt = createdAt, _updatedAt = updatedAt, _uEventOwnerId = uEventOwnerId, _uEventLeaderId = uEventLeaderId;
+  const UEvent._internal({required this.id, required name, streetAddress, state, city, zipCode, details, date, time, membersAttending, membersNotAttending, owner, leader, required project, eventPicture, checkInCode, createdAt, updatedAt, uEventOwnerId, uEventLeaderId}): _name = name, _streetAddress = streetAddress, _state = state, _city = city, _zipCode = zipCode, _details = details, _date = date, _time = time, _membersAttending = membersAttending, _membersNotAttending = membersNotAttending, _owner = owner, _leader = leader, _project = project, _eventPicture = eventPicture, _checkInCode = checkInCode, _createdAt = createdAt, _updatedAt = updatedAt, _uEventOwnerId = uEventOwnerId, _uEventLeaderId = uEventLeaderId;
   
-  factory UEvent({String? id, required String name, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, UUser? owner, UUser? leader, required UProject project, String? eventPicture, String? checkInCode, String? uEventOwnerId, String? uEventLeaderId}) {
+  factory UEvent({String? id, required String name, String? streetAddress, String? state, String? city, String? zipCode, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, UUser? owner, UUser? leader, required UProject project, String? eventPicture, String? checkInCode, String? uEventOwnerId, String? uEventLeaderId}) {
     return UEvent._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
+      streetAddress: streetAddress,
+      state: state,
+      city: city,
+      zipCode: zipCode,
       details: details,
       date: date,
       time: time,
@@ -165,6 +189,10 @@ class UEvent extends amplify_core.Model {
     return other is UEvent &&
       id == other.id &&
       _name == other._name &&
+      _streetAddress == other._streetAddress &&
+      _state == other._state &&
+      _city == other._city &&
+      _zipCode == other._zipCode &&
       _details == other._details &&
       _date == other._date &&
       _time == other._time &&
@@ -189,6 +217,10 @@ class UEvent extends amplify_core.Model {
     buffer.write("UEvent {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
+    buffer.write("streetAddress=" + "$_streetAddress" + ", ");
+    buffer.write("state=" + "$_state" + ", ");
+    buffer.write("city=" + "$_city" + ", ");
+    buffer.write("zipCode=" + "$_zipCode" + ", ");
     buffer.write("details=" + "$_details" + ", ");
     buffer.write("date=" + "$_date" + ", ");
     buffer.write("time=" + "$_time" + ", ");
@@ -206,10 +238,14 @@ class UEvent extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UEvent copyWith({String? name, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, UUser? owner, UUser? leader, UProject? project, String? eventPicture, String? checkInCode, String? uEventOwnerId, String? uEventLeaderId}) {
+  UEvent copyWith({String? name, String? streetAddress, String? state, String? city, String? zipCode, String? details, String? date, String? time, List<String>? membersAttending, List<String>? membersNotAttending, UUser? owner, UUser? leader, UProject? project, String? eventPicture, String? checkInCode, String? uEventOwnerId, String? uEventLeaderId}) {
     return UEvent._internal(
       id: id,
       name: name ?? this.name,
+      streetAddress: streetAddress ?? this.streetAddress,
+      state: state ?? this.state,
+      city: city ?? this.city,
+      zipCode: zipCode ?? this.zipCode,
       details: details ?? this.details,
       date: date ?? this.date,
       time: time ?? this.time,
@@ -226,6 +262,10 @@ class UEvent extends amplify_core.Model {
   
   UEvent copyWithModelFieldValues({
     ModelFieldValue<String>? name,
+    ModelFieldValue<String?>? streetAddress,
+    ModelFieldValue<String?>? state,
+    ModelFieldValue<String?>? city,
+    ModelFieldValue<String?>? zipCode,
     ModelFieldValue<String?>? details,
     ModelFieldValue<String?>? date,
     ModelFieldValue<String?>? time,
@@ -242,6 +282,10 @@ class UEvent extends amplify_core.Model {
     return UEvent._internal(
       id: id,
       name: name == null ? this.name : name.value,
+      streetAddress: streetAddress == null ? this.streetAddress : streetAddress.value,
+      state: state == null ? this.state : state.value,
+      city: city == null ? this.city : city.value,
+      zipCode: zipCode == null ? this.zipCode : zipCode.value,
       details: details == null ? this.details : details.value,
       date: date == null ? this.date : date.value,
       time: time == null ? this.time : time.value,
@@ -260,6 +304,10 @@ class UEvent extends amplify_core.Model {
   UEvent.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _name = json['name'],
+      _streetAddress = json['streetAddress'],
+      _state = json['state'],
+      _city = json['city'],
+      _zipCode = json['zipCode'],
       _details = json['details'],
       _date = json['date'],
       _time = json['time'],
@@ -282,12 +330,16 @@ class UEvent extends amplify_core.Model {
       _uEventLeaderId = json['uEventLeaderId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'details': _details, 'date': _date, 'time': _time, 'membersAttending': _membersAttending, 'membersNotAttending': _membersNotAttending, 'owner': _owner?.toJson(), 'leader': _leader?.toJson(), 'project': _project?.toJson(), 'eventPicture': _eventPicture, 'checkInCode': _checkInCode, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uEventOwnerId': _uEventOwnerId, 'uEventLeaderId': _uEventLeaderId
+    'id': id, 'name': _name, 'streetAddress': _streetAddress, 'state': _state, 'city': _city, 'zipCode': _zipCode, 'details': _details, 'date': _date, 'time': _time, 'membersAttending': _membersAttending, 'membersNotAttending': _membersNotAttending, 'owner': _owner?.toJson(), 'leader': _leader?.toJson(), 'project': _project?.toJson(), 'eventPicture': _eventPicture, 'checkInCode': _checkInCode, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uEventOwnerId': _uEventOwnerId, 'uEventLeaderId': _uEventLeaderId
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'name': _name,
+    'streetAddress': _streetAddress,
+    'state': _state,
+    'city': _city,
+    'zipCode': _zipCode,
     'details': _details,
     'date': _date,
     'time': _time,
@@ -307,6 +359,10 @@ class UEvent extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<UEventModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<UEventModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final NAME = amplify_core.QueryField(fieldName: "name");
+  static final STREETADDRESS = amplify_core.QueryField(fieldName: "streetAddress");
+  static final STATE = amplify_core.QueryField(fieldName: "state");
+  static final CITY = amplify_core.QueryField(fieldName: "city");
+  static final ZIPCODE = amplify_core.QueryField(fieldName: "zipCode");
   static final DETAILS = amplify_core.QueryField(fieldName: "details");
   static final DATE = amplify_core.QueryField(fieldName: "date");
   static final TIME = amplify_core.QueryField(fieldName: "time");
@@ -345,6 +401,30 @@ class UEvent extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UEvent.NAME,
       isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UEvent.STREETADDRESS,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UEvent.STATE,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UEvent.CITY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UEvent.ZIPCODE,
+      isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     

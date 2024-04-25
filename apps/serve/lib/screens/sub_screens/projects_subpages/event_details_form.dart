@@ -25,6 +25,62 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   late UProject _project;
   UEvent? _event;
+
+  final List<String> _states = [
+    'Alabama',
+    'Alaska',
+    'Arizona',
+    'Arkansas',
+    'California',
+    'Colorado',
+    'Connecticut',
+    'Delaware',
+    'Florida',
+    'Georgia',
+    'Hawaii',
+    'Idaho',
+    'Illinois',
+    'Indiana',
+    'Iowa',
+    'Kansas',
+    'Kentucky',
+    'Louisiana',
+    'Maine',
+    'Maryland',
+    'Massachusetts',
+    'Michigan',
+    'Minnesota',
+    'Mississippi',
+    'Missouri',
+    'Montana',
+    'Nebraska',
+    'Nevada',
+    'New Hampshire',
+    'New Jersey',
+    'New Mexico',
+    'New York',
+    'North Carolina',
+    'North Dakota',
+    'Ohio',
+    'Oklahoma',
+    'Oregon',
+    'Pennsylvania',
+    'Rhode Island',
+    'South Carolina',
+    'South Dakota',
+    'Tennessee',
+    'Texas',
+    'Utah',
+    'Vermont',
+    'Virginia',
+    'Washington',
+    'West Virginia',
+    'Wisconsin',
+    'Wyoming',
+  ];
+
+  String? _selectedState;
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +142,36 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
                 name: 'eventDetails',
                 decoration: InputDecoration(labelText: 'Event Details'),
               ),
+              FormBuilderTextField(
+                name: 'streetAddress',
+                decoration: InputDecoration(labelText: 'Street Address'),
+              ),
+              FormBuilderTextField(
+                name: 'city',
+                decoration: InputDecoration(labelText: 'City'),
+              ),
+              FormBuilderDropdown(
+                name: 'state',
+                decoration: InputDecoration(labelText: 'State'),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                ]),
+                items: _states
+                    .map((state) => DropdownMenuItem(
+                          value: state,
+                          child: Text(state),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedState = value as String?;
+                  });
+                },
+              ),
+              FormBuilderTextField(
+                name: 'zipCode',
+                decoration: InputDecoration(labelText: 'Zip Code'),
+              ),
               FormBuilderDateTimePicker(
                 name: 'eventDateTime',
                 inputType: InputType.both,
@@ -117,7 +203,10 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
       String eventName = formData['eventName'];
       String eventDetails = formData['eventDetails'];
       DateTime eventDateTime = formData['eventDateTime'];
-
+      String streetAddress = formData['streetAddress'];
+      String city = formData['city'];
+      String state = formData['state'];
+      String zipCode = formData['zipCode'];
       // Extract date and time
       int year = eventDateTime.year;
       String month = eventDateTime.month.toString().padLeft(2, '0');
@@ -136,6 +225,10 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
           details: eventDetails,
           date: '$year-$month-$day',
           time: '$hour:$minute',
+          streetAddress: streetAddress,
+          city: city,
+          state: state,
+          zipCode: zipCode,
         );
         await EventHandlers.updateUEvent(updatedEvent);
       } else {
@@ -149,6 +242,10 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
             time: '$hour:$minute',
             membersAttending: [],
             membersNotAttending: [],
+            streetAddress: streetAddress,
+            city: city,
+            state: state,
+            zipCode: zipCode,
             project: _project);
 
         await ProjectHandlers.addEvent(widget.projectId, uevent);

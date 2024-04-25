@@ -1,5 +1,6 @@
 // import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:serve_to_be_free/services/platform.dart';
 import 'package:universal_io/io.dart';
 import 'dart:core';
@@ -45,6 +46,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       date: "Date",
       privacy: "null",
       isCompleted: false,
+      zipCode: "",
       projectPicture: "");
 
   // final UProject proj = await ProjectHandlers.getUProjectById(id);
@@ -61,9 +63,6 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
     if (widget.id != null && widget.id!.isNotEmpty) {
       // Replace 'getUProjectById' with your actual data fetching method
       ProjectHandlers.getUProjectById(widget.id!).then((data) async {
-        setState(() {
-          projectData = data!; // Store the fetched project data
-        });
         Uint8List? uint8List =
             await fetchImageFromUrl(projectData.projectPicture);
 
@@ -78,6 +77,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           'city': projectData.city,
           'projectBio': projectData.bio,
           'projectDescription': projectData.description,
+          'zipCode': projectData.zipCode,
           'projectImage': [xFile],
           // 'leadership': "leader chosen"
         });
@@ -141,20 +141,22 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           leaderStr = projectData.leader;
         }
         UProject uproject = UProject(
-            name: formData['projectName'],
-            description: formData['projectDescription'],
-            privacy: formData['privacy'],
-            date: formData['projectDate'].toString().split(' ')[0],
-            uUserProjectsId: "724a6ce3-47ed-402e-80c0-69e75601d2dd",
-            posts: [],
-            projectPicture: imageURL,
-            city: formData['city'],
-            state: formData['state'],
-            sponsors: [],
-            bio: formData['projectBio'],
-            isCompleted: false,
-            leader: leaderStr,
-            members: [BlocProvider.of<UserCubit>(context).state.id]);
+          name: formData['projectName'],
+          description: formData['projectDescription'],
+          privacy: formData['privacy'],
+          date: formData['projectDate'].toString().split(' ')[0],
+          uUserProjectsId: "724a6ce3-47ed-402e-80c0-69e75601d2dd",
+          posts: [],
+          projectPicture: imageURL,
+          city: formData['city'],
+          state: formData['state'],
+          sponsors: [],
+          bio: formData['projectBio'],
+          isCompleted: false,
+          leader: leaderStr,
+          members: [BlocProvider.of<UserCubit>(context).state.id],
+          zipCode: formData['zipCode'],
+        );
 
         final request = ModelMutations.create(uproject);
         final response = await Amplify.API.mutate(request: request).response;
@@ -201,6 +203,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             city: formData['city'],
             state: formData['state'],
             bio: formData['projectBio'],
+            zipCode: formData['zipCode'],
             leader: leaderStr,
           );
         }
@@ -215,6 +218,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             city: formData['city'],
             state: formData['state'],
             bio: formData['projectBio'],
+            zipCode: formData['zipCode'],
             leader: leaderStr,
           );
         } else {
@@ -227,6 +231,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             city: formData['city'],
             state: formData['state'],
             bio: formData['projectBio'],
+            zipCode: formData['zipCode'],
             leader: leaderStr,
           );
         }
@@ -344,26 +349,26 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: const Text(
-              'Project Details',
-              style: TextStyle(color: Colors.white),
-            ),
-            iconTheme: const IconThemeData(color: Colors.white),
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color.fromRGBO(0, 28, 72, 1.0),
-                    Color.fromRGBO(35, 107, 140, 1.0),
-                  ],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                ),
+      appBar: AppBar(
+          title: const Text(
+            'Project Details',
+            style: TextStyle(color: Colors.white),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(0, 28, 72, 1.0),
+                  Color.fromRGBO(35, 107, 140, 1.0),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
               ),
-            )),
-        body: SingleChildScrollView(
-            child: FormBuilder(
+            ),
+          )),
+      body: SingleChildScrollView(
+        child: FormBuilder(
           key: _formKey,
           child: Column(
             children: [
@@ -605,6 +610,8 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       ),
                     ),
 
+                    //),
+
                     FormBuilderDropdown<String>(
                       name: 'state',
                       decoration: _fieldDecoration("State"),
@@ -675,7 +682,6 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                               ))
                           .toList(),
                     ),
-                    //),
                   ],
                 ),
               ),
@@ -724,7 +730,56 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Project Bio",
+                      "Zip Code",
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          // width: 350,
+                          // height: 200,
+                          child: FormBuilderTextField(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
+                            keyboardType: TextInputType.number,
+                            name: "zipCode",
+                            decoration: _fieldDecoration("Zip Code"),
+                            validator: FormBuilderValidators.compose([
+                              FormBuilderValidators.required(),
+                              (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a 5-digit zip code';
+                                }
+                                if (value.length != 5) {
+                                  return 'Zip code must be 5 digits long';
+                                }
+                                return null;
+                              },
+                            ]),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(
+                //height: 1,
+                color: Colors.grey,
+                thickness: 0.5,
+              ),
+              Container(
+                padding: const EdgeInsets.all(30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Short Description",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
@@ -763,7 +818,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Project Description",
+                      "Detailed Description",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                     ),
@@ -796,6 +851,8 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       SolidRoundedButton("Next", passedFunction: _submitForm))
             ],
           ),
-        )));
+        ), // Circular progress indicator displayed on top of the form when submitting
+      ),
+    );
   }
 }
