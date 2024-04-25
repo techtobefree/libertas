@@ -39,11 +39,16 @@ type UProject @model @auth(rules: [{ allow: public }]){
   notifications: [UNotification] @hasMany
   isCompleted: Boolean!
   events: [UEvent] @hasMany
+  zipCode: String
 }
 
 type UEvent @model @auth(rules: [{ allow: public }]){
   id: ID!
   name: String!
+  streetAddress: String
+  state: String
+  city: String
+  zipCode: String
   details: String
   date: String
   time: String

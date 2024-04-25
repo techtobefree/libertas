@@ -214,8 +214,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 SizedBox(height: 10),
                 if (eventData.containsKey('description'))
                   Text('${eventData['description']}'),
+                if (eventData.containsKey('streetAddress'))
+                  Text('${eventData['streetAddress']}'),
                 if (eventData.containsKey('city'))
-                  Text('${eventData['city']}, ${eventData['state']}'),
+                  Text(
+                      '${eventData['city']}, ${eventData['state']} ${eventData['zipCode']}'),
                 SizedBox(height: 10),
                 if (eventData
                     .containsKey('details')) // Displaying details field
