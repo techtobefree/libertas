@@ -30,7 +30,10 @@ import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/my_account_su
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/my_account_subpages/my_account_login_info.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/create_a_project/invite_a_leader.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project/sponsor_project_form.dart';
-import 'package:serve_to_be_free/screens/sub_screens/welcome.dart';
+import 'package:serve_to_be_free/screens/sub_screens/welcome_sub.dart';
+import 'package:serve_to_be_free/screens/sub_screens/welcome_sub2.dart';
+import 'package:serve_to_be_free/screens/sub_screens/welcome_sub3.dart';
+import 'package:serve_to_be_free/screens/welcome.dart';
 import 'package:serve_to_be_free/screens/tasks.dart';
 import 'package:serve_to_be_free/screens/sub_screens/create_a_post.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/about_page.dart';
@@ -67,7 +70,22 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/welcome',
       pageBuilder: ((context, state) =>
-          NoTransitionPage(child: WelcomeScreen())),
+          const NoTransitionPage(child: WelcomeScreen())),
+    ),
+    GoRoute(
+      path: '/newwelcome',
+      pageBuilder: ((context, state) =>
+          const NoTransitionPage(child: NewUserWelcome())),
+    ),
+    GoRoute(
+      path: '/newwelcome2',
+      pageBuilder: ((context, state) =>
+          const NoTransitionPage(child: NewUserWelcome2())),
+    ),
+    GoRoute(
+      path: '/newwelcome3',
+      pageBuilder: ((context, state) =>
+          const NoTransitionPage(child: NewUserWelcome3())),
     ),
     GoRoute(
       path: '/login',

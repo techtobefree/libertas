@@ -59,7 +59,7 @@ class _WelcomeScreenState extends State {
       body: GestureDetector(
         onTap: isNotLoggedIn
             ? () {
-                context.go('/login');
+                context.go('/newwelcome');
               }
             : null,
         child: Container(
