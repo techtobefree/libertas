@@ -27,7 +27,7 @@ class _NewUserWelcomeState extends State {
           // Image from assets
           Container(
             height: MediaQuery.of(context).size.height * 0.4,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/volunteer.png'),
                 fit: BoxFit.cover,
@@ -35,8 +35,8 @@ class _NewUserWelcomeState extends State {
             ),
           ),
           // Welcome title
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text(
               'Welcome to Serve To Be Free',
               style: TextStyle(
@@ -46,8 +46,8 @@ class _NewUserWelcomeState extends State {
             ),
           ),
           // Description text
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Text(
               'Join likeminded citizens that believe the health of a community is directly correlated to the involvement of its community members',
               textAlign: TextAlign.center,

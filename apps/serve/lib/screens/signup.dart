@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
+import 'package:serve_to_be_free/data/policy_info.dart';
 import 'package:serve_to_be_free/utilities/constants.dart';
 
 enum UserField {
@@ -40,6 +41,7 @@ class CreateAccountScreen extends StatefulWidget {
 
 class CreateAccountState extends State<CreateAccountScreen> {
   late SignupCubit cubit;
+  bool? _isChecked = false;
 
   Widget _buildTF(UserField userField) {
     InputDecoration decoration = InputDecoration(
@@ -123,7 +125,7 @@ class CreateAccountState extends State<CreateAccountScreen> {
               : const Color(0xff256C8D),
         ),
         child: const Text(
-          'Choose Profile Picture',
+          'Next',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
             letterSpacing: 1.5,
@@ -142,6 +144,7 @@ class CreateAccountState extends State<CreateAccountScreen> {
     return Scaffold(
         backgroundColor: const Color(0xff001B48),
         appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Text(
             'Create an Account',
             style: TextStyle(color: Colors.white),
@@ -212,6 +215,34 @@ class CreateAccountState extends State<CreateAccountScreen> {
                           const SizedBox(
                             height: 20.0,
                           ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _isChecked,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    _isChecked = value;
+                                  });
+                                },
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  context.pushNamed("information",
+                                      queryParameters: {
+                                        'title': 'Terms and Conditions',
+                                        'info': Policies.termsAndConditions,
+                                      });
+                                },
+                                child: Text(
+                                  'I agree with the Terms and Conditions',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           _buildCreateAccBtn(cubit),
                         ],
                       ),
@@ -259,6 +290,9 @@ class CreateAccountState extends State<CreateAccountScreen> {
     final String lastName = cubit.state.lastName;
 
     try {
+      if (!_isChecked!) {
+        throw (Exception('Must agree to terms and conditions'));
+      }
       if (password.length < 8) {
         throw (Exception('Passwords must be at least 8 digits long'));
       }
@@ -283,7 +317,9 @@ class CreateAccountState extends State<CreateAccountScreen> {
       /// but I don't know what that is right now. We'll just assume it
       /// succeeded since we have good validation before it's called:
       //if (cubit.state.signUpResult.isSignUpComplete) {
-      context.go('/login/createaccountscreen/chooseprofilepicture');
+      // context.go('/login/createaccountscreen/chooseprofilepicture');
+      context.go('/login/communitypledge');
+
       //} else {
       //  print('Erorr message or sometihng');
       //}

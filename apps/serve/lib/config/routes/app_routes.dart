@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
+import 'package:serve_to_be_free/screens/community_pledge.dart';
+import 'package:serve_to_be_free/screens/information.dart';
 import 'package:serve_to_be_free/screens/signup.dart';
 import 'package:serve_to_be_free/screens/dashboard.dart';
 import 'package:serve_to_be_free/screens/groups.dart';
@@ -88,6 +90,16 @@ final goRouter = GoRouter(
           const NoTransitionPage(child: NewUserWelcome3())),
     ),
     GoRoute(
+      path: '/information',
+      name: 'information',
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: Information(
+          title: state.queryParameters['title'],
+          info: state.queryParameters['info'],
+        ),
+      ),
+    ),
+    GoRoute(
       path: '/login',
       pageBuilder: (context, state) =>
           const NoTransitionPage(child: LoginScreen()),
@@ -108,6 +120,10 @@ final goRouter = GoRouter(
                 ]),
           ],
         ),
+        GoRoute(
+          path: 'communitypledge',
+          builder: (context, state) => CommunityPledge(),
+        )
       ],
     ),
     ShellRoute(

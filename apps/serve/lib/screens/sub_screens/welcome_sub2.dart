@@ -29,7 +29,7 @@ class _NewUserWelcome2State extends State {
             height: MediaQuery.of(context).size.height * 0.4,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/volunteer.png'),
+                image: AssetImage('assets/images/volunteer2.png'),
                 fit: BoxFit.cover,
               ),
             ),
