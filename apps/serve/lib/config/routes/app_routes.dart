@@ -122,7 +122,9 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: 'communitypledge',
-          builder: (context, state) => CommunityPledge(),
+          builder: (context, state) => const CommunityPledge(
+            agreedToPledge: false,
+          ),
         )
       ],
     ),
@@ -357,6 +359,13 @@ final goRouter = GoRouter(
               name: 'friends',
               builder: (context, state) => Friends(
                 userId: state.queryParameters['userId'],
+              ),
+            ),
+            GoRoute(
+              path: 'communitypledge',
+              name: 'communitypledgemenu',
+              builder: (context, state) => const CommunityPledge(
+                agreedToPledge: true,
               ),
             ),
             GoRoute(

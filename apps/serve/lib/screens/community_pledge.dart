@@ -10,7 +10,12 @@ import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 
 class CommunityPledge extends StatelessWidget {
-  const CommunityPledge({super.key});
+  final bool agreedToPledge;
+
+  const CommunityPledge({
+    Key? key,
+    required this.agreedToPledge,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -149,15 +154,17 @@ class CommunityPledge extends StatelessWidget {
                 size: 45,
               ),
             ),
-            Align(
-              alignment: AlignmentDirectional(0.66, 0.84),
-              child: ElevatedButton(
-                onPressed: () {
-                  context.go('/login/createaccountscreen/chooseprofilepicture');
-                },
-                child: Text('I agree'),
+            if (!agreedToPledge)
+              Align(
+                alignment: AlignmentDirectional(0.66, 0.84),
+                child: ElevatedButton(
+                  onPressed: () {
+                    context
+                        .go('/login/createaccountscreen/chooseprofilepicture');
+                  },
+                  child: Text('I agree'),
+                ),
               ),
-            ),
           ],
         ),
       ),

@@ -23,6 +23,8 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'UComment.dart';
 import 'UEvent.dart';
 import 'UEventCheckIn.dart';
+import 'UGroup.dart';
+import 'UGroupUser.dart';
 import 'UNotification.dart';
 import 'UPost.dart';
 import 'UProject.dart';
@@ -32,6 +34,8 @@ import 'UUser.dart';
 export 'UComment.dart';
 export 'UEvent.dart';
 export 'UEventCheckIn.dart';
+export 'UGroup.dart';
+export 'UGroupUser.dart';
 export 'UNotification.dart';
 export 'UPost.dart';
 export 'UProject.dart';
@@ -40,9 +44,9 @@ export 'UUser.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "e16c3323b0248bb3c5c4872420adf6a4";
+  String version = "a43da3e344c773bc61168dce0baa8147";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [UComment.schema, UEvent.schema, UEventCheckIn.schema, UNotification.schema, UPost.schema, UProject.schema, USponsor.schema, UUser.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [UComment.schema, UEvent.schema, UEventCheckIn.schema, UGroup.schema, UGroupUser.schema, UNotification.schema, UPost.schema, UProject.schema, USponsor.schema, UUser.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
@@ -57,6 +61,10 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
         return UEvent.classType;
       case "UEventCheckIn":
         return UEventCheckIn.classType;
+      case "UGroup":
+        return UGroup.classType;
+      case "UGroupUser":
+        return UGroupUser.classType;
       case "UNotification":
         return UNotification.classType;
       case "UPost":

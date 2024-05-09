@@ -115,3 +115,27 @@ type UNotification @model {
   status: String!
   # INCOMPLETE, APPROVED, DENIED, COMPLETE
 }
+
+type UGroup @model {
+  id: ID!
+  name: String!
+  privacy: String!
+  bio: String
+  description: String!
+  city: String
+  state: String
+  leader: String
+  date: String
+  projects: [UProject]
+  members: [String]
+  posts: [String]
+  groupPicture: String!
+  zipCode: String
+}
+
+type UGroupUser @model {
+  id: ID!
+  isAdmin: Boolean
+  approvedByGroup: Boolean
+  approvedByUser: Boolean
+}

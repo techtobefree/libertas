@@ -137,6 +137,17 @@ class MenuPage extends StatelessWidget {
                         }, pathParameters: {
                           'userId': BlocProvider.of<UserCubit>(context).state.id
                         })),
+                MenuButton(
+                    Icon(
+                      Icons.handshake_outlined,
+                      size: 25,
+                      color: Colors.lightBlue[900],
+                    ),
+                    "Community Pledge",
+                    '',
+                    onTapReplacement: () =>
+                        context.goNamed("communitypledgemenu")),
+                const SizedBox(height: 20), // Ad
                 const SizedBox(height: 20),
                 TextButton(
                   onPressed: () {

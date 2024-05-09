@@ -19,11 +19,7 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
       icon: Icon(Icons.business),
       label: 'PROJECTS',
     ),
-    // ScaffoldWithNavBarTabItem(
-    //   initialLocation: '/groups',
-    //   icon: Icon(Icons.groups_2_outlined),
-    //   label: 'Groups',
-    // ),
+
     // ScaffoldWithNavBarTabItem(
     //   initialLocation: '/mytasks',
     //   icon: Icon(Icons.task_outlined),
@@ -38,6 +34,11 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
       initialLocation: '/notifications',
       icon: Icon(Icons.notifications),
       label: 'NOTIFICATIONS',
+    ),
+    ScaffoldWithNavBarTabItem(
+      initialLocation: '/groups',
+      icon: Icon(Icons.group),
+      label: 'GROUPS',
     ),
     ScaffoldWithNavBarTabItem(
       initialLocation: '/menu',
