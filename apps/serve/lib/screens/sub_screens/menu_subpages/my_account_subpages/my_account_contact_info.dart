@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+// import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:form_validator/form_validator.dart';
 
 class MyAccountContactInfo extends StatefulWidget {
   const MyAccountContactInfo({super.key});
@@ -86,8 +87,12 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                       child: FormBuilderTextField(
                           name: 'address',
                           initialValue: placeholder,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
+                          validator: ValidationBuilder().required().build(),
+                          
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
                             // FormBuilderValidators.minLength(3),
                             // FormBuilderValidators.maxLength(50),
                             // FormBuilderValidators.match(
@@ -95,7 +100,7 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                             //   errorText:
                             //       'Only alphanumeric characters are allowed',
                             // ),
-                          ]),
+                          // ]),
                           decoration: _fieldDecoration("Address")),
                     ),
                     Container(height: 20),
@@ -108,14 +113,23 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                       margin: const EdgeInsets.only(top: 5),
                       child: FormBuilderTextField(
                           name: 'city',
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                            FormBuilderValidators.match(
-                              r'^[a-zA-Z]+$',
-                              errorText:
-                                  'Only alphanumeric characters are allowed',
-                            ),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    .regExp(
+      RegExp(r'^[a-zA-Z]+$'),
+      'Only alphabetic characters are allowed',
+    )
+    .build(),
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          //   FormBuilderValidators.match(
+                          //     r'^[a-zA-Z]+$',
+                          //     errorText:
+                          //         'Only alphanumeric characters are allowed',
+                          //   ),
+                          // ]),
                           decoration: _fieldDecoration("City")),
                     ),
                     Container(height: 20),
@@ -129,9 +143,12 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                       child: FormBuilderTextField(
                           name: 'state',
                           //initialValue: "October 12, 1998",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
+                          validator: ValidationBuilder().required().build(),
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          // ]),
                           decoration: _fieldDecoration("State")),
                     ),
                     Container(height: 20),
@@ -145,14 +162,24 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                       child: FormBuilderTextField(
                           name: 'zipcode',
                           //initialValue: "October 12, 1998",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                            FormBuilderValidators.match(
-                              r'^[0-9]+$',
-                              errorText:
-                                  'Only alphanumeric characters are allowed',
-                            ),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    .regExp(
+      RegExp(r'^[a-zA-Z]+$'),
+      'Only alphabetic characters are allowed',
+    )
+    .build(),
+                          
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          //   FormBuilderValidators.match(
+                          //     r'^[0-9]+$',
+                          //     errorText:
+                          //         'Only alphanumeric characters are allowed',
+                          //   ),
+                          // ]),
                           decoration: _fieldDecoration("Zip Code")),
                     ),
                     Container(height: 20),
@@ -166,14 +193,24 @@ class _MyAccountContactInfoState extends State<MyAccountContactInfo> {
                       child: FormBuilderTextField(
                           name: 'phone',
                           //initialValue: "October 12, 1998",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                            FormBuilderValidators.match(
-                              r'^[0-9]+$',
-                              errorText:
-                                  'Only alphanumeric characters are allowed',
-                            ),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    .regExp(
+      RegExp(r'^[0-9]+$'),
+      'Only alphabetic characters are allowed',
+    )
+    .build(),
+                          
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          //   FormBuilderValidators.match(
+                          //     r'^[0-9]+$',
+                          //     errorText:
+                          //         'Only numeric characters are allowed',
+                          //   ),
+                          // ]),
                           decoration: _fieldDecoration("Phone Number")),
                     ),
                   ],

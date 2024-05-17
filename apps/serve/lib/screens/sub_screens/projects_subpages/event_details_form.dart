@@ -2,7 +2,8 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+// import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
@@ -25,6 +26,13 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   late UProject _project;
   UEvent? _event;
+
+   String? dateValidator(DateTime? value) {
+  if (value == null) {
+    return 'This field is required';
+  }
+  return null;
+}
 
   final List<String> _states = [
     'Alabama',
@@ -134,9 +142,11 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
               FormBuilderTextField(
                 name: 'eventName',
                 decoration: InputDecoration(labelText: 'Event Name'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: ValidationBuilder().required().build(),
+                
+                // FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(),
+                // ]),
               ),
               FormBuilderTextField(
                 name: 'eventDetails',
@@ -153,9 +163,12 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
               FormBuilderDropdown(
                 name: 'state',
                 decoration: InputDecoration(labelText: 'State'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: ValidationBuilder().required().build(),
+                
+                
+                // FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(),
+                // ]),
                 items: _states
                     .map((state) => DropdownMenuItem(
                           value: state,
@@ -176,9 +189,11 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
                 name: 'eventDateTime',
                 inputType: InputType.both,
                 decoration: InputDecoration(labelText: 'Date & Time'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: dateValidator,
+                
+                // FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(),
+                // ]),
               ),
               ElevatedButton(
                 onPressed: () {

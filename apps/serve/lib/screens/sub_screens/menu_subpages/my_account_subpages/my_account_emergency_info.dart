@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+// import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:form_validator/form_validator.dart';
 
 class MyAccountEmergencyInfo extends StatefulWidget {
   const MyAccountEmergencyInfo({super.key});
@@ -85,8 +86,10 @@ class _MyAccountEmergencyInfoState extends State<MyAccountEmergencyInfo> {
                       child: FormBuilderTextField(
                           name: 'firstNameEmergency',
                           initialValue: placeholder,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
+                          validator: ValidationBuilder().required().build(),
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
                             // FormBuilderValidators.minLength(3),
                             // FormBuilderValidators.maxLength(50),
                             // FormBuilderValidators.match(
@@ -94,7 +97,7 @@ class _MyAccountEmergencyInfoState extends State<MyAccountEmergencyInfo> {
                             //   errorText:
                             //       'Only alphanumeric characters are allowed',
                             // ),
-                          ]),
+                          // ]),
                           decoration: _fieldDecoration("First Name")),
                     ),
                     Container(height: 20),
@@ -108,9 +111,14 @@ class _MyAccountEmergencyInfoState extends State<MyAccountEmergencyInfo> {
                       child: FormBuilderTextField(
                           name: 'lastNameEmergency',
                           initialValue: "Brown",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+   
+    .build(),
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          // ]),
                           decoration: _fieldDecoration("Last Name")),
                     ),
                     Container(height: 20),
@@ -124,9 +132,11 @@ class _MyAccountEmergencyInfoState extends State<MyAccountEmergencyInfo> {
                       child: FormBuilderTextField(
                           name: 'phoneEmergency',
                           //initialValue: "October 12, 1998",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
+                          validator: 
+                          ValidationBuilder()
+    .required()
+    
+    .build(),
                           decoration: _fieldDecoration("Phone")),
                     ),
                   ],

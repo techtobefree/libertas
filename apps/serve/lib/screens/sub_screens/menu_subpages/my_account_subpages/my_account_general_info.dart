@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+// import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:form_validator/form_validator.dart';
 
 class MyAccountGeneralInfo extends StatefulWidget {
   const MyAccountGeneralInfo({super.key});
@@ -86,8 +87,14 @@ class _MyAccountGeneralInfoState extends State<MyAccountGeneralInfo> {
                           // This is going to be the key in the saved object
                           name: 'firstName',
                           initialValue: placeholder,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
+                          validator: ValidationBuilder()
+    .required()
+   
+    .build(),
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
                             // FormBuilderValidators.minLength(3),
                             // FormBuilderValidators.maxLength(50),
                             // FormBuilderValidators.match(
@@ -95,7 +102,7 @@ class _MyAccountGeneralInfoState extends State<MyAccountGeneralInfo> {
                             //   errorText:
                             //       'Only alphanumeric characters are allowed',
                             // ),
-                          ]),
+                          // ]),
                           decoration: _fieldDecoration("First Name")),
                     ),
                     Container(height: 20),
@@ -109,9 +116,15 @@ class _MyAccountGeneralInfoState extends State<MyAccountGeneralInfo> {
                       child: FormBuilderTextField(
                           name: 'lastName',
                           initialValue: "Brown",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    
+    .build(),
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          // ]),
                           decoration: _fieldDecoration("Last Name")),
                     ),
                     Container(height: 20),
@@ -125,9 +138,15 @@ class _MyAccountGeneralInfoState extends State<MyAccountGeneralInfo> {
                       child: FormBuilderTextField(
                           name: 'birthDate',
                           initialValue: "October 12, 1998",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    
+    .build(),
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          // ]),
                           decoration: _fieldDecoration("Birth Date")),
                     ),
                     Container(height: 20),
@@ -141,15 +160,23 @@ class _MyAccountGeneralInfoState extends State<MyAccountGeneralInfo> {
                       child: FormBuilderTextField(
                           name: 'gender',
                           //initialValue: "October 12, 1998",
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.minLength(3),
-                            FormBuilderValidators.maxLength(50),
-                            FormBuilderValidators.match(
-                              r'^[a-zA-Z]+$',
-                              errorText:
-                                  'Only alphanumeric characters are allowed',
-                            ),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    .regExp(
+      RegExp(r'^[a-zA-Z]+$'),
+      'Only alphabetic characters are allowed',
+    )
+    .build(),
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.minLength(3),
+                          //   FormBuilderValidators.maxLength(50),
+                          //   FormBuilderValidators.match(
+                          //     r'^[a-zA-Z]+$',
+                          //     errorText:
+                          //         'Only alphanumeric characters are allowed',
+                          //   ),
+                          // ]),
                           decoration: _fieldDecoration("Gender")),
                     ),
                   ],
