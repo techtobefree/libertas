@@ -1,6 +1,7 @@
 // import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:serve_to_be_free/services/platform.dart';
 import 'package:universal_io/io.dart';
 import 'dart:core';
@@ -14,7 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+// import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 //import 'package:path_provider/path_provider.dart'; // for getting the directory path
@@ -301,6 +302,17 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
     }
   }
 
+  String? dateValidator(DateTime? value) {
+  if (value == null) {
+    return 'This field is required';
+  }
+  return null;
+}
+String? listValidator(List<dynamic>? value) {
+  final validator = ValidationBuilder().required('Please select an Image').build();
+  return validator(value != null && value.isNotEmpty ? 'selected' : null);
+}
+
   InputDecoration _fieldDecoration(hintText) {
     return InputDecoration(
       hintText: hintText,
@@ -386,16 +398,29 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       margin: const EdgeInsets.only(top: 12),
                       child: FormBuilderTextField(
                           name: 'projectName',
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                            FormBuilderValidators.minLength(3),
-                            FormBuilderValidators.maxLength(50),
-                            FormBuilderValidators.match(
-                              r'^[a-zA-Z0-9 ]+$',
-                              errorText:
-                                  'Only alphanumeric characters are allowed',
-                            ),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    .minLength(3)
+    .maxLength(50)
+    .regExp(
+      RegExp(r'^[a-zA-Z0-9 ]+$'),
+      'Only alphanumeric characters are allowed',
+    )
+    .build(),
+                          
+                          
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          //   FormBuilderValidators.minLength(3),
+                          //   FormBuilderValidators.maxLength(50),
+                          //   FormBuilderValidators.match(
+                          //     r'^[a-zA-Z0-9 ]+$',
+                          //     errorText:
+                          //         'Only alphanumeric characters are allowed',
+                          //   ),
+                          // ]),
                           decoration: _fieldDecoration(projectData.name)),
                     ),
                   ],
@@ -421,8 +446,10 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                         child: FormBuilderDateTimePicker(
                             name: 'projectDate',
                             inputType: InputType.date,
-                            validator: FormBuilderValidators.compose(
-                                [FormBuilderValidators.required()]),
+                            validator: dateValidator,
+                            
+                            //  FormBuilderValidators.compose(
+                            //     [FormBuilderValidators.required()]),
                             decoration: _fieldDecoration(projectData.date)),
                       ),
                     ]),
@@ -451,10 +478,13 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       child: FormBuilderDropdown<String>(
                         name: 'privacy',
                         decoration: _fieldDecoration("Project Privacy"),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
-                        elevation: 2,
+                        validator: ValidationBuilder().required().build(),
+                        
+                        
+                        // FormBuilderValidators.compose([
+                        //   FormBuilderValidators.required(),
+                        // ]),
+                        // elevation: 2,
                         iconSize: 30,
                         isExpanded: true,
                         initialValue: null,
@@ -492,9 +522,12 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                         decoration: _fieldDecoration(projectData.leader != null
                             ? 'Use Current leader'
                             : "Leadership Option"),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
+                        validator: ValidationBuilder().required().build(),
+                        
+                        
+                        // FormBuilderValidators.compose([
+                        //   FormBuilderValidators.required(),
+                        // ]),
                         elevation: 2,
                         iconSize: 30,
                         isExpanded: true,
@@ -574,11 +607,14 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                                 //       BorderSide(color: Colors.red, width: 2),
                                 // ),
                               ),
-                              validator: FormBuilderValidators.compose([
-                                FormBuilderValidators.required(
-                                  errorText: 'Please select an Image',
-                                ),
-                              ]),
+                              validator: listValidator,
+                              
+                              
+                              // FormBuilderValidators.compose([
+                              //   FormBuilderValidators.required(
+                              //     errorText: 'Please select an Image',
+                              //   ),
+                              // ]),
 
                               // previewHeight: 100,
                               // previewWidth: 100,
@@ -615,9 +651,11 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                     FormBuilderDropdown<String>(
                       name: 'state',
                       decoration: _fieldDecoration("State"),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                      ]),
+                      validator: ValidationBuilder().required().build(),
+                      
+                      // FormBuilderValidators.compose([
+                      //   FormBuilderValidators.required(),
+                      // ]),
                       elevation: 2,
                       iconSize: 30,
                       isExpanded: true,
@@ -704,16 +742,28 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       margin: const EdgeInsets.only(top: 12),
                       child: FormBuilderTextField(
                           name: 'city',
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                            FormBuilderValidators.minLength(3),
-                            FormBuilderValidators.maxLength(50),
-                            FormBuilderValidators.match(
-                              r'^[a-zA-Z0-9 ]+$',
-                              errorText:
-                                  'Only alphanumeric characters are allowed',
-                            ),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+    .minLength(3)
+    .maxLength(50)
+    .regExp(
+      RegExp(r'^[a-zA-Z0-9 ]+$'),
+      'Only alphanumeric characters are allowed',
+    )
+    .build(),
+                          
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          //   FormBuilderValidators.minLength(3),
+                          //   FormBuilderValidators.maxLength(50),
+                          //   FormBuilderValidators.match(
+                          //     r'^[a-zA-Z0-9 ]+$',
+                          //     errorText:
+                          //         'Only alphanumeric characters are allowed',
+                          //   ),
+                          // ]),
                           decoration: _fieldDecoration("City")),
                     ),
                   ],
@@ -749,18 +799,25 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                             keyboardType: TextInputType.number,
                             name: "zipCode",
                             decoration: _fieldDecoration("Zip Code"),
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(),
-                              (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter a 5-digit zip code';
-                                }
-                                if (value.length != 5) {
-                                  return 'Zip code must be 5 digits long';
-                                }
-                                return null;
-                              },
-                            ]),
+                            validator: ValidationBuilder()
+    .required('Zip code must be 5 digits long')
+    
+    .build()
+                            
+                            
+                            
+                            // FormBuilderValidators.compose([
+                            //   FormBuilderValidators.required(),
+                            //   (value) {
+                            //     if (value == null || value.isEmpty) {
+                            //       return 'Please enter a 5-digit zip code';
+                            //     }
+                            //     if (value.length != 5) {
+                            //       return 'Zip code must be 5 digits long';
+                            //     }
+                            //     return null;
+                            //   },
+                            // ]),
                           ),
                         ),
                       ),
@@ -796,9 +853,12 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                             name: "projectBio",
                             decoration: _fieldDecoration(
                                 "Short synopsis about your project..."),
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(),
-                            ]),
+                            validator: ValidationBuilder().required().build(),
+                            
+                            
+                            // FormBuilderValidators.compose([
+                            //   FormBuilderValidators.required(),
+                            // ]),
                           ),
                         ),
                       ),
@@ -835,9 +895,11 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                             name: "projectDescription",
                             decoration:
                                 _fieldDecoration("About your project..."),
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(),
-                            ]),
+                            validator: ValidationBuilder().required().build(),
+                            
+                            // FormBuilderValidators.compose([
+                            //   FormBuilderValidators.required(),
+                            // ]),
                           ),
                         ),
                       ),
