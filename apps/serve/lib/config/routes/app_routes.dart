@@ -16,6 +16,7 @@ import 'package:serve_to_be_free/screens/messages.dart';
 import 'package:serve_to_be_free/screens/notifications.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/group_details_form.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/active_events.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/friends.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/checked_in.dart';
@@ -294,12 +295,13 @@ final goRouter = GoRouter(
           pageBuilder: (context, state) => const NoTransitionPage(
             child: GroupsPage(/*label: 'B', detailsPath: '/b/details'*/),
           ),
-          // routes: [
-          //   GoRoute(
-          //     path: 'details',
-          //     builder: (context, state) => const DetailsScreen(label: 'B'),
-          //   ),
-          // ],
+          routes: [
+            GoRoute(
+              path: 'groupsdetailsform',
+              name: 'groupsdetailsform',
+              builder: (context, state) => const GroupDetailsForm(),
+            ),
+          ],
         ),
         GoRoute(
           path: '/mytasks',

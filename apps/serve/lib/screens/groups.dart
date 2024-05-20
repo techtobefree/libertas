@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
@@ -48,7 +49,7 @@ class _GroupsPageState extends State<GroupsPage> {
         elevation: 0,
         centerTitle: false,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0),
+          preferredSize: const Size.fromHeight(100.0),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
             child: Column(
@@ -82,6 +83,19 @@ class _GroupsPageState extends State<GroupsPage> {
                   ),
                 ),
                 const SizedBox(height: 8.0),
+                ElevatedButton(
+      onPressed: ()=>{context.go('/groups/groupsdetailsform')},
+      // style: ElevatedButton.styleFrom(
+      //   primary: Colors.blue, // Button background color
+      //   onPrimary: Colors.white, // Button text color
+      //   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      //   textStyle: TextStyle(fontSize: 16),
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(8),
+      //   ),
+      // ),
+      child: Text('Create Group'),
+    )
               ],
             ),
           ),

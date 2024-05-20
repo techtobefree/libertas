@@ -125,7 +125,6 @@ type UGroup @model {
   city: String
   state: String
   leader: String
-  date: String
   projects: [UProject]
   members: [String]
   posts: [String]
