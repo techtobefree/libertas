@@ -16,6 +16,7 @@ import 'package:serve_to_be_free/screens/messages.dart';
 import 'package:serve_to_be_free/screens/notifications.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/find_a_group.dart';
 import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/group_details_form.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/active_events.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/friends.dart';
@@ -300,6 +301,11 @@ final goRouter = GoRouter(
               path: 'groupsdetailsform',
               name: 'groupsdetailsform',
               builder: (context, state) => const GroupDetailsForm(),
+            ),
+            GoRoute(
+              path: 'findagroup',
+              name: 'findagroup',
+              builder: (context, state) => const FindAGroup(),
             ),
           ],
         ),
