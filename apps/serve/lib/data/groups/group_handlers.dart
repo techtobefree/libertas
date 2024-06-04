@@ -56,4 +56,49 @@ class GroupHandlers {
       return const [];
     }
   }
+
+  static Future<List<UProject>> getGroupUProjects(String id) async {
+    try {
+      var group = await GroupHandlers.getUGroupById(id);
+
+      return group?.projects ?? [];
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
+  }
+
+  static Future<List<UGroup>> getFindUGroups(String id) async {
+    try {
+      var groups = await GroupHandlers.getUGroups();
+      var myUGroups = <UGroup>[];
+
+      for (var group in groups) {
+        if (!group!.members!.contains(id)) {
+          myUGroups.add(group);
+        }
+      }
+
+      return myUGroups;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
+  }
+
+  static Future<UGroup?> getUGroupById(String id) async {
+    final queryPredicate = UGroup.ID.eq(id);
+
+    final request = ModelQueries.list<UGroup>(
+      UGroup.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+
+    if (response.data!.items.isNotEmpty) {
+      return response.data!.items[0];
+    }
+
+    return null;
+  }
 }

@@ -9,15 +9,15 @@ import 'package:serve_to_be_free/models/ModelProvider.dart';
 
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 
-class JoinProjectDialog extends StatefulWidget {
+class ProjectPostDialog extends StatefulWidget {
   final String projectId;
-  const JoinProjectDialog({super.key, required this.projectId});
+  const ProjectPostDialog({super.key, required this.projectId});
 
   @override
-  JoinProjectDialogState createState() => JoinProjectDialogState();
+  ProjectPostDialogState createState() => ProjectPostDialogState();
 }
 
-class JoinProjectDialogState extends State<JoinProjectDialog> {
+class ProjectPostDialogState extends State<ProjectPostDialog> {
   final _textController = TextEditingController();
 
   @override

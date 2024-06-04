@@ -16,8 +16,13 @@ import 'package:serve_to_be_free/screens/messages.dart';
 import 'package:serve_to_be_free/screens/notifications.dart';
 import 'package:serve_to_be_free/screens/profile.dart';
 import 'package:serve_to_be_free/screens/projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/about_group.dart';
 import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/find_a_group.dart';
+import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/find_group_project.dart';
+import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/group_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/group_details_form.dart';
+import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/group_projects.dart';
+import 'package:serve_to_be_free/screens/sub_screens/groups_subpages/show_group_members.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/active_events.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/friends.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/checked_in.dart';
@@ -53,7 +58,7 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/project_e
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/about_project.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_details.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/my_projects.dart';
-import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_project_members.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/show_members_attending.dart';
 
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/lead_project_details.dart';
@@ -278,7 +283,7 @@ final goRouter = GoRouter(
             GoRoute(
               path: 'showmembers',
               name: 'showmembers',
-              builder: (context, state) => ShowMembers(
+              builder: (context, state) => ShowProjectMembers(
                 projectId: state.queryParameters['projectId'],
               ),
             ),
@@ -306,6 +311,36 @@ final goRouter = GoRouter(
               path: 'findagroup',
               name: 'findagroup',
               builder: (context, state) => const FindAGroup(),
+            ),
+            GoRoute(
+              path: 'groupdetails/:id',
+              name: 'groupdetails',
+              builder: (context, state) =>
+                  GroupDetails(id: state.queryParameters['id']),
+            ),
+            GoRoute(
+              path: 'groupabout/:id',
+              name: 'groupabout',
+              builder: (context, state) =>
+                  AboutGroup(id: state.queryParameters['id']!),
+            ),
+            GoRoute(
+              path: 'groupprojects/:id',
+              name: 'groupproject',
+              builder: (context, state) =>
+                  GroupProjects(id: state.queryParameters['id']!),
+            ),
+            GoRoute(
+              path: 'findgroupproject',
+              name: 'findgroupproject',
+              builder: (context, state) => const FindAGroupProject(),
+            ),
+            GoRoute(
+              path: 'showgroupmembers',
+              name: 'showgroupmembers',
+              builder: (context, state) => ShowGroupMembers(
+                groupId: state.queryParameters['groupId'],
+              ),
             ),
           ],
         ),

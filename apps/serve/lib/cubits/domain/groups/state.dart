@@ -6,6 +6,7 @@ abstract class GroupsCubitState extends Equatable {
 
   /// my groups - member of or leader of.
   final List<UGroup> mine;
+  final List<UGroup> findgroups;
 
   /// result of a search query
   //final List<UGroup> search;
@@ -15,6 +16,7 @@ abstract class GroupsCubitState extends Equatable {
   const GroupsCubitState({
     required this.groups,
     required this.mine,
+    required this.findgroups,
     required this.busy,
   });
 
@@ -38,6 +40,7 @@ class GroupsState extends GroupsCubitState {
   const GroupsState({
     required super.groups,
     required super.mine,
+    required super.findgroups,
     required super.busy,
   });
 }
@@ -47,6 +50,7 @@ class InitGroupsState extends GroupsCubitState {
       : super(
           groups: const [],
           mine: const [],
+          findgroups: const [],
           busy: false,
         );
 }

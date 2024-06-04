@@ -14,11 +14,13 @@ class GroupsCubit extends Cubit<GroupsCubitState> {
   void update({
     List<UGroup>? groups,
     List<UGroup>? mine,
+    List<UGroup>? findgroups,
     bool? busy,
   }) =>
       emit(GroupsState(
         groups: groups ?? state.groups,
         mine: mine ?? state.mine,
+        findgroups: findgroups ?? state.findgroups,
         busy: busy ?? state.busy,
       ));
 
@@ -26,6 +28,16 @@ class GroupsCubit extends Cubit<GroupsCubitState> {
     try {
       update(busy: true);
       update(groups: await _getGroups(), busy: false);
+    } catch (e) {
+      // Handle the exception
+      print('Failed to load roups: $e');
+    }
+  }
+
+  Future<void> loadFindGroups(String userId) async {
+    try {
+      update(busy: true);
+      update(findgroups: await _getFindGroups(userId), busy: false);
     } catch (e) {
       // Handle the exception
       print('Failed to load roups: $e');
@@ -53,6 +65,17 @@ class GroupsCubit extends Cubit<GroupsCubitState> {
   Future<List<UGroup>> _getMyGroups(String userId) async {
     try {
       var projs = (await GroupHandlers.getMyUGroups(userId))
+          .whereType<UGroup>()
+          .toList();
+      return projs;
+    } catch (e) {
+      throw Exception('Failed to load roups $e');
+    }
+  }
+
+  Future<List<UGroup>> _getFindGroups(String userId) async {
+    try {
+      var projs = (await GroupHandlers.getFindUGroups(userId))
           .whereType<UGroup>()
           .toList();
       return projs;

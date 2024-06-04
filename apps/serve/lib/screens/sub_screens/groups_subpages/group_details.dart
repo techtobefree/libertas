@@ -10,43 +10,45 @@ import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
-import 'package:serve_to_be_free/widgets/ui/project_post.dart';
+import 'package:serve_to_be_free/widgets/group_post_dialogue.dart';
+// import 'package:serve_to_be_free/widgets/ui/group_post.dart';
 import 'package:serve_to_be_free/widgets/project_post_dialogue.dart';
-import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/data/groups/group_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 
-class ProjectDetails extends StatefulWidget {
+class GroupDetails extends StatefulWidget {
   final String? id;
 
-  const ProjectDetails({Key? key, required this.id}) : super(key: key);
+  const GroupDetails({Key? key, required this.id}) : super(key: key);
 
   @override
-  ProjectDetailsState createState() => ProjectDetailsState();
+  GroupDetailsState createState() => GroupDetailsState();
 }
 
-class ProjectDetailsState extends State<ProjectDetails> {
-  Map<String, dynamic> projectData = {};
-  UProject? uproject;
+class GroupDetailsState extends State<GroupDetails> {
+  Map<String, dynamic> groupData = {};
+  UGroup? ugroup;
   List<dynamic> users = [];
   bool isLoading = true;
 
   var sponsor = 0.0;
 
-  Future<Map<String, dynamic>> getProjects() async {
-    final queryPredicate = UProject.ID.eq(widget.id);
+  Future<Map<String, dynamic>> getGroups() async {
+    final queryPredicate = UGroup.ID.eq(widget.id);
 
-    final request = ModelQueries.list<UProject>(
-      UProject.classType,
+    final request = ModelQueries.list<UGroup>(
+      UGroup.classType,
       where: queryPredicate,
     );
     final response = await Amplify.API.query(request: request).response;
 
     if (response.data!.items.isNotEmpty) {
-      // var url = Uri.parse('http://44.203.120.103:3000/projects/${widget.id}');
+      // var url = Uri.parse('http://44.203.120.103:3000/groups/${widget.id}');
       // var response = await http.get(url);
       // if (response.statusCode == 200) {
       var jsonResponse = response.data!.items[0]!.toJson();
-      jsonResponse['uproject'] = response.data!.items[0];
+      jsonResponse['ugroup'] = response.data!.items[0];
 
       // print(jsonResponse['sponsors']);
       // if (jsonResponse.containsKey('sponsors') &&
@@ -84,25 +86,25 @@ class ProjectDetailsState extends State<ProjectDetails> {
             //     convertDate(newPosts[newPosts.length - 1]['date']);
           }
         }
-        print(jsonResponse['uproject']);
+        print(jsonResponse['ugroup']);
         jsonResponse['posts'] = newPosts;
       }
       return jsonResponse;
     } else {
-      throw Exception('Failed to load projects');
+      throw Exception('Failed to load groups');
     }
   }
 
   Future<List> getMembers(idArr) async {
     var users = [];
-    String? leaderId = projectData['leader'];
+    String? leaderId = groupData['leader'];
     if (leaderId != null && leaderId != "") {
-      var user = await UserHandlers.getUUserById(projectData['leader']);
+      var user = await UserHandlers.getUUserById(groupData['leader']);
       users.add(user);
     }
     for (int i = 0; i < 5; i++) {
       if (idArr.length > i) {
-        if (idArr[i] != projectData['leader']) {
+        if (idArr[i] != groupData['leader']) {
           var user = await UserHandlers.getUUserById(idArr[i]);
           users.add(user);
         }
@@ -161,9 +163,9 @@ class ProjectDetailsState extends State<ProjectDetails> {
 
   void loadData() async {
     // try {
-    var data = await getProjects();
+    var data = await getGroups();
     setState(() {
-      projectData = data;
+      groupData = data;
     });
 
     var members = await getMembers(data['members']);
@@ -172,12 +174,12 @@ class ProjectDetailsState extends State<ProjectDetails> {
     });
 
     var id = widget.id;
-    if (id != null) {
-      var sponsorAmount = await SponsorHandlers.getUSponsorAmountByProject(id);
-      setState(() {
-        sponsor = sponsorAmount;
-      });
-    }
+    // if (id != null) {
+    //   var sponsorAmount = await SponsorHandlers.getUSponsorAmountByGroup(id);
+    //   setState(() {
+    //     sponsor = sponsorAmount;
+    //   });
+    // }
 
     // Set isLoading to false to enable the screen
     setState(() {
@@ -194,7 +196,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
   Widget build(BuildContext context) {
     final currentUserID = BlocProvider.of<UserCubit>(context).state.id;
 
-    final members = projectData['members'] ?? [];
+    final members = groupData['members'] ?? [];
 
     final hasJoined = members.contains(currentUserID);
 
@@ -210,7 +212,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
       return Scaffold(
         appBar: AppBar(
             title: const Text(
-              'Project Dashboard',
+              'Group Dashboard',
               style: TextStyle(color: Colors.white),
             ),
             iconTheme: const IconThemeData(color: Colors.white),
@@ -239,7 +241,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                     // Add horizontal margins
                     const SizedBox(height: 20),
                     Text(
-                      projectData['name'] ?? '',
+                      groupData['name'] ?? '',
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 5),
@@ -249,27 +251,23 @@ class ProjectDetailsState extends State<ProjectDetails> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '${projectData['members']?.length ?? ''} Members',
+                            '${groupData['members']?.length ?? ''} Members',
                             style: const TextStyle(fontSize: 12),
                           ),
                           const SizedBox(width: 5),
-                          const SizedBox(
-                              width:
-                                  5), // Add spacing between the members count and the dot
+                          const SizedBox(width: 5),
                           const Text(
                             '•', // Horizontal dot separator
                             style: TextStyle(fontSize: 12),
                           ),
-                          const SizedBox(
-                              width:
-                                  5), // Add spacing between the "Members" text and the hyperlink
+                          const SizedBox(width: 5),
                           GestureDetector(
                             onTap: () {
                               print("view members");
-                              context
-                                  .pushNamed("showmembers", queryParameters: {
-                                'projectId': projectData['id'],
-                              });
+                              context.pushNamed("showgroupmembers",
+                                  queryParameters: {
+                                    'groupId': groupData['id'],
+                                  });
                             },
                             child: const Text(
                               'View Members',
@@ -284,13 +282,13 @@ class ProjectDetailsState extends State<ProjectDetails> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    if (projectData.containsKey('date'))
-                      Text(
-                        '${projectData['date']}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
+                    // if (groupData.containsKey('date'))
+                    //   Text(
+                    //     '${groupData['date']}',
+                    //     style: const TextStyle(
+                    //       fontSize: 12,
+                    //     ),
+                    //   ),
                     Container(
                       padding: const EdgeInsets.only(top: 20, bottom: 10),
                       child: Row(
@@ -342,9 +340,9 @@ class ProjectDetailsState extends State<ProjectDetails> {
                           height: 30,
                           child: ElevatedButton(
                             onPressed: () {
-                              context.pushNamed("projectabout",
-                                  queryParameters: {'id': projectData['id']},
-                                  pathParameters: {'id': projectData['id']});
+                              context.pushNamed("groupabout",
+                                  queryParameters: {'id': groupData['id']},
+                                  pathParameters: {'id': groupData['id']});
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color.fromARGB(
@@ -368,10 +366,10 @@ class ProjectDetailsState extends State<ProjectDetails> {
                             onPressed: () {
                               // Button action goes here
                               context
-                                  .pushNamed("projectevents", queryParameters: {
-                                'projectId': projectData['id'],
+                                  .pushNamed("groupproject", queryParameters: {
+                                'id': groupData['id'],
                               }, pathParameters: {
-                                'projectId': projectData['id'],
+                                'id': groupData['id'],
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -385,7 +383,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                               padding: EdgeInsets.symmetric(horizontal: 16),
                             ),
                             child: Text(
-                              "Events",
+                              "Projects",
                               style: TextStyle(fontSize: 13),
                             ),
                           ),
@@ -483,9 +481,9 @@ class ProjectDetailsState extends State<ProjectDetails> {
                     // ElevatedButton(
                     //   onPressed: () {
                     //     // navigate to about page
-                    //     context.pushNamed("projectabout",
-                    //         queryParameters: {'id': projectData['id']},
-                    //         pathParameters: {'id': projectData['id']});
+                    //     context.pushNamed("groupabout",
+                    //         queryParameters: {'id': groupData['id']},
+                    //         pathParameters: {'id': groupData['id']});
                     //   },
                     //   style: ButtonStyle(
                     //     backgroundColor: MaterialStateProperty.all<Color>(
@@ -498,11 +496,11 @@ class ProjectDetailsState extends State<ProjectDetails> {
                     //   ),
                     // ),
                     // Visibility(
-                    //   visible: projectData
+                    //   visible: groupData
                     //       .isNotEmpty, // Show the button when hasJoined is not null
                     //   child: ElevatedButton(
                     //     onPressed: () => {
-                    //       if (!projectData['members'].contains(currentUserID))
+                    //       if (!groupData['members'].contains(currentUserID))
                     //         {addMember()}
                     //       else
                     //         {onPostClick(currentUserID)}
@@ -526,25 +524,25 @@ class ProjectDetailsState extends State<ProjectDetails> {
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: projectData['posts']?.length ?? 0,
+                itemCount: groupData['posts']?.length ?? 0,
                 itemBuilder: (context, index) {
-                  final reversedIndex = projectData['posts'].length -
+                  final reversedIndex = groupData['posts'].length -
                       index -
                       1; // compute the index of the reversed list
                   return Post(
                     id: '',
                     name:
-                        '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
-                    postText: projectData['posts'][reversedIndex]['text'],
+                        '${groupData['posts'][reversedIndex]['user']['firstName']} ${groupData['posts'][reversedIndex]['user']['lastName']}',
+                    postText: groupData['posts'][reversedIndex]['text'],
                     profURL:
-                        projectData['posts'][reversedIndex]['imageUrl'] ?? '',
-                    date: projectData['posts'][reversedIndex]['date'] ?? '',
+                        groupData['posts'][reversedIndex]['imageUrl'] ?? '',
+                    date: groupData['posts'][reversedIndex]['date'] ?? '',
                     userId:
-                        projectData['posts'][reversedIndex]['user']['id'] ?? '',
+                        groupData['posts'][reversedIndex]['user']['id'] ?? '',
                   );
                   // return DashboardUserDisplay(
                   //     dimension: 60.0,
-                  //     name: projectData['posts']?[index]['text']);
+                  //     name: groupData['posts']?[index]['text']);
                 },
                 // ),
               ),
@@ -558,7 +556,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
   void updatePosts(List<dynamic> newPosts) {}
 
   void onPostClick(currentUserID) async {
-    if (!projectData['members'].contains(currentUserID)) {
+    if (!groupData['members'].contains(currentUserID)) {
       // addMember();
       await showDialog(
         context: context,
@@ -570,7 +568,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    'Join project to post',
+                    'Join group to post',
                     style: TextStyle(fontSize: 18.0),
                   ),
                 ),
@@ -589,14 +587,14 @@ class ProjectDetailsState extends State<ProjectDetails> {
       await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ProjectPostDialog(
-            projectId: projectData['id'],
+          return GroupPostDialog(
+            groupId: groupData['id'],
           );
         },
       ).then((value) => setState(() {}));
-      getProjects().then((data) {
+      getGroups().then((data) {
         setState(() {
-          projectData = data;
+          groupData = data;
         });
       });
     }

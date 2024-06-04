@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serve_to_be_free/data/groups/group_handlers.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
@@ -14,11 +15,13 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
   void update({
     List<UProject>? projects,
     List<UProject>? mine,
+    List<UProject>? group,
     bool? busy,
   }) =>
       emit(ProjectsState(
         projects: projects ?? state.projects,
         mine: mine ?? state.mine,
+        group: group ?? state.group,
         busy: busy ?? state.busy,
       ));
 
@@ -42,6 +45,16 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
     }
   }
 
+  Future<void> loadGroupProjects(String userId) async {
+    try {
+      update(busy: true);
+      update(mine: await _getGroupProjects(userId), busy: false);
+    } catch (e) {
+      // Handle the exception
+      print('Failed to load projects: $e');
+    }
+  }
+
   Future<List<UProject>> _getProjects() async {
     try {
       return (await ProjectHandlers.getUProjects())
@@ -55,6 +68,17 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
   Future<List<UProject>> _getMyProjects(String userId) async {
     try {
       var projs = (await ProjectHandlers.getMyUProjects(userId))
+          .whereType<UProject>()
+          .toList();
+      return projs;
+    } catch (e) {
+      throw Exception('Failed to load projects $e');
+    }
+  }
+
+  Future<List<UProject>> _getGroupProjects(String userId) async {
+    try {
+      var projs = (await GroupHandlers.getGroupUProjects(userId))
           .whereType<UProject>()
           .toList();
       return projs;

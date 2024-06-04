@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/cubits/domain/groups/cubit.dart';
-import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
+import 'package:serve_to_be_free/widgets/find_group_project_card.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
-import 'package:serve_to_be_free/widgets/group_card.dart';
 
-class FindAGroup extends StatefulWidget {
-  const FindAGroup({super.key});
+class FindAGroupProject extends StatefulWidget {
+  const FindAGroupProject({super.key});
 
   @override
-  State<FindAGroup> createState() => _FindAGroupState();
+  State<FindAGroupProject> createState() => _FindAGroupProjectState();
 }
 
-class _FindAGroupState extends State<FindAGroup> {
+class _FindAGroupProjectState extends State<FindAGroupProject> {
   String _searchQuery = '';
 
   @override
@@ -23,14 +21,13 @@ class _FindAGroupState extends State<FindAGroup> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<GroupsCubit>(context)
-        .loadFindGroups(BlocProvider.of<UserCubit>(context).state.id);
+    BlocProvider.of<ProjectsCubit>(context).loadProjects();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
         title: const Text(
-          'Find a Group',
+          'Find a Project',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -52,7 +49,7 @@ class _FindAGroupState extends State<FindAGroup> {
         elevation: 0,
         centerTitle: false,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(70.0),
+          preferredSize: const Size.fromHeight(60.0),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
             child: Column(
@@ -65,7 +62,7 @@ class _FindAGroupState extends State<FindAGroup> {
                     });
                   },
                   decoration: InputDecoration(
-                    hintText: 'Search by group name',
+                    hintText: 'Search by location',
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -85,13 +82,13 @@ class _FindAGroupState extends State<FindAGroup> {
                         vertical: 16.0, horizontal: 16.0),
                   ),
                 ),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 8.0),
               ],
             ),
           ),
         ),
       ),
-      body: BlocBuilder<GroupsCubit, GroupsCubitState>(
+      body: BlocBuilder<ProjectsCubit, ProjectsCubitState>(
         buildWhen: (previous, current) => previous != current,
         builder: (context, state) {
           if (state.busy) {
@@ -99,19 +96,23 @@ class _FindAGroupState extends State<FindAGroup> {
               child: CircularProgressIndicator(),
             );
           }
-          final groups = state.findgroups.toList();
+          final incompleteProjects = state.incompleteProjects.toList();
           return ListView.builder(
-            itemCount: groups.length,
+            itemCount: incompleteProjects.length,
             itemBuilder: (context, i) {
               // print(_searchQuery.toLowerCase());
               if (_searchQuery.length < 2) {
-                return GroupCard.fromUGroup(groups[i]);
-                // return ProjectCard.fromUProject(incompleteProjects[i]);
+                return GroupProjectCard.fromUProject(incompleteProjects[i]);
               } else {
-                final name = groups[i].name.toLowerCase();
+                final city = incompleteProjects[i].city?.toLowerCase() ?? '';
+                final usaState =
+                    incompleteProjects[i].state?.toLowerCase() ?? '';
+                final combined = '$city, $usaState';
                 final query = _searchQuery.toLowerCase();
-                if (name.contains(query)) {
-                  return GroupCard.fromUGroup(groups[i]);
+                if (city.contains(query) ||
+                    usaState.contains(query) ||
+                    combined.contains(query)) {
+                  return ProjectCard.fromUProject(incompleteProjects[i]);
                 }
                 return const SizedBox
                     .shrink(); // or return null; to hide the card

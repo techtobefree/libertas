@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/widgets/ui/member_card.dart'; // Import your project handlers
 
-class ShowMembers extends StatefulWidget {
+class ShowProjectMembers extends StatefulWidget {
   final String? projectId;
 
-  const ShowMembers({super.key, required this.projectId});
+  const ShowProjectMembers({super.key, required this.projectId});
 
   @override
-  ShowMembersState createState() => ShowMembersState();
+  ShowProjectMembersState createState() => ShowProjectMembersState();
 }
 
-class ShowMembersState extends State<ShowMembers> {
+class ShowProjectMembersState extends State<ShowProjectMembers> {
   List<String>? projectMems;
 
   @override

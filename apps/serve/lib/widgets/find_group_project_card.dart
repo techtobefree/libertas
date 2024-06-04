@@ -1,38 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/models/UProject.dart';
 import 'package:serve_to_be_free/repository/repository.dart';
 
-class GroupCard extends StatelessWidget {
+class GroupProjectCard extends StatelessWidget {
   final String title;
-  final Map<String, dynamic> group;
+  final String numMembers;
+  final Map<String, dynamic> project;
+  final List<dynamic> sponsors;
+  final bool lead;
 
-  const GroupCard({
+  const GroupProjectCard({
     super.key,
     required this.title,
-    required this.group,
+    required this.numMembers,
+    required this.project,
+    required this.sponsors,
+    this.lead = false,
   });
 
   // Named constructor that accepts a JSON object
-  factory GroupCard.fromJson(
+  factory GroupProjectCard.fromJson(
     Map<String, dynamic> json, {
     Key? key,
+    bool lead = false,
   }) =>
-      GroupCard(
-        key: key,
-        title: json['name'],
-        group: json,
-      );
+      GroupProjectCard(
+          key: key,
+          title: json['name'],
+          numMembers: json['members'].length.toString(),
+          sponsors: json['sponsors'] ?? [],
+          project: json,
+          lead: lead);
 
-  factory GroupCard.fromUGroup(
-    UGroup uGroup, {
+  factory GroupProjectCard.fromUProject(
+    UProject uProject, {
     Key? key,
+    bool lead = false,
   }) =>
-      GroupCard(
-        key: key,
-        title: uGroup.name,
-        group: uGroup.toJson(),
-      );
+      GroupProjectCard(
+          key: key,
+          title: uProject.name,
+          numMembers: (uProject.members?.length ?? 0).toString(),
+          sponsors: uProject.sponsors ?? [],
+          project: uProject.toJson(),
+          lead: lead);
 
   // Named constructor that accepts a JSON object
   //ProjectCard.fromJson(
@@ -42,7 +54,7 @@ class GroupCard extends StatelessWidget {
   //})  : title = json['name'],
   //      numMembers = json['members'].length.toString(),
   //      sponsors = json['sponsors'] ?? [],
-  //      group = json,
+  //      project = json,
   //      this.lead = lead; // Initialize 'lead' with the provided value
 
   @override
@@ -54,16 +66,16 @@ class GroupCard extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             // Do something when the container is clicked
-            // if (lead == false) {
-            context.pushNamed("groupdetails",
-                queryParameters: {'id': group['id']},
-                pathParameters: {'id': group['id']});
-
-            // if (lead == true) {
-            //   context.pushNamed("leadgroupdetails",
-            //       queryParameters: {'id': group['id']},
-            //       pathParameters: {'id': group['id']});
-            // }
+            if (lead == false) {
+              context.pushNamed("projectdetails",
+                  queryParameters: {'id': project['id']},
+                  pathParameters: {'id': project['id']});
+            }
+            if (lead == true) {
+              context.pushNamed("leadprojectdetails",
+                  queryParameters: {'id': project['id']},
+                  pathParameters: {'id': project['id']});
+            }
           },
           child: Card(
             color: Colors.white,
@@ -90,25 +102,28 @@ class GroupCard extends StatelessWidget {
                             overflow: TextOverflow.visible,
                           ),
                         ),
-                        if (group.containsKey('city'))
-                          Text('${group['city']}, ${group['state']}'),
-
-                        // Text('$numMembers Members'),
-                        // const SizedBox(height: 12.0),
-                        // Text((group['isCompleted'] == true ? 'Completed' : ''),
-                        //     style: const TextStyle(
-                        //       fontWeight: FontWeight.bold,
-                        //       color: Colors.redAccent,
-                        //     )),
+                        if (project.containsKey('city'))
+                          Text('${project['city']}, ${project['state']}'),
+                        if (project.containsKey('date'))
+                          Text('${project['date']}'),
+                        const SizedBox(height: 8.0),
+                        Text('$numMembers Members'),
+                        const SizedBox(height: 12.0),
+                        Text(
+                            (project['isCompleted'] == true ? 'Completed' : ''),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.redAccent,
+                            )),
                       ],
                     ),
                   ),
-                  if (group.containsKey('groupPicture') &&
-                      group['groupPicture'].isNotEmpty)
+                  if (project.containsKey('projectPicture') &&
+                      project['projectPicture'].isNotEmpty)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5),
                       child: repo.image(
-                        group['groupPicture'],
+                        project['projectPicture'],
                         fit: BoxFit.cover,
                         height: 130,
                         width: 160,
@@ -132,20 +147,6 @@ class GroupCard extends StatelessWidget {
                           );
                         },
                       ),
-                      // FadeInImage.assetNetwork(
-                      //                 placeholder: 'assets/images/curious_lemur.jpeg',
-                      //                 image: group['groupPicture'],
-                      //                 fit: BoxFit.cover, // adjust the image to fit the widget
-                      // height: 130,
-                      // width: 160,
-
-                      //               ),
-                      // repo.image(
-                      //   group['groupPicture'],
-                      //   fit: BoxFit
-                      //       .cover, // adjust the image to fit the widget
-                      //   height: 130, // set the height of the widget
-                      // ),
                     ),
                 ],
               ),
