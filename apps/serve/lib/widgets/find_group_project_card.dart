@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/data/groups/group_handlers.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
 import 'package:serve_to_be_free/repository/repository.dart';
 
@@ -115,6 +116,11 @@ class GroupProjectCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: Colors.redAccent,
                             )),
+                        const SizedBox(height: 12.0),
+                        ElevatedButton(
+                            onPressed: () async =>
+                                await addProjectToGroup("", ""),
+                            child: Text("Add Project to Group")),
                       ],
                     ),
                   ),
@@ -155,5 +161,11 @@ class GroupProjectCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  addProjectToGroup(String groupId, String projId) async {
+    print('x');
+    // await GroupHandlers.addProjectToGroup(String groupId, String projectId);
+    return;
   }
 }

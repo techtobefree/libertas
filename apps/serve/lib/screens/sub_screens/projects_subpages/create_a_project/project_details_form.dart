@@ -147,6 +147,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           privacy: formData['privacy'],
           date: formData['projectDate'].toString().split(' ')[0],
           uUserProjectsId: "724a6ce3-47ed-402e-80c0-69e75601d2dd",
+          uGroupProjectsId: "724a6ce3-47ed-402e-80c0-69e75601d2dr",
           posts: [],
           projectPicture: imageURL,
           city: formData['city'],

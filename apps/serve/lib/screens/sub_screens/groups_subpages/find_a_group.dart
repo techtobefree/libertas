@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/groups/cubit.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
-import 'package:serve_to_be_free/widgets/find_project_card.dart';
 import 'package:serve_to_be_free/widgets/group_card.dart';
 
 class FindAGroup extends StatefulWidget {
