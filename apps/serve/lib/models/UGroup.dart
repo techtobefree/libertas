@@ -36,7 +36,7 @@ class UGroup extends amplify_core.Model {
   final String? _state;
   final String? _leader;
   final String? _date;
-  final List<UProject>? _projects;
+  final List<String>? _projects;
   final List<String>? _members;
   final List<String>? _posts;
   final String? _groupPicture;
@@ -116,7 +116,7 @@ class UGroup extends amplify_core.Model {
     return _date;
   }
   
-  List<UProject>? get projects {
+  List<String>? get projects {
     return _projects;
   }
   
@@ -155,7 +155,7 @@ class UGroup extends amplify_core.Model {
   
   const UGroup._internal({required this.id, required name, required privacy, bio, required description, city, state, leader, date, projects, members, posts, required groupPicture, zipCode, createdAt, updatedAt}): _name = name, _privacy = privacy, _bio = bio, _description = description, _city = city, _state = state, _leader = leader, _date = date, _projects = projects, _members = members, _posts = posts, _groupPicture = groupPicture, _zipCode = zipCode, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory UGroup({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, String? leader, String? date, List<UProject>? projects, List<String>? members, List<String>? posts, required String groupPicture, String? zipCode}) {
+  factory UGroup({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, String? leader, String? date, List<String>? projects, List<String>? members, List<String>? posts, required String groupPicture, String? zipCode}) {
     return UGroup._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
@@ -166,7 +166,7 @@ class UGroup extends amplify_core.Model {
       state: state,
       leader: leader,
       date: date,
-      projects: projects != null ? List<UProject>.unmodifiable(projects) : projects,
+      projects: projects != null ? List<String>.unmodifiable(projects) : projects,
       members: members != null ? List<String>.unmodifiable(members) : members,
       posts: posts != null ? List<String>.unmodifiable(posts) : posts,
       groupPicture: groupPicture,
@@ -214,6 +214,7 @@ class UGroup extends amplify_core.Model {
     buffer.write("state=" + "$_state" + ", ");
     buffer.write("leader=" + "$_leader" + ", ");
     buffer.write("date=" + "$_date" + ", ");
+    buffer.write("projects=" + (_projects != null ? _projects!.toString() : "null") + ", ");
     buffer.write("members=" + (_members != null ? _members!.toString() : "null") + ", ");
     buffer.write("posts=" + (_posts != null ? _posts!.toString() : "null") + ", ");
     buffer.write("groupPicture=" + "$_groupPicture" + ", ");
@@ -225,7 +226,7 @@ class UGroup extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UGroup copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, String? leader, String? date, List<UProject>? projects, List<String>? members, List<String>? posts, String? groupPicture, String? zipCode}) {
+  UGroup copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, String? leader, String? date, List<String>? projects, List<String>? members, List<String>? posts, String? groupPicture, String? zipCode}) {
     return UGroup._internal(
       id: id,
       name: name ?? this.name,
@@ -252,7 +253,7 @@ class UGroup extends amplify_core.Model {
     ModelFieldValue<String?>? state,
     ModelFieldValue<String?>? leader,
     ModelFieldValue<String?>? date,
-    ModelFieldValue<List<UProject>?>? projects,
+    ModelFieldValue<List<String>?>? projects,
     ModelFieldValue<List<String>?>? members,
     ModelFieldValue<List<String>?>? posts,
     ModelFieldValue<String>? groupPicture,
@@ -286,19 +287,7 @@ class UGroup extends amplify_core.Model {
       _state = json['state'],
       _leader = json['leader'],
       _date = json['date'],
-      _projects = json['projects']  is Map
-        ? (json['projects']['items'] is List
-          ? (json['projects']['items'] as List)
-              .where((e) => e != null)
-              .map((e) => UProject.fromJson(new Map<String, dynamic>.from(e)))
-              .toList()
-          : null)
-        : (json['projects'] is List
-          ? (json['projects'] as List)
-              .where((e) => e?['serializedData'] != null)
-              .map((e) => UProject.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
-              .toList()
-          : null),
+      _projects = json['projects']?.cast<String>(),
       _members = json['members']?.cast<String>(),
       _posts = json['posts']?.cast<String>(),
       _groupPicture = json['groupPicture'],
@@ -307,7 +296,7 @@ class UGroup extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'leader': _leader, 'date': _date, 'projects': _projects?.map((UProject? e) => e?.toJson()).toList(), 'members': _members, 'posts': _posts, 'groupPicture': _groupPicture, 'zipCode': _zipCode, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'leader': _leader, 'date': _date, 'projects': _projects, 'members': _members, 'posts': _posts, 'groupPicture': _groupPicture, 'zipCode': _zipCode, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -339,9 +328,7 @@ class UGroup extends amplify_core.Model {
   static final STATE = amplify_core.QueryField(fieldName: "state");
   static final LEADER = amplify_core.QueryField(fieldName: "leader");
   static final DATE = amplify_core.QueryField(fieldName: "date");
-  static final PROJECTS = amplify_core.QueryField(
-    fieldName: "projects",
-    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UProject'));
+  static final PROJECTS = amplify_core.QueryField(fieldName: "projects");
   static final MEMBERS = amplify_core.QueryField(fieldName: "members");
   static final POSTS = amplify_core.QueryField(fieldName: "posts");
   static final GROUPPICTURE = amplify_core.QueryField(fieldName: "groupPicture");
@@ -400,11 +387,11 @@ class UGroup extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: UGroup.PROJECTS,
       isRequired: false,
-      ofModelName: 'UProject',
-      associatedKey: UProject.UGROUPPROJECTSID
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

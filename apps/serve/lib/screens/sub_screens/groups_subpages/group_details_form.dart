@@ -392,6 +392,7 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
             description: formData['description'],
             leader: BlocProvider.of<UserCubit>(context).state.id,
             members: [BlocProvider.of<UserCubit>(context).state.id],
+            projects: [],
             bio: formData['bio'],
             city: formData['city'],
             state: formData['state'],

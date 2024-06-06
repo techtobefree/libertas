@@ -5,8 +5,9 @@ import 'package:serve_to_be_free/widgets/find_group_project_card.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class FindAGroupProject extends StatefulWidget {
-  const FindAGroupProject({super.key});
+  final String? id;
 
+  const FindAGroupProject({Key? key, required this.id}) : super(key: key);
   @override
   State<FindAGroupProject> createState() => _FindAGroupProjectState();
 }
@@ -102,7 +103,13 @@ class _FindAGroupProjectState extends State<FindAGroupProject> {
             itemBuilder: (context, i) {
               // print(_searchQuery.toLowerCase());
               if (_searchQuery.length < 2) {
-                return GroupProjectCard.fromUProject(incompleteProjects[i]);
+                return GroupProjectCard(
+                    title: incompleteProjects[i].name,
+                    numMembers:
+                        incompleteProjects[i].members!.length.toString(),
+                    project: incompleteProjects[i].toJson(),
+                    sponsors: incompleteProjects[i].sponsors ?? [],
+                    groupId: widget.id!);
               } else {
                 final city = incompleteProjects[i].city?.toLowerCase() ?? '';
                 final usaState =
@@ -112,7 +119,13 @@ class _FindAGroupProjectState extends State<FindAGroupProject> {
                 if (city.contains(query) ||
                     usaState.contains(query) ||
                     combined.contains(query)) {
-                  return ProjectCard.fromUProject(incompleteProjects[i]);
+                  return GroupProjectCard(
+                      title: incompleteProjects[i].name,
+                      numMembers:
+                          incompleteProjects[i].members!.length.toString(),
+                      project: incompleteProjects[i].toJson(),
+                      sponsors: incompleteProjects[i].sponsors ?? [],
+                      groupId: widget.id!);
                 }
                 return const SizedBox
                     .shrink(); // or return null; to hide the card

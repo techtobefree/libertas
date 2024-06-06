@@ -331,9 +331,10 @@ final goRouter = GoRouter(
                   GroupProjects(id: state.queryParameters['id']!),
             ),
             GoRoute(
-              path: 'findgroupproject',
+              path: 'findgroupproject/:id',
               name: 'findgroupproject',
-              builder: (context, state) => const FindAGroupProject(),
+              builder: (context, state) =>
+                  FindAGroupProject(id: state.queryParameters['id']!),
             ),
             GoRoute(
               path: 'showgroupmembers',

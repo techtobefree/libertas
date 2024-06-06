@@ -48,7 +48,7 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
   Future<void> loadGroupProjects(String userId) async {
     try {
       update(busy: true);
-      update(mine: await _getGroupProjects(userId), busy: false);
+      update(group: await _getGroupProjects(userId), busy: false);
     } catch (e) {
       // Handle the exception
       print('Failed to load projects: $e');

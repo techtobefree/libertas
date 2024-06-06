@@ -10,6 +10,7 @@ class GroupProjectCard extends StatelessWidget {
   final Map<String, dynamic> project;
   final List<dynamic> sponsors;
   final bool lead;
+  final String groupId;
 
   const GroupProjectCard({
     super.key,
@@ -17,46 +18,9 @@ class GroupProjectCard extends StatelessWidget {
     required this.numMembers,
     required this.project,
     required this.sponsors,
+    required this.groupId,
     this.lead = false,
   });
-
-  // Named constructor that accepts a JSON object
-  factory GroupProjectCard.fromJson(
-    Map<String, dynamic> json, {
-    Key? key,
-    bool lead = false,
-  }) =>
-      GroupProjectCard(
-          key: key,
-          title: json['name'],
-          numMembers: json['members'].length.toString(),
-          sponsors: json['sponsors'] ?? [],
-          project: json,
-          lead: lead);
-
-  factory GroupProjectCard.fromUProject(
-    UProject uProject, {
-    Key? key,
-    bool lead = false,
-  }) =>
-      GroupProjectCard(
-          key: key,
-          title: uProject.name,
-          numMembers: (uProject.members?.length ?? 0).toString(),
-          sponsors: uProject.sponsors ?? [],
-          project: uProject.toJson(),
-          lead: lead);
-
-  // Named constructor that accepts a JSON object
-  //ProjectCard.fromJson(
-  //  Map<String, dynamic> json, {
-  //  super.key,
-  //  bool lead = false,
-  //})  : title = json['name'],
-  //      numMembers = json['members'].length.toString(),
-  //      sponsors = json['sponsors'] ?? [],
-  //      project = json,
-  //      this.lead = lead; // Initialize 'lead' with the provided value
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +83,7 @@ class GroupProjectCard extends StatelessWidget {
                         const SizedBox(height: 12.0),
                         ElevatedButton(
                             onPressed: () async =>
-                                await addProjectToGroup("", ""),
+                                await addProjectToGroup(groupId, project['id']),
                             child: Text("Add Project to Group")),
                       ],
                     ),
@@ -164,8 +128,7 @@ class GroupProjectCard extends StatelessWidget {
   }
 
   addProjectToGroup(String groupId, String projId) async {
-    print('x');
-    // await GroupHandlers.addProjectToGroup(String groupId, String projectId);
+    await GroupHandlers.addProject(groupId, projId);
     return;
   }
 }

@@ -146,7 +146,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
           id: users[i].id ?? "",
         ),
       );
-      userWidgets.add(SizedBox(
+      userWidgets.add(const SizedBox(
         width: 5,
       ));
     }

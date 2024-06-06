@@ -1,6 +1,7 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -60,8 +61,13 @@ class GroupHandlers {
   static Future<List<UProject>> getGroupUProjects(String id) async {
     try {
       var group = await GroupHandlers.getUGroupById(id);
+      List<UProject> groupprojs = [];
+      for (var projId in group!.projects!) {
+        var proj = await ProjectHandlers.getUProjectById(projId);
+        groupprojs.add(proj!);
+      }
 
-      return group?.projects ?? [];
+      return groupprojs;
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
       return const [];
@@ -100,5 +106,28 @@ class GroupHandlers {
     }
 
     return null;
+  }
+
+  static Future<void> addProject(String groupId, String projId) async {
+    UGroup? group = await getUGroupById(groupId);
+    UProject? project = await ProjectHandlers.getUProjectById(projId);
+
+    if (group != null && project != null) {
+      var groupprojects = group.projects ?? [];
+
+      groupprojects.add(projId);
+
+      final addedUProjUGroup = group.copyWith(projects: groupprojects);
+
+      try {
+        final request = ModelMutations.update(addedUProjUGroup);
+        final response = await Amplify.API.mutate(request: request).response;
+        safePrint('Response: $response');
+      } catch (e) {
+        throw Exception('Failed to update project: $e');
+      }
+    } else {
+      print("failed");
+    }
   }
 }

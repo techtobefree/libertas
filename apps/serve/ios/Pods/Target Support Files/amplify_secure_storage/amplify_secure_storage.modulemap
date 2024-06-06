@@ -1,0 +1,6 @@
+framework module amplify_secure_storage {
+  umbrella header "amplify_secure_storage-umbrella.h"
+
+  export *
+  module * { export * }
+}

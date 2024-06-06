@@ -65,7 +65,13 @@ class _GroupProjectsState extends State<GroupProjects> {
               children: [
                 const SizedBox(height: 8.0),
                 ElevatedButton(
-                  onPressed: () => {context.go('/groups/findgroupproject')},
+                  onPressed: () => {
+                    context.pushNamed("findgroupproject", queryParameters: {
+                      'id': widget.id,
+                    }, pathParameters: {
+                      'id': widget.id!,
+                    })
+                  },
                   child: const Text('Find Projects'),
                 ),
               ],
