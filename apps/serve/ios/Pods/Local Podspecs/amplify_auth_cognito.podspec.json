@@ -1,0 +1,46 @@
+{
+  "name": "amplify_auth_cognito",
+  "version": "0.0.1",
+  "summary": "The auth module for Amplify Flutter.",
+  "description": "The auth module for Amplify Flutter.",
+  "homepage": "https://github.com/aws-amplify/amplify-flutter",
+  "license": "Apache License, Version 2.0",
+  "authors": {
+    "Amazon Web Services": "amazonwebservices"
+  },
+  "source": {
+    "git": "https://github.com/aws-amplify/amplify-flutter.git"
+  },
+  "source_files": "Classes/**/*",
+  "ios": {
+    "dependencies": {
+      "Flutter": [
+
+      ]
+    },
+    "frameworks": "UIKit",
+    "pod_target_xcconfig": {
+      "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+    }
+  },
+  "osx": {
+    "dependencies": {
+      "FlutterMacOS": [
+
+      ]
+    },
+    "frameworks": [
+      "AppKit",
+      "IOKit"
+    ]
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES"
+  },
+  "platforms": {
+    "ios": "13.0",
+    "osx": "10.15"
+  },
+  "swift_versions": "5.5",
+  "swift_version": "5.5"
+}

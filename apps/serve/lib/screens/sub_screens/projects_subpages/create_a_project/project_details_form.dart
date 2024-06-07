@@ -303,15 +303,17 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
   }
 
   String? dateValidator(DateTime? value) {
-  if (value == null) {
-    return 'This field is required';
+    if (value == null) {
+      return 'This field is required';
+    }
+    return null;
   }
-  return null;
-}
-String? listValidator(List<dynamic>? value) {
-  final validator = ValidationBuilder().required('Please select an Image').build();
-  return validator(value != null && value.isNotEmpty ? 'selected' : null);
-}
+
+  String? listValidator(List<dynamic>? value) {
+    final validator =
+        ValidationBuilder().required('Please select an Image').build();
+    return validator(value != null && value.isNotEmpty ? 'selected' : null);
+  }
 
   InputDecoration _fieldDecoration(hintText) {
     return InputDecoration(
@@ -399,28 +401,14 @@ String? listValidator(List<dynamic>? value) {
                       child: FormBuilderTextField(
                           name: 'projectName',
                           validator: ValidationBuilder()
-    .required()
-    .minLength(3)
-    .maxLength(50)
-    .regExp(
-      RegExp(r'^[a-zA-Z0-9 ]+$'),
-      'Only alphanumeric characters are allowed',
-    )
-    .build(),
-                          
-                          
-                          
-                          
-                          // FormBuilderValidators.compose([
-                          //   FormBuilderValidators.required(),
-                          //   FormBuilderValidators.minLength(3),
-                          //   FormBuilderValidators.maxLength(50),
-                          //   FormBuilderValidators.match(
-                          //     r'^[a-zA-Z0-9 ]+$',
-                          //     errorText:
-                          //         'Only alphanumeric characters are allowed',
-                          //   ),
-                          // ]),
+                              .required()
+                              .minLength(3)
+                              .maxLength(50)
+                              .regExp(
+                                RegExp(r'^[a-zA-Z0-9 ]+$'),
+                                'Only alphanumeric characters are allowed',
+                              )
+                              .build(),
                           decoration: _fieldDecoration(projectData.name)),
                     ),
                   ],
@@ -447,7 +435,7 @@ String? listValidator(List<dynamic>? value) {
                             name: 'projectDate',
                             inputType: InputType.date,
                             validator: dateValidator,
-                            
+
                             //  FormBuilderValidators.compose(
                             //     [FormBuilderValidators.required()]),
                             decoration: _fieldDecoration(projectData.date)),
@@ -479,8 +467,7 @@ String? listValidator(List<dynamic>? value) {
                         name: 'privacy',
                         decoration: _fieldDecoration("Project Privacy"),
                         validator: ValidationBuilder().required().build(),
-                        
-                        
+
                         // FormBuilderValidators.compose([
                         //   FormBuilderValidators.required(),
                         // ]),
@@ -523,8 +510,7 @@ String? listValidator(List<dynamic>? value) {
                             ? 'Use Current leader'
                             : "Leadership Option"),
                         validator: ValidationBuilder().required().build(),
-                        
-                        
+
                         // FormBuilderValidators.compose([
                         //   FormBuilderValidators.required(),
                         // ]),
@@ -608,8 +594,7 @@ String? listValidator(List<dynamic>? value) {
                                 // ),
                               ),
                               validator: listValidator,
-                              
-                              
+
                               // FormBuilderValidators.compose([
                               //   FormBuilderValidators.required(
                               //     errorText: 'Please select an Image',
@@ -652,7 +637,7 @@ String? listValidator(List<dynamic>? value) {
                       name: 'state',
                       decoration: _fieldDecoration("State"),
                       validator: ValidationBuilder().required().build(),
-                      
+
                       // FormBuilderValidators.compose([
                       //   FormBuilderValidators.required(),
                       // ]),
@@ -743,17 +728,15 @@ String? listValidator(List<dynamic>? value) {
                       child: FormBuilderTextField(
                           name: 'city',
                           validator: ValidationBuilder()
-    .required()
-    .minLength(3)
-    .maxLength(50)
-    .regExp(
-      RegExp(r'^[a-zA-Z0-9 ]+$'),
-      'Only alphanumeric characters are allowed',
-    )
-    .build(),
-                          
-                          
-                          
+                              .required()
+                              .minLength(3)
+                              .maxLength(50)
+                              .regExp(
+                                RegExp(r'^[a-zA-Z0-9 ]+$'),
+                                'Only alphanumeric characters are allowed',
+                              )
+                              .build(),
+
                           // FormBuilderValidators.compose([
                           //   FormBuilderValidators.required(),
                           //   FormBuilderValidators.minLength(3),
@@ -792,33 +775,30 @@ String? listValidator(List<dynamic>? value) {
                           // width: 350,
                           // height: 200,
                           child: FormBuilderTextField(
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                            ],
-                            keyboardType: TextInputType.number,
-                            name: "zipCode",
-                            decoration: _fieldDecoration("Zip Code"),
-                            validator: ValidationBuilder()
-    .required('Zip code must be 5 digits long')
-    
-    .build()
-                            
-                            
-                            
-                            // FormBuilderValidators.compose([
-                            //   FormBuilderValidators.required(),
-                            //   (value) {
-                            //     if (value == null || value.isEmpty) {
-                            //       return 'Please enter a 5-digit zip code';
-                            //     }
-                            //     if (value.length != 5) {
-                            //       return 'Zip code must be 5 digits long';
-                            //     }
-                            //     return null;
-                            //   },
-                            // ]),
-                          ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
+                              ],
+                              keyboardType: TextInputType.number,
+                              name: "zipCode",
+                              decoration: _fieldDecoration("Zip Code"),
+                              validator: ValidationBuilder()
+                                  .required('Zip code must be 5 digits long')
+                                  .build()
+
+                              // FormBuilderValidators.compose([
+                              //   FormBuilderValidators.required(),
+                              //   (value) {
+                              //     if (value == null || value.isEmpty) {
+                              //       return 'Please enter a 5-digit zip code';
+                              //     }
+                              //     if (value.length != 5) {
+                              //       return 'Zip code must be 5 digits long';
+                              //     }
+                              //     return null;
+                              //   },
+                              // ]),
+                              ),
                         ),
                       ),
                     ),
@@ -854,8 +834,7 @@ String? listValidator(List<dynamic>? value) {
                             decoration: _fieldDecoration(
                                 "Short synopsis about your project..."),
                             validator: ValidationBuilder().required().build(),
-                            
-                            
+
                             // FormBuilderValidators.compose([
                             //   FormBuilderValidators.required(),
                             // ]),
@@ -896,7 +875,7 @@ String? listValidator(List<dynamic>? value) {
                             decoration:
                                 _fieldDecoration("About your project..."),
                             validator: ValidationBuilder().required().build(),
-                            
+
                             // FormBuilderValidators.compose([
                             //   FormBuilderValidators.required(),
                             // ]),

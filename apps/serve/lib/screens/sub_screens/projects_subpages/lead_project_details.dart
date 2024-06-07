@@ -11,7 +11,7 @@ import 'package:serve_to_be_free/data/notifications/notification.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
-import 'package:serve_to_be_free/widgets/post_dialogue.dart';
+import 'package:serve_to_be_free/widgets/project_post_dialogue.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -333,7 +333,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                 final reversedIndex = projectData['posts'].length -
                     index -
                     1; // compute the index of the reversed list
-                return ProjectPost(
+                return Post(
                   id: '',
                   name:
                       '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
@@ -427,7 +427,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
       await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return JoinProjectDialog(
+          return ProjectPostDialog(
             projectId: projectData['id'],
           );
         },

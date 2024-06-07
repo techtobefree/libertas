@@ -126,7 +126,7 @@ type UGroup @model {
   state: String
   leader: String
   date: String
-  projects: [UProject]
+  projects: [String]
   members: [String]
   posts: [String]
   groupPicture: String!
