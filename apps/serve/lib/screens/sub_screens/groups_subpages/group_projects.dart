@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/groups/cubit.dart';
 import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/widgets/find_group_project_card.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
+import 'package:serve_to_be_free/widgets/group_project_card.dart';
 
 class GroupProjects extends StatefulWidget {
   final String? id;
@@ -55,6 +57,16 @@ class _GroupProjectsState extends State<GroupProjects> {
             ),
           ),
         ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.pushNamed("groupdetails", queryParameters: {
+              'id': widget.id,
+            }, pathParameters: {
+              'id': widget.id!,
+            });
+          },
+        ),
         elevation: 0,
         centerTitle: false,
         bottom: PreferredSize(
@@ -91,7 +103,13 @@ class _GroupProjectsState extends State<GroupProjects> {
           return ListView.builder(
             itemCount: projects.length,
             itemBuilder: (context, index) {
-              return ProjectCard.fromUProject(projects[index]);
+              return GroupProjectCard(
+                groupId: widget.id!,
+                title: projects[index].name,
+                numMembers: projects[index].members!.length.toString(),
+                project: projects[index].toMap(),
+                sponsors: projects[index].sponsors ?? [],
+              );
               // print(projects[index]['members'].length.toString());
               // return ProjectCard(
               //   title: projects[index]['name'],

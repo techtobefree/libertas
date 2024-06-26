@@ -20,6 +20,7 @@ class AboutProject extends StatefulWidget {
 
 class AboutProjectState extends State<AboutProject> {
   var sponsor = 0.0;
+  bool needLeader = false;
 
   Map<String, dynamic> projectData = {};
 
@@ -47,6 +48,10 @@ class AboutProjectState extends State<AboutProject> {
     getProject().then((data) {
       setState(() {
         projectData = data;
+        if (projectData['leader'] == null || projectData['leader'].isEmpty){
+          needLeader = true;
+        }
+
       });
     });
     var id = widget.id;
@@ -95,7 +100,21 @@ class AboutProjectState extends State<AboutProject> {
                 end: Alignment.topCenter,
               ),
             ),
-          )),
+          ),leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            if (needLeader == false) {
+              context.pushNamed("projectdetails",
+                  queryParameters: {'id': projectData['id']},
+                  pathParameters: {'id': projectData['id']});
+            }
+            if (needLeader == true) {
+              context.pushNamed("leadprojectdetails",
+                  queryParameters: {'id': projectData['id']},
+                  pathParameters: {'id': projectData['id']});
+            }
+          },
+        ),),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(25),
@@ -180,14 +199,21 @@ class AboutProjectState extends State<AboutProject> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                if (projectData['members'] != null &&
-                    !projectData['members']
-                        .contains(BlocProvider.of<UserCubit>(context).state.id))
+                // if (projectData['members'] != null &&
+                //     !projectData['members']
+                //         .contains(BlocProvider.of<UserCubit>(context).state.id))
                   SizedBox(
                     height: 30,
                     child: ElevatedButton(
                       onPressed: () {
-                        addMember();
+                          if (projectData['members'] != null &&
+                    !projectData['members']
+                        .contains(BlocProvider.of<UserCubit>(context).state.id)){addMember();}
+                        else{
+                          removeMember();
+                        }
+                        
+                        
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(
@@ -199,12 +225,17 @@ class AboutProjectState extends State<AboutProject> {
                         ),
                         padding: EdgeInsets.symmetric(horizontal: 16),
                       ),
-                      child: const Text(
-                        'Join Project',
+                      child: (projectData['members'] != null &&
+                    !projectData['members']
+                        .contains(BlocProvider.of<UserCubit>(context).state.id)) ? 
+                        const Text(
+                         'Join Project' ,
                         style: TextStyle(fontSize: 13),
-                      ),
+                      ) : const Text(
+                         'Leave Project' ,
+                        style: TextStyle(fontSize: 13),
                     ),
-                  ),
+                  ),),
                 const Divider(
                   indent: 0,
                   endIndent: 0,
@@ -257,29 +288,15 @@ class AboutProjectState extends State<AboutProject> {
     } catch (e) {
       throw Exception('Failed to update project: $e');
     }
-    // final url = Uri.parse(
-    //     'http://44.203.120.103:3000/projects/${projectData['_id']}/member');
-    // final Map<String, dynamic> data = {
-    //   'memberId': Provider.of<UserProvider>(context, listen: false).id
-    // };
-    // final response = await http.put(
-    //   url,
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: jsonEncode(data),
-    // );
-
-    // if (response.statusCode == 200) {
-    //   // API call successful\
-    // setState(() {
-    //   projectData['members'] = projectData['members'] != null
-    //       ? [...projectData['members'], data['memberId']]
-    //       : [data['memberId']];
-    //   });
-    // } else {
-    //   // API call unsuccessful
-    //   print('Failed to fetch data ${response.body}');
-    // }
+   
+  }
+   Future<void> removeMember() async {
+   await ProjectHandlers.removeMember(projectData['id'], BlocProvider.of<UserCubit>(context).state.id);
+   getProject().then((data) {
+      setState(() {
+        projectData = data;
+      });
+    });
+   
   }
 }

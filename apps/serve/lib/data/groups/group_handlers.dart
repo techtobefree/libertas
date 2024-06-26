@@ -110,9 +110,8 @@ class GroupHandlers {
 
   static Future<void> addProject(String groupId, String projId) async {
     UGroup? group = await getUGroupById(groupId);
-    UProject? project = await ProjectHandlers.getUProjectById(projId);
 
-    if (group != null && project != null) {
+    if (group != null) {
       var groupprojects = group.projects ?? [];
 
       groupprojects.add(projId);
@@ -121,6 +120,28 @@ class GroupHandlers {
 
       try {
         final request = ModelMutations.update(addedUProjUGroup);
+        final response = await Amplify.API.mutate(request: request).response;
+        safePrint('Response: $response');
+      } catch (e) {
+        throw Exception('Failed to update project: $e');
+      }
+    } else {
+      print("failed");
+    }
+  }
+
+  static Future<void> removeProject(String groupId, String projId) async {
+    UGroup? group = await getUGroupById(groupId);
+
+    if (group != null) {
+      var groupprojects = group.projects ?? [];
+
+      groupprojects.remove(projId);
+
+      final removedUProjUGroup = group.copyWith(projects: groupprojects);
+
+      try {
+        final request = ModelMutations.update(removedUProjUGroup);
         final response = await Amplify.API.mutate(request: request).response;
         safePrint('Response: $response');
       } catch (e) {

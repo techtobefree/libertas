@@ -78,6 +78,10 @@ abstract class ProjectsCubitState extends Equatable {
   Iterable<UProject> get incompleteProjects =>
       projects.where((project) => !project.isCompleted);
 
+  Iterable<UProject> incompleteProjectsNotMember(String userId) =>
+      projects.where((project) =>
+          (!project.isCompleted && !project.members!.contains(userId)));
+
   Iterable<UProject> get projectsWithoutLeader => projects.where((project) =>
       !project.isCompleted &&
       (project.leader == null || project.leader!.isEmpty));

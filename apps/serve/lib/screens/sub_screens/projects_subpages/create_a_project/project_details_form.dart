@@ -37,7 +37,7 @@ class ProjectDetailsForm extends StatefulWidget {
 
 class ProjectDetailsFormState extends State<ProjectDetailsForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  final List<String> privacyOptions = ['Friends', 'Public'];
+  final List<String> privacyOptions = ['Friends', 'Group', 'Public'];
   var projectData = UProject(
       name: "Project Name",
       description: "About your project...",
@@ -400,6 +400,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                       margin: const EdgeInsets.only(top: 12),
                       child: FormBuilderTextField(
                           name: 'projectName',
+                          textCapitalization: TextCapitalization.words,
                           validator: ValidationBuilder()
                               .required()
                               .minLength(3)
@@ -586,24 +587,9 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                 ),
-                                //errorText: 'Please select an image',
-                                // errorBorder: OutlineInputBorder(
-                                //   borderRadius: BorderRadius.circular(10),
-                                //   borderSide:
-                                //       BorderSide(color: Colors.red, width: 2),
-                                // ),
                               ),
                               validator: listValidator,
 
-                              // FormBuilderValidators.compose([
-                              //   FormBuilderValidators.required(
-                              //     errorText: 'Please select an Image',
-                              //   ),
-                              // ]),
-
-                              // previewHeight: 100,
-                              // previewWidth: 100,
-                              //previewAutoSizeWidth: true,
                               fit: BoxFit.cover,
                               maxImages: 1,
                             ),
@@ -611,6 +597,40 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                     //),
                   ],
                 ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "City",
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 12),
+                      child: FormBuilderTextField(
+                          name: 'city',
+                          textCapitalization: TextCapitalization.words,
+                          validator: ValidationBuilder()
+                              .required()
+                              .minLength(3)
+                              .maxLength(50)
+                              .regExp(
+                                RegExp(r'^[a-zA-Z0-9 ]+$'),
+                                'Only alphanumeric characters are allowed',
+                              )
+                              .build(),
+                          decoration: _fieldDecoration("City")),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(
+                //height: 1,
+                color: Colors.grey,
+                thickness: 0.5,
               ),
               const Divider(
                 //height: 1,
@@ -719,50 +739,6 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "City",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      child: FormBuilderTextField(
-                          name: 'city',
-                          validator: ValidationBuilder()
-                              .required()
-                              .minLength(3)
-                              .maxLength(50)
-                              .regExp(
-                                RegExp(r'^[a-zA-Z0-9 ]+$'),
-                                'Only alphanumeric characters are allowed',
-                              )
-                              .build(),
-
-                          // FormBuilderValidators.compose([
-                          //   FormBuilderValidators.required(),
-                          //   FormBuilderValidators.minLength(3),
-                          //   FormBuilderValidators.maxLength(50),
-                          //   FormBuilderValidators.match(
-                          //     r'^[a-zA-Z0-9 ]+$',
-                          //     errorText:
-                          //         'Only alphanumeric characters are allowed',
-                          //   ),
-                          // ]),
-                          decoration: _fieldDecoration("City")),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
                       "Zip Code",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
@@ -779,7 +755,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp(r'[0-9]')),
                               ],
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.text,
                               name: "zipCode",
                               decoration: _fieldDecoration("Zip Code"),
                               validator: ValidationBuilder()
@@ -829,6 +805,8 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                           // height: 200,
                           child: FormBuilderTextField(
                             maxLines: null,
+                            textCapitalization: TextCapitalization.sentences,
+                            keyboardType: TextInputType.text,
                             minLines: 2,
                             name: "projectBio",
                             decoration: _fieldDecoration(
@@ -872,6 +850,9 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
                             maxLines: null,
                             minLines: 10,
                             name: "projectDescription",
+                            textCapitalization: TextCapitalization.sentences,
+                            keyboardType: TextInputType.text,
+
                             decoration:
                                 _fieldDecoration("About your project..."),
                             validator: ValidationBuilder().required().build(),

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
+import 'package:serve_to_be_free/data/groups/group_handlers.dart';
 import 'package:serve_to_be_free/widgets/find_group_project_card.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
+
+import '../../../models/ModelProvider.dart';
 
 class FindAGroupProject extends StatefulWidget {
   final String? id;
@@ -14,10 +18,25 @@ class FindAGroupProject extends StatefulWidget {
 
 class _FindAGroupProjectState extends State<FindAGroupProject> {
   String _searchQuery = '';
+  var groupProjs = [];
 
   @override
   void initState() {
     super.initState();
+
+    getGroupMembers(widget.id).then((data) {
+      setState(() {
+        groupProjs = data;
+      });
+    });
+  }
+
+  Future<List<String>> getGroupMembers(id) async {
+    UGroup? group = await GroupHandlers.getUGroupById(id);
+    if (group != null) {
+      return group.projects!;
+    }
+    return [];
   }
 
   @override
@@ -46,6 +65,16 @@ class _FindAGroupProjectState extends State<FindAGroupProject> {
               end: Alignment.topCenter,
             ),
           ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.pushNamed("groupproject", queryParameters: {
+              'id': widget.id,
+            }, pathParameters: {
+              'id': widget.id!,
+            });
+          },
         ),
         elevation: 0,
         centerTitle: false,
@@ -97,34 +126,37 @@ class _FindAGroupProjectState extends State<FindAGroupProject> {
               child: CircularProgressIndicator(),
             );
           }
-          final incompleteProjects = state.incompleteProjects.toList();
+          var incompleteProjects = state.incompleteProjects.toList();
+          var projsNotInGroup = [];
+          for (var proj in incompleteProjects) {
+            if (!groupProjs.contains(proj.id)) {
+              projsNotInGroup.add(proj);
+            }
+          }
           return ListView.builder(
-            itemCount: incompleteProjects.length,
+            itemCount: projsNotInGroup.length,
             itemBuilder: (context, i) {
               // print(_searchQuery.toLowerCase());
               if (_searchQuery.length < 2) {
-                return GroupProjectCard(
-                    title: incompleteProjects[i].name,
-                    numMembers:
-                        incompleteProjects[i].members!.length.toString(),
-                    project: incompleteProjects[i].toJson(),
-                    sponsors: incompleteProjects[i].sponsors ?? [],
+                return FindGroupProjectCard(
+                    title: projsNotInGroup[i].name,
+                    numMembers: projsNotInGroup[i].members!.length.toString(),
+                    project: projsNotInGroup[i].toJson(),
+                    sponsors: projsNotInGroup[i].sponsors ?? [],
                     groupId: widget.id!);
               } else {
-                final city = incompleteProjects[i].city?.toLowerCase() ?? '';
-                final usaState =
-                    incompleteProjects[i].state?.toLowerCase() ?? '';
+                final city = projsNotInGroup[i].city?.toLowerCase() ?? '';
+                final usaState = projsNotInGroup[i].state?.toLowerCase() ?? '';
                 final combined = '$city, $usaState';
                 final query = _searchQuery.toLowerCase();
                 if (city.contains(query) ||
                     usaState.contains(query) ||
                     combined.contains(query)) {
-                  return GroupProjectCard(
-                      title: incompleteProjects[i].name,
-                      numMembers:
-                          incompleteProjects[i].members!.length.toString(),
-                      project: incompleteProjects[i].toJson(),
-                      sponsors: incompleteProjects[i].sponsors ?? [],
+                  return FindGroupProjectCard(
+                      title: projsNotInGroup[i].name,
+                      numMembers: projsNotInGroup[i].members!.length.toString(),
+                      project: projsNotInGroup[i].toJson(),
+                      sponsors: projsNotInGroup[i].sponsors ?? [],
                       groupId: widget.id!);
                 }
                 return const SizedBox

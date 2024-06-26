@@ -36,134 +36,135 @@ class MenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize:
-              const Size.fromHeight(150.0), // Set the height of the AppBar
-          child: AppBar(
-            title: const Text("SERVE TO BE FREE",
-                style: TextStyle(color: Colors.white)),
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: <Color>[
-                      Color.fromRGBO(35, 107, 140, 1.0),
-                      Color.fromRGBO(0, 28, 72, 1.0),
-                    ]),
-              ),
+      appBar: PreferredSize(
+        preferredSize:
+            const Size.fromHeight(150.0), // Set the height of the AppBar
+        child: AppBar(
+          title: const Text("SERVE TO BE FREE",
+              style: TextStyle(color: Colors.white)),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Color.fromRGBO(35, 107, 140, 1.0),
+                    Color.fromRGBO(0, 28, 72, 1.0),
+                  ]),
             ),
           ),
         ),
-        body: Container(
-            margin: const EdgeInsets.only(top: 10, right: 20),
-            child: Column(
-              children: [
-                MenuButton(
-                    ProfilePicture(
-                        Colors.amberAccent,
-                        45,
-                        BlocProvider.of<UserCubit>(context)
-                            .state
-                            .profilePictureUrl,
-                        '',
-                        borderRadius: 7),
-                    "My Profile",
-                    myProfilePath),
+      ),
+      body: Container(
+        margin: const EdgeInsets.only(top: 10, right: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              MenuButton(
+                  ProfilePicture(
+                      Colors.amberAccent,
+                      45,
+                      BlocProvider.of<UserCubit>(context)
+                          .state
+                          .profilePictureUrl,
+                      '',
+                      borderRadius: 7),
+                  "My Profile",
+                  myProfilePath),
 
-                MenuButton(
-                    Icon(
-                      Icons.checklist_rounded,
-                      size: 30,
-                      color: Colors.lightBlue[900],
-                    ),
-                    "Finish Projects",
-                    finishProjectsPath),
-                // MenuButton(
-                //     Icon(
-                //       Icons.favorite_border_rounded,
-                //       size: 25,
-                //       color: Colors.lightBlue[900],
-                //     ),
-                //     "Favorites",
-                //     "Path"),
+              MenuButton(
+                  Icon(
+                    Icons.checklist_rounded,
+                    size: 30,
+                    color: Colors.lightBlue[900],
+                  ),
+                  "Finish Projects",
+                  finishProjectsPath),
+              // MenuButton(
+              //     Icon(
+              //       Icons.favorite_border_rounded,
+              //       size: 25,
+              //       color: Colors.lightBlue[900],
+              //     ),
+              //     "Favorites",
+              //     "Path"),
 
-                MenuButton(
-                    Icon(
-                      Icons.lightbulb_outline_rounded,
-                      size: 25,
-                      color: Colors.lightBlue[900],
-                    ),
-                    "How It Works",
-                    howItWorksPath),
+              MenuButton(
+                  Icon(
+                    Icons.lightbulb_outline_rounded,
+                    size: 25,
+                    color: Colors.lightBlue[900],
+                  ),
+                  "How It Works",
+                  howItWorksPath),
 
-                MenuButton(
-                    Icon(
-                      Icons.info_outline_rounded,
-                      size: 25,
-                      color: Colors.lightBlue[900],
-                    ),
-                    "About Serve To Be Free",
-                    aboutPath),
+              MenuButton(
+                  Icon(
+                    Icons.info_outline_rounded,
+                    size: 25,
+                    color: Colors.lightBlue[900],
+                  ),
+                  "Share",
+                  aboutPath),
 
-                MenuButton(
-                    Icon(
-                      Icons.man,
-                      size: 25,
-                      color: Colors.lightBlue[900],
-                    ),
-                    "Friends",
-                    '',
-                    onTapReplacement: () => context
-                            .pushNamed("friends", queryParameters: {
-                          'userId': BlocProvider.of<UserCubit>(context).state.id
-                        }, pathParameters: {
-                          'userId': BlocProvider.of<UserCubit>(context).state.id
-                        })),
-                const SizedBox(
-                    height:
-                        20), // Add some space between the last item and the logout button
-                MenuButton(
-                    Icon(
-                      Icons.account_box,
-                      size: 25,
-                      color: Colors.lightBlue[900],
-                    ),
-                    "My Events",
-                    '',
-                    onTapReplacement: () => context
-                            .pushNamed("myevents", queryParameters: {
-                          'userId': BlocProvider.of<UserCubit>(context).state.id
-                        }, pathParameters: {
-                          'userId': BlocProvider.of<UserCubit>(context).state.id
-                        })),
-                MenuButton(
-                    Icon(
-                      Icons.handshake_outlined,
-                      size: 25,
-                      color: Colors.lightBlue[900],
-                    ),
-                    "Community Pledge",
-                    '',
-                    onTapReplacement: () =>
-                        context.goNamed("communitypledgemenu")),
-                const SizedBox(height: 20), // Ad
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {
-                    // Handle Logout action
-                    signOutCurrentUser();
-                    context.go("/login");
-                  },
-                  child: const Text(
-                    "Logout",
-                    style: TextStyle(
-                      color: Colors.red, // Change the text color as desired
-                      fontSize: 18,
-                    ),
+              MenuButton(
+                  Icon(
+                    Icons.man,
+                    size: 25,
+                    color: Colors.lightBlue[900],
+                  ),
+                  "Friends",
+                  '',
+                  onTapReplacement: () => context
+                          .pushNamed("friends", queryParameters: {
+                        'userId': BlocProvider.of<UserCubit>(context).state.id
+                      }, pathParameters: {
+                        'userId': BlocProvider.of<UserCubit>(context).state.id
+                      })),
+              // Add some space between the last item and the logout button
+              MenuButton(
+                  Icon(
+                    Icons.account_box,
+                    size: 25,
+                    color: Colors.lightBlue[900],
+                  ),
+                  "My Events",
+                  '',
+                  onTapReplacement: () => context
+                          .pushNamed("myevents", queryParameters: {
+                        'userId': BlocProvider.of<UserCubit>(context).state.id
+                      }, pathParameters: {
+                        'userId': BlocProvider.of<UserCubit>(context).state.id
+                      })),
+              MenuButton(
+                  Icon(
+                    Icons.handshake_outlined,
+                    size: 25,
+                    color: Colors.lightBlue[900],
+                  ),
+                  "Community Pledge",
+                  '',
+                  onTapReplacement: () =>
+                      context.goNamed("communitypledgemenu")),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  // Handle Logout action
+                  signOutCurrentUser();
+                  context.go("/login");
+                },
+                child: const Text(
+                  "Logout",
+                  style: TextStyle(
+                    color: Colors.red, // Change the text color as desired
+                    fontSize: 18,
                   ),
                 ),
-              ],
-            )));
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,5 +1,10 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/UProject.dart';
 import 'package:serve_to_be_free/repository/repository.dart';
 
@@ -45,17 +50,6 @@ class ProjectCard extends StatelessWidget {
           sponsors: uProject.sponsors ?? [],
           project: uProject.toJson(),
           lead: lead);
-
-  // Named constructor that accepts a JSON object
-  //ProjectCard.fromJson(
-  //  Map<String, dynamic> json, {
-  //  super.key,
-  //  bool lead = false,
-  //})  : title = json['name'],
-  //      numMembers = json['members'].length.toString(),
-  //      sponsors = json['sponsors'] ?? [],
-  //      project = json,
-  //      this.lead = lead; // Initialize 'lead' with the provided value
 
   @override
   Widget build(BuildContext context) {
@@ -110,11 +104,51 @@ class ProjectCard extends StatelessWidget {
                         Text('$numMembers Members'),
                         const SizedBox(height: 12.0),
                         Text(
-                            (project['isCompleted'] == true ? 'Completed' : ''),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.redAccent,
-                            )),
+                          (project['isCompleted'] == true ? 'Completed' : ''),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                        if (!lead &&
+                            !project['members'].contains(
+                                BlocProvider.of<UserCubit>(context).state.id))
+                          ElevatedButton(
+                              onPressed: () async {
+                                var success = await addMember(
+                                    BlocProvider.of<UserCubit>(context)
+                                        .state
+                                        .id);
+
+                                if (success) {
+                                  var needLeader = (project['leader'] == null ||
+                                      project['leader'].isEmpty);
+                                  if (needLeader == false) {
+                                    context.pushNamed("projectdetails",
+                                        queryParameters: {'id': project['id']},
+                                        pathParameters: {'id': project['id']});
+                                  }
+                                  if (needLeader == true) {
+                                    context.pushNamed("leadprojectdetails",
+                                        queryParameters: {'id': project['id']},
+                                        pathParameters: {'id': project['id']});
+                                  }
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color.fromARGB(
+                                    255, 16, 34, 65), // Background color
+                                foregroundColor: Colors.white, // Text color
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      20.0), // Rounded corners
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                              ),
+                              child: const Text(
+                                'Join Project',
+                                style: TextStyle(fontSize: 13),
+                              )),
                       ],
                     ),
                   ),
@@ -147,20 +181,6 @@ class ProjectCard extends StatelessWidget {
                           );
                         },
                       ),
-                      // FadeInImage.assetNetwork(
-                      //                 placeholder: 'assets/images/curious_lemur.jpeg',
-                      //                 image: project['projectPicture'],
-                      //                 fit: BoxFit.cover, // adjust the image to fit the widget
-                      // height: 130,
-                      // width: 160,
-
-                      //               ),
-                      // repo.image(
-                      //   project['projectPicture'],
-                      //   fit: BoxFit
-                      //       .cover, // adjust the image to fit the widget
-                      //   height: 130, // set the height of the widget
-                      // ),
                     ),
                 ],
               ),
@@ -169,5 +189,24 @@ class ProjectCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<bool> addMember(userId) async {
+    UProject? uproject = await ProjectHandlers.getUProjectById(project['id']);
+    var uprojectMems = uproject!.members;
+    if (uprojectMems != null) {
+      uprojectMems.add(userId);
+    }
+
+    final addedMemUProj = uproject.copyWith(members: uprojectMems);
+
+    try {
+      final request = ModelMutations.update(addedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+      return true;
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
   }
 }

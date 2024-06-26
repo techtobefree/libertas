@@ -27,6 +27,7 @@ class LeadProjectDetails extends StatefulWidget {
 class LeadProjectDetailsState extends State<LeadProjectDetails> {
   Map<String, dynamic> projectData = {};
   List<dynamic> users = [];
+  bool userApplied = false;
 
   var sponsor = 0.0;
   String buttonText = 'Apply to Lead Project';
@@ -131,6 +132,14 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
           users = value;
         });
       });
+      NotificationHandlers.isUserWaitingOnLeaderApproval(
+              BlocProvider.of<UserCubit>(context).state.id, widget.id!)
+          .then((bool) {
+        setState(() {
+          userApplied = bool;
+        });
+      });
+
       setState(() {
         projectData = data;
         // print(projectData);
@@ -297,29 +306,31 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                     ),
                   ),
                   Visibility(
-                    visible: projectData
-                        .isNotEmpty, // Show the button when hasJoined is not null
-                    child: ElevatedButton(
-                      onPressed: () => {
-                        if (buttonText != "Post")
-                          showPopUp(
-                            projectData['members'][0],
-                            BlocProvider.of<UserCubit>(context).state.id,
+                    visible: projectData.isNotEmpty,
+                    child: !userApplied
+                        ? ElevatedButton(
+                            onPressed: () {
+                              if (buttonText != "Post") {
+                                showPopUp(
+                                  projectData['members'][0],
+                                  BlocProvider.of<UserCubit>(context).state.id,
+                                );
+                              } else {
+                                onPostClick(currentUserID);
+                              }
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color.fromARGB(255, 16, 34, 65),
+                              ),
+                            ),
+                            child: Text(
+                              buttonText,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           )
-                        else
-                          {onPostClick(currentUserID)}
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(255, 16, 34, 65),
-                        ),
-                      ),
-                      child: Text(
-                        buttonText,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
+                        : const Text("Waiting on leader approval"),
+                  )
                 ],
               ),
             ),

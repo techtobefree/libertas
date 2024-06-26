@@ -38,7 +38,7 @@ class _WelcomeScreenState extends State {
           BlocProvider.of<UserCubit>(context).fromUUser(uUser: user);
         }
 
-        context.go('/dashboard');
+        context.go('/projects');
         return true;
       }
     }
