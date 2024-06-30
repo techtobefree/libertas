@@ -33,6 +33,7 @@ abstract class ProjectsCubitState extends Equatable {
 
   /// my projects - member of or leader of.
   final List<UProject> mine;
+  final List<UProject> group;
 
   /// result of a search query
   //final List<UProject> search;
@@ -42,6 +43,7 @@ abstract class ProjectsCubitState extends Equatable {
   const ProjectsCubitState({
     required this.projects,
     required this.mine,
+    required this.group,
     required this.busy,
   });
 
@@ -49,6 +51,7 @@ abstract class ProjectsCubitState extends Equatable {
   List<Object> get props => [
         projects,
         mine,
+        group,
         busy,
       ];
 
@@ -75,6 +78,10 @@ abstract class ProjectsCubitState extends Equatable {
   Iterable<UProject> get incompleteProjects =>
       projects.where((project) => !project.isCompleted);
 
+  Iterable<UProject> incompleteProjectsNotMember(String userId) =>
+      projects.where((project) =>
+          (!project.isCompleted && !project.members!.contains(userId)));
+
   Iterable<UProject> get projectsWithoutLeader => projects.where((project) =>
       !project.isCompleted &&
       (project.leader == null || project.leader!.isEmpty));
@@ -96,6 +103,7 @@ class ProjectsState extends ProjectsCubitState {
   const ProjectsState({
     required super.projects,
     required super.mine,
+    required super.group,
     required super.busy,
   });
 }
@@ -105,6 +113,7 @@ class InitProjectsState extends ProjectsCubitState {
       : super(
           projects: const [],
           mine: const [],
+          group: const [],
           busy: false,
         );
 }

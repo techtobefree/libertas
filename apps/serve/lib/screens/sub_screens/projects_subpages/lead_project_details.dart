@@ -11,7 +11,7 @@ import 'package:serve_to_be_free/data/notifications/notification.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
-import 'package:serve_to_be_free/widgets/post_dialogue.dart';
+import 'package:serve_to_be_free/widgets/project_post_dialogue.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -27,6 +27,7 @@ class LeadProjectDetails extends StatefulWidget {
 class LeadProjectDetailsState extends State<LeadProjectDetails> {
   Map<String, dynamic> projectData = {};
   List<dynamic> users = [];
+  bool userApplied = false;
 
   var sponsor = 0.0;
   String buttonText = 'Apply to Lead Project';
@@ -131,6 +132,14 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
           users = value;
         });
       });
+      NotificationHandlers.isUserWaitingOnLeaderApproval(
+              BlocProvider.of<UserCubit>(context).state.id, widget.id!)
+          .then((bool) {
+        setState(() {
+          userApplied = bool;
+        });
+      });
+
       setState(() {
         projectData = data;
         // print(projectData);
@@ -297,29 +306,31 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                     ),
                   ),
                   Visibility(
-                    visible: projectData
-                        .isNotEmpty, // Show the button when hasJoined is not null
-                    child: ElevatedButton(
-                      onPressed: () => {
-                        if (buttonText != "Post")
-                          showPopUp(
-                            projectData['members'][0],
-                            BlocProvider.of<UserCubit>(context).state.id,
+                    visible: projectData.isNotEmpty,
+                    child: !userApplied
+                        ? ElevatedButton(
+                            onPressed: () {
+                              if (buttonText != "Post") {
+                                showPopUp(
+                                  projectData['members'][0],
+                                  BlocProvider.of<UserCubit>(context).state.id,
+                                );
+                              } else {
+                                onPostClick(currentUserID);
+                              }
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color.fromARGB(255, 16, 34, 65),
+                              ),
+                            ),
+                            child: Text(
+                              buttonText,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           )
-                        else
-                          {onPostClick(currentUserID)}
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(255, 16, 34, 65),
-                        ),
-                      ),
-                      child: Text(
-                        buttonText,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
+                        : const Text("Waiting on leader approval"),
+                  )
                 ],
               ),
             ),
@@ -333,7 +344,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
                 final reversedIndex = projectData['posts'].length -
                     index -
                     1; // compute the index of the reversed list
-                return ProjectPost(
+                return Post(
                   id: '',
                   name:
                       '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
@@ -427,7 +438,7 @@ class LeadProjectDetailsState extends State<LeadProjectDetails> {
       await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return JoinProjectDialog(
+          return ProjectPostDialog(
             projectId: projectData['id'],
           );
         },

@@ -6,6 +6,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:serve_to_be_free/config/routes/app_routes.dart';
 import 'package:serve_to_be_free/cubits/cubits.dart';
+import 'package:serve_to_be_free/cubits/domain/groups/cubit.dart';
 
 import 'package:serve_to_be_free/data/users/providers/user_provider.dart';
 import 'package:serve_to_be_free/amplifyconfiguration.dart';
@@ -29,6 +30,8 @@ void main() async {
         BlocProvider<UsersCubit>(create: (context) => UsersCubit()),
         BlocProvider<PostsCubit>(create: (context) => PostsCubit()),
         BlocProvider<ProjectsCubit>(create: (context) => ProjectsCubit()),
+        BlocProvider<GroupsCubit>(create: (context) => GroupsCubit()),
+
         // pages
         BlocProvider<SignupCubit>(create: (context) => SignupCubit()),
         BlocProvider<DashboardCubit>(create: (context) => DashboardCubit()),

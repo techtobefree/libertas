@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+// import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:form_validator/form_validator.dart';
 
 class MyAccountLoginInfo extends StatefulWidget {
   const MyAccountLoginInfo({super.key});
@@ -85,8 +86,14 @@ class _MyAccountLoginInfoState extends State<MyAccountLoginInfo> {
                       child: FormBuilderTextField(
                           name: 'email',
                           initialValue: placeholder,
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
+                          validator: ValidationBuilder()
+    .required()
+    
+    .build(),
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
                             // FormBuilderValidators.minLength(3),
                             // FormBuilderValidators.maxLength(50),
                             // FormBuilderValidators.match(
@@ -94,7 +101,7 @@ class _MyAccountLoginInfoState extends State<MyAccountLoginInfo> {
                             //   errorText:
                             //       'Only alphanumeric characters are allowed',
                             // ),
-                          ]),
+                          // ]),
                           decoration: _fieldDecoration("Email")),
                     ),
                     Container(height: 20),
@@ -109,9 +116,15 @@ class _MyAccountLoginInfoState extends State<MyAccountLoginInfo> {
                           name: 'password',
                           initialValue:
                               "123456789012345".replaceAll(RegExp(r"."), "*"),
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                          ]),
+                          validator: ValidationBuilder()
+    .required()
+   
+    .build(),
+                          
+                          
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          // ]),
                           decoration: _fieldDecoration("Password")),
                     ),
                   ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
 
 class FindAProject extends StatefulWidget {
@@ -95,23 +96,28 @@ class _FindAProjectState extends State<FindAProject> {
               child: CircularProgressIndicator(),
             );
           }
-          final incompleteProjects = state.incompleteProjects.toList();
+          final incompleteProjectsNotMember = state
+              .incompleteProjectsNotMember(
+                  BlocProvider.of<UserCubit>(context).state.id)
+              .toList();
           return ListView.builder(
-            itemCount: incompleteProjects.length,
+            itemCount: incompleteProjectsNotMember.length,
             itemBuilder: (context, i) {
-              // print(_searchQuery.toLowerCase());
               if (_searchQuery.length < 2) {
-                return ProjectCard.fromUProject(incompleteProjects[i]);
+                return ProjectCard.fromUProject(incompleteProjectsNotMember[i]);
               } else {
-                final city = incompleteProjects[i].city?.toLowerCase() ?? '';
+                final city =
+                    incompleteProjectsNotMember[i].city?.toLowerCase() ?? '';
                 final usaState =
-                    incompleteProjects[i].state?.toLowerCase() ?? '';
+                    incompleteProjectsNotMember[i].state?.toLowerCase() ?? '';
                 final combined = '$city, $usaState';
                 final query = _searchQuery.toLowerCase();
                 if (city.contains(query) ||
                     usaState.contains(query) ||
-                    combined.contains(query)) {
-                  return ProjectCard.fromUProject(incompleteProjects[i]);
+                    combined.contains(query) ||
+                    incompleteProjectsNotMember[i].zipCode!.contains(query)) {
+                  return ProjectCard.fromUProject(
+                      incompleteProjectsNotMember[i]);
                 }
                 return const SizedBox
                     .shrink(); // or return null; to hide the card

@@ -17,7 +17,7 @@
 // Generated files can be excluded from analysis in analysis_options.yaml
 // For more info, see: https://dart.dev/guides/language/analysis-options#excluding-code-from-analysis
 
-// ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
+// ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, override_on_non_overriding_member, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
@@ -302,37 +302,72 @@ class UUser extends amplify_core.Model {
       _lastName = json['lastName'],
       _profilePictureUrl = json['profilePictureUrl'],
       _coverPictureUrl = json['coverPictureUrl'],
-      _projects = json['projects'] is List
-        ? (json['projects'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UProject.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
+      _projects = json['projects']  is Map
+        ? (json['projects']['items'] is List
+          ? (json['projects']['items'] as List)
+              .where((e) => e != null)
+              .map((e) => UProject.fromJson(new Map<String, dynamic>.from(e)))
+              .toList()
+          : null)
+        : (json['projects'] is List
+          ? (json['projects'] as List)
+              .where((e) => e?['serializedData'] != null)
+              .map((e) => UProject.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
+              .toList()
+          : null),
       _friends = json['friends']?.cast<String>(),
-      _posts = json['posts'] is List
-        ? (json['posts'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UPost.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
-      _sponsors = json['sponsors'] is List
-        ? (json['sponsors'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => USponsor.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
-      _notificationsSent = json['notificationsSent'] is List
-        ? (json['notificationsSent'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UNotification.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
-      _notificationsReceived = json['notificationsReceived'] is List
-        ? (json['notificationsReceived'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UNotification.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
+      _posts = json['posts']  is Map
+        ? (json['posts']['items'] is List
+          ? (json['posts']['items'] as List)
+              .where((e) => e != null)
+              .map((e) => UPost.fromJson(new Map<String, dynamic>.from(e)))
+              .toList()
+          : null)
+        : (json['posts'] is List
+          ? (json['posts'] as List)
+              .where((e) => e?['serializedData'] != null)
+              .map((e) => UPost.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
+              .toList()
+          : null),
+      _sponsors = json['sponsors']  is Map
+        ? (json['sponsors']['items'] is List
+          ? (json['sponsors']['items'] as List)
+              .where((e) => e != null)
+              .map((e) => USponsor.fromJson(new Map<String, dynamic>.from(e)))
+              .toList()
+          : null)
+        : (json['sponsors'] is List
+          ? (json['sponsors'] as List)
+              .where((e) => e?['serializedData'] != null)
+              .map((e) => USponsor.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
+              .toList()
+          : null),
+      _notificationsSent = json['notificationsSent']  is Map
+        ? (json['notificationsSent']['items'] is List
+          ? (json['notificationsSent']['items'] as List)
+              .where((e) => e != null)
+              .map((e) => UNotification.fromJson(new Map<String, dynamic>.from(e)))
+              .toList()
+          : null)
+        : (json['notificationsSent'] is List
+          ? (json['notificationsSent'] as List)
+              .where((e) => e?['serializedData'] != null)
+              .map((e) => UNotification.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
+              .toList()
+          : null),
+      _notificationsReceived = json['notificationsReceived']  is Map
+        ? (json['notificationsReceived']['items'] is List
+          ? (json['notificationsReceived']['items'] as List)
+              .where((e) => e != null)
+              .map((e) => UNotification.fromJson(new Map<String, dynamic>.from(e)))
+              .toList()
+          : null)
+        : (json['notificationsReceived'] is List
+          ? (json['notificationsReceived'] as List)
+              .where((e) => e?['serializedData'] != null)
+              .map((e) => UNotification.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
+              .toList()
+          : null),
       _bio = json['bio'],
       _city = json['city'],
       _state = json['state'],

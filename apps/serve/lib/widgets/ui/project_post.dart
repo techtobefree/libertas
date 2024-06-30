@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 
-class ProjectPost extends StatefulWidget {
+class Post extends StatefulWidget {
   final String id;
   final String name;
   final String postText;
@@ -10,7 +10,7 @@ class ProjectPost extends StatefulWidget {
   final String date;
   final String userId;
 
-  const ProjectPost({
+  const Post({
     Key? key,
     required this.id,
     required this.name,
@@ -21,10 +21,10 @@ class ProjectPost extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ProjectPost> createState() => _ProjectPostState();
+  State<Post> createState() => _PostState();
 }
 
-class _ProjectPostState extends State<ProjectPost> {
+class _PostState extends State<Post> {
   // How are we going to tie this to different users?
   bool isLiked = false;
   MaterialAccentColor getRandomAccentColor() {

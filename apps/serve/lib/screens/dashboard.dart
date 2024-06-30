@@ -238,7 +238,7 @@ class DashboardPage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     // compute the index of the reversed list
                     //print(posts[index]['_id']);
-                    return ProjectPost(
+                    return Post(
                       id: posts[index]['id'],
                       name: posts[index]['name'],
                       postText: posts[index]['text'],

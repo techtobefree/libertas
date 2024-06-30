@@ -102,6 +102,43 @@ class NotificationHandlers {
     }
   }
 
+  static Future<List<UNotification?>> getNotificationsBySenderIDandIncomplete(
+      String userId) async {
+    try {
+      // Fetching leader requests where the ownerID matches the provided ownerID
+      final queryPredicate = UNotification.SENDER.eq(userId);
+      final secondPredicate = UNotification.STATUS.eq("INCOMPLETE");
+      final finalPredicate = queryPredicate.and(secondPredicate);
+      final request = ModelQueries.list<UNotification>(
+        UNotification.classType,
+        where: finalPredicate,
+      );
+
+      final response = await Amplify.API.query(request: request).response;
+
+      if (response.data != null) {
+        return response.data!.items;
+      } else {
+        safePrint('errors: ${response.errors}');
+        return [];
+      }
+    } catch (e) {
+      throw Exception('Failed to get leader requests by owner: $e');
+    }
+  }
+
+  static Future<bool> isUserWaitingOnLeaderApproval(
+      String userId, String projectId) async {
+    var listOfIncompleteNotifs =
+        await getNotificationsBySenderIDandIncomplete(userId);
+    for (var notif in listOfIncompleteNotifs) {
+      if (projectId == notif!.project!.id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   static Future<UNotification?> updateNotificationStatus(
       String id, Map<String, dynamic> updatedFields) async {
     UNotification? notification = await getNotificationById(id);

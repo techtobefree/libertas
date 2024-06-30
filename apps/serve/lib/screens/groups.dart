@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serve_to_be_free/cubits/domain/groups/cubit.dart';
+import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/widgets/find_project_card.dart';
+import 'package:serve_to_be_free/widgets/group_card.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});
@@ -20,7 +23,8 @@ class _GroupsPageState extends State<GroupsPage> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ProjectsCubit>(context).loadProjects();
+    BlocProvider.of<GroupsCubit>(context)
+        .loadMyGroups(BlocProvider.of<UserCubit>(context).state.id);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -48,46 +52,51 @@ class _GroupsPageState extends State<GroupsPage> {
         elevation: 0,
         centerTitle: false,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0),
+          preferredSize: const Size.fromHeight(40.0),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
             child: Column(
               children: [
-                const SizedBox(height: 5.0),
-                TextField(
-                  onChanged: (query) {
-                    setState(() {
-                      _searchQuery = query;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search by group name',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide:
-                          BorderSide(color: Colors.grey[700]!, width: 1.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide:
-                          BorderSide(color: Colors.grey[700]!, width: 1.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 16.0),
-                  ),
-                ),
                 const SizedBox(height: 8.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          {context.go('/groups/groupsdetailsform')},
+                      // style: ElevatedButton.styleFrom(
+                      //   primary: Colors.blue, // Button background color
+                      //   onPrimary: Colors.white, // Button text color
+                      //   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      //   textStyle: TextStyle(fontSize: 16),
+                      //   shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(8),
+                      //   ),
+                      // ),
+                      child: const Text('Create Group'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => {context.go('/groups/findagroup')},
+                      // style: ElevatedButton.styleFrom(
+                      //   primary: Colors.blue, // Button background color
+                      //   onPrimary: Colors.white, // Button text color
+                      //   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      //   textStyle: TextStyle(fontSize: 16),
+                      //   shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(8),
+                      //   ),
+                      // ),
+                      child: const Text('Find a Group'),
+                    ),
+                    const SizedBox(height: 15.0),
+                  ],
+                )
               ],
             ),
           ),
         ),
       ),
-      body: BlocBuilder<ProjectsCubit, ProjectsCubitState>(
+      body: BlocBuilder<GroupsCubit, GroupsCubitState>(
         buildWhen: (previous, current) => previous != current,
         builder: (context, state) {
           if (state.busy) {
@@ -95,27 +104,38 @@ class _GroupsPageState extends State<GroupsPage> {
               child: CircularProgressIndicator(),
             );
           }
-          final incompleteProjects = state.incompleteProjects.toList();
+          final groups = state.mine.toList();
+          if (groups.isEmpty) {
+            return const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 20.0),
+                Icon(
+                  Icons.group,
+                  size: 50,
+                  color: Colors.blueAccent,
+                ),
+                SizedBox(height: 20.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    "Press 'Find a Group' or 'Create a Group' to get started",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
           return ListView.builder(
-            itemCount: incompleteProjects.length,
+            itemCount: groups.length,
             itemBuilder: (context, i) {
-              // print(_searchQuery.toLowerCase());
-              if (_searchQuery.length < 2) {
-                return ProjectCard.fromUProject(incompleteProjects[i]);
-              } else {
-                final city = incompleteProjects[i].city?.toLowerCase() ?? '';
-                final usaState =
-                    incompleteProjects[i].state?.toLowerCase() ?? '';
-                final combined = '$city, $usaState';
-                final query = _searchQuery.toLowerCase();
-                if (city.contains(query) ||
-                    usaState.contains(query) ||
-                    combined.contains(query)) {
-                  return ProjectCard.fromUProject(incompleteProjects[i]);
-                }
-                return const SizedBox
-                    .shrink(); // or return null; to hide the card
-              }
+              return GroupCard.fromUGroup(groups[i]);
             },
           );
         },

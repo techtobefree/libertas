@@ -187,27 +187,25 @@ class ProjectHandlers {
     }
   }
 
-  // Future<void> addMember(projId) async {
-  //   final url =
-  //       Uri.parse('http://44.203.120.103:3000/projects/${projId}/member');
-  //   final Map<String, dynamic> data = {
-  //     'memberId': Provider.of<UserProvider>(context, listen: false).id
-  //   };
-  //   final response = await http.put(
-  //     url,
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: jsonEncode(data),
-  //   );
+  static Future<void> removeMember(projId, userId) async {
+  UProject? uproject =
+        await ProjectHandlers.getUProjectById(projId);
+    var uprojectMems = uproject!.members;
+    if (uprojectMems != null) {
+      uprojectMems.remove(userId);
+    }
 
-  //   if (response.statusCode == 200) {
-  //     // API call successful\
-  //   } else {
-  //     // API call unsuccessful
-  //     print('Failed to fetch data');
-  //   }
-  // }
+    final removedMemUProj = uproject.copyWith(members: uprojectMems);
+
+    try {
+      final request = ModelMutations.update(removedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+      
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+  }
 
   static Future<void> addSponsor(String projId, sponsorData, userId) async {
     UUser? user = await UserHandlers.getUUserById(userId);

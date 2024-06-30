@@ -2,7 +2,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
@@ -25,6 +25,13 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   late UProject _project;
   UEvent? _event;
+
+  String? dateValidator(DateTime? value) {
+    if (value == null) {
+      return 'This field is required';
+    }
+    return null;
+  }
 
   final List<String> _states = [
     'Alabama',
@@ -88,9 +95,6 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
   }
 
   Future<void> _fetchProjectandEventData() async {
-    // Simulating asynchronous data fetching
-
-    // Assume fetchData() is an asynchronous method in UProject class
     UProject? project = await ProjectHandlers.getUProjectById(widget.projectId);
     UEvent? event;
     if (widget.eventId != '') {
@@ -125,7 +129,7 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
       appBar: AppBar(
         title: Text('Event Details'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: FormBuilder(
           key: _formKey,
@@ -134,9 +138,7 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
               FormBuilderTextField(
                 name: 'eventName',
                 decoration: InputDecoration(labelText: 'Event Name'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: ValidationBuilder().required().build(),
               ),
               FormBuilderTextField(
                 name: 'eventDetails',
@@ -153,9 +155,7 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
               FormBuilderDropdown(
                 name: 'state',
                 decoration: InputDecoration(labelText: 'State'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: ValidationBuilder().required().build(),
                 items: _states
                     .map((state) => DropdownMenuItem(
                           value: state,
@@ -176,10 +176,9 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
                 name: 'eventDateTime',
                 inputType: InputType.both,
                 decoration: InputDecoration(labelText: 'Date & Time'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
+                validator: dateValidator,
               ),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.saveAndValidate()) {
@@ -233,26 +232,26 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
         await EventHandlers.updateUEvent(updatedEvent);
       } else {
         UEvent uevent = UEvent(
-            owner: await UserHandlers.getUUserById(
-                BlocProvider.of<UserCubit>(context).state.id),
-            uEventOwnerId: BlocProvider.of<UserCubit>(context).state.id,
-            name: eventName,
-            details: eventDetails,
-            date: '$year-$month-$day',
-            time: '$hour:$minute',
-            membersAttending: [],
-            membersNotAttending: [],
-            streetAddress: streetAddress,
-            city: city,
-            state: state,
-            zipCode: zipCode,
-            project: _project);
+          owner: await UserHandlers.getUUserById(
+              BlocProvider.of<UserCubit>(context).state.id),
+          uEventOwnerId: BlocProvider.of<UserCubit>(context).state.id,
+          name: eventName,
+          details: eventDetails,
+          date: '$year-$month-$day',
+          time: '$hour:$minute',
+          membersAttending: [],
+          membersNotAttending: [],
+          streetAddress: streetAddress,
+          city: city,
+          state: state,
+          zipCode: zipCode,
+          project: _project,
+        );
 
         await ProjectHandlers.addEvent(widget.projectId, uevent);
       }
 
       // Button action goes here
-      // ignore: use_build_context_synchronously
       context.pushNamed("projectevents", queryParameters: {
         'projectId': widget.projectId,
       }, pathParameters: {
