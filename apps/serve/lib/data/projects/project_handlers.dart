@@ -77,6 +77,13 @@ class ProjectHandlers {
     }
   }
 
+  static void removeAllDuplicates() async {
+    var uprojects = await getUProjects();
+    for (var proj in uprojects) {
+      await removeDuplicateMembers(proj!.id);
+    }
+  }
+
   static Future<Map<String, dynamic>> getProjectById(projectId) async {
     var url = Uri.parse('http://44.203.120.103:3000/projects/$projectId');
     var response = await http.get(url);
@@ -187,9 +194,25 @@ class ProjectHandlers {
     }
   }
 
+  static Future<void> removeDuplicateMembers(projId) async {
+    UProject? uproject = await ProjectHandlers.getUProjectById(projId);
+    var uprojectMems = uproject!.members;
+
+    var uniqueMembers = uprojectMems!.toSet().toList();
+
+    final noDuplicateMembers = uproject.copyWith(members: uniqueMembers);
+
+    try {
+      final request = ModelMutations.update(noDuplicateMembers);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+  }
+
   static Future<void> removeMember(projId, userId) async {
-  UProject? uproject =
-        await ProjectHandlers.getUProjectById(projId);
+    UProject? uproject = await ProjectHandlers.getUProjectById(projId);
     var uprojectMems = uproject!.members;
     if (uprojectMems != null) {
       uprojectMems.remove(userId);
@@ -201,7 +224,6 @@ class ProjectHandlers {
       final request = ModelMutations.update(removedMemUProj);
       final response = await Amplify.API.mutate(request: request).response;
       safePrint('Response: $response');
-      
     } catch (e) {
       throw Exception('Failed to update project: $e');
     }

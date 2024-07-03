@@ -48,10 +48,9 @@ class AboutProjectState extends State<AboutProject> {
     getProject().then((data) {
       setState(() {
         projectData = data;
-        if (projectData['leader'] == null || projectData['leader'].isEmpty){
+        if (projectData['leader'] == null || projectData['leader'].isEmpty) {
           needLeader = true;
         }
-
       });
     });
     var id = widget.id;
@@ -84,23 +83,24 @@ class AboutProjectState extends State<AboutProject> {
     }
     return Scaffold(
       appBar: AppBar(
-          title: const Text(
-            'About Project',
-            style: TextStyle(color: Colors.white),
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(0, 28, 72, 1.0),
-                  Color.fromRGBO(35, 107, 140, 1.0),
-                ],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
+        title: const Text(
+          'About Project',
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromRGBO(0, 28, 72, 1.0),
+                Color.fromRGBO(35, 107, 140, 1.0),
+              ],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
             ),
-          ),leading: IconButton(
+          ),
+        ),
+        leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             if (needLeader == false) {
@@ -114,7 +114,8 @@ class AboutProjectState extends State<AboutProject> {
                   pathParameters: {'id': projectData['id']});
             }
           },
-        ),),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(25),
@@ -202,40 +203,41 @@ class AboutProjectState extends State<AboutProject> {
                 // if (projectData['members'] != null &&
                 //     !projectData['members']
                 //         .contains(BlocProvider.of<UserCubit>(context).state.id))
-                  SizedBox(
-                    height: 30,
-                    child: ElevatedButton(
-                      onPressed: () {
-                          if (projectData['members'] != null &&
-                    !projectData['members']
-                        .contains(BlocProvider.of<UserCubit>(context).state.id)){addMember();}
-                        else{
-                          removeMember();
-                        }
-                        
-                        
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(
-                            255, 16, 34, 65), // Background color
-                        foregroundColor: Colors.white, // Text color
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20.0), // Rounded corners
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                SizedBox(
+                  height: 30,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (projectData['members'] != null &&
+                          !projectData['members'].contains(
+                              BlocProvider.of<UserCubit>(context).state.id)) {
+                        addMember();
+                      } else {
+                        removeMember();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(
+                          255, 16, 34, 65), // Background color
+                      foregroundColor: Colors.white, // Text color
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(20.0), // Rounded corners
                       ),
-                      child: (projectData['members'] != null &&
-                    !projectData['members']
-                        .contains(BlocProvider.of<UserCubit>(context).state.id)) ? 
-                        const Text(
-                         'Join Project' ,
-                        style: TextStyle(fontSize: 13),
-                      ) : const Text(
-                         'Leave Project' ,
-                        style: TextStyle(fontSize: 13),
+                      padding: EdgeInsets.symmetric(horizontal: 16),
                     ),
-                  ),),
+                    child: (projectData['members'] != null &&
+                            !projectData['members'].contains(
+                                BlocProvider.of<UserCubit>(context).state.id))
+                        ? const Text(
+                            'Join Project',
+                            style: TextStyle(fontSize: 13),
+                          )
+                        : const Text(
+                            'Leave Project',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                  ),
+                ),
                 const Divider(
                   indent: 0,
                   endIndent: 0,
@@ -271,6 +273,7 @@ class AboutProjectState extends State<AboutProject> {
     if (uprojectMems != null) {
       uprojectMems.add(memID);
     }
+    uprojectMems = uprojectMems!.toSet().toList();
 
     final addedMemUProj = uproject.copyWith(members: uprojectMems);
 
@@ -288,15 +291,15 @@ class AboutProjectState extends State<AboutProject> {
     } catch (e) {
       throw Exception('Failed to update project: $e');
     }
-   
   }
-   Future<void> removeMember() async {
-   await ProjectHandlers.removeMember(projectData['id'], BlocProvider.of<UserCubit>(context).state.id);
-   getProject().then((data) {
+
+  Future<void> removeMember() async {
+    await ProjectHandlers.removeMember(
+        projectData['id'], BlocProvider.of<UserCubit>(context).state.id);
+    getProject().then((data) {
       setState(() {
         projectData = data;
       });
     });
-   
   }
 }
