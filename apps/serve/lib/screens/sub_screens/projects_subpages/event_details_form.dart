@@ -118,6 +118,10 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
       _formKey.currentState?.patchValue({
         'eventName': _event!.name,
         'eventDetails': _event!.details,
+        'streetAddress': _event!.streetAddress,
+        'city': _event!.city,
+        'state': _event!.state,
+        'zipCode': _event!.zipCode,
         'eventDateTime': eventDate,
       });
     }
@@ -133,62 +137,108 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
         padding: const EdgeInsets.all(16.0),
         child: FormBuilder(
           key: _formKey,
-          child: Column(
-            children: [
-              FormBuilderTextField(
-                name: 'eventName',
-                decoration: InputDecoration(labelText: 'Event Name'),
-                validator: ValidationBuilder().required().build(),
-              ),
-              FormBuilderTextField(
-                name: 'eventDetails',
-                decoration: InputDecoration(labelText: 'Event Details'),
-              ),
-              FormBuilderTextField(
-                name: 'streetAddress',
-                decoration: InputDecoration(labelText: 'Street Address'),
-              ),
-              FormBuilderTextField(
-                name: 'city',
-                decoration: InputDecoration(labelText: 'City'),
-              ),
-              FormBuilderDropdown(
-                name: 'state',
-                decoration: InputDecoration(labelText: 'State'),
-                validator: ValidationBuilder().required().build(),
-                items: _states
-                    .map((state) => DropdownMenuItem(
-                          value: state,
-                          child: Text(state),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedState = value as String?;
-                  });
-                },
-              ),
-              FormBuilderTextField(
-                name: 'zipCode',
-                decoration: InputDecoration(labelText: 'Zip Code'),
-              ),
-              FormBuilderDateTimePicker(
-                name: 'eventDateTime',
-                inputType: InputType.both,
-                decoration: InputDecoration(labelText: 'Date & Time'),
-                validator: dateValidator,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.saveAndValidate()) {
-                    final formData = _formKey.currentState!.value;
-                    _submitForm(formData);
-                  }
-                },
-                child: Text('Submit'),
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                FormBuilderTextField(
+                  name: 'eventName',
+                  decoration: InputDecoration(labelText: 'Event Name'),
+                  validator: ValidationBuilder().required().build(),
+                ),
+                FormBuilderTextField(
+                  name: 'eventDetails',
+                  decoration: InputDecoration(labelText: 'Event Details'),
+                ),
+                FormBuilderTextField(
+                  name: 'streetAddress',
+                  decoration: InputDecoration(labelText: 'Street Address'),
+                ),
+                FormBuilderTextField(
+                  name: 'city',
+                  decoration: InputDecoration(labelText: 'City'),
+                ),
+                FormBuilderDropdown(
+                  name: 'state',
+                  decoration: InputDecoration(labelText: 'State'),
+                  validator: ValidationBuilder().required().build(),
+                  items: _states
+                      .map((state) => DropdownMenuItem(
+                            value: state,
+                            child: Text(state),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedState = value as String?;
+                    });
+                  },
+                ),
+                FormBuilderTextField(
+                  name: 'zipCode',
+                  decoration: InputDecoration(labelText: 'Zip Code'),
+                ),
+                FormBuilderDateTimePicker(
+                  name: 'eventDateTime',
+                  inputType: InputType.both,
+                  decoration: InputDecoration(labelText: 'Date & Time'),
+                  validator: dateValidator,
+                ),
+                SizedBox(height: 20),
+                if (widget.eventId != '')
+                  ElevatedButton(
+                    onPressed: () async {
+                      bool? confirmDelete = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Confirm Delete'),
+                            content: Text(
+                                'Are you sure you want to delete this event?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(false); // Cancel
+                                },
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true); // Confirm
+                                },
+                                child: Text('Confirm'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirmDelete == true) {
+                        EventHandlers.deleteUEventfromId(widget.eventId);
+                        context.pushNamed(
+                          "projectevents",
+                          queryParameters: {
+                            'projectId': widget.projectId,
+                          },
+                          pathParameters: {
+                            'projectId': widget.projectId,
+                          },
+                        );
+                      }
+                    },
+                    child: Text('Delete'),
+                  ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.saveAndValidate()) {
+                      final formData = _formKey.currentState!.value;
+                      _submitForm(formData);
+                    }
+                  },
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

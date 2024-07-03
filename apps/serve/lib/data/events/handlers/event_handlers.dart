@@ -271,6 +271,19 @@ class EventHandlers {
     return null;
   }
 
+  static Future<void> deleteUEvent(UEvent event) async {
+    final request = ModelMutations.delete(event);
+    final response = await Amplify.API.mutate(request: request).response;
+    safePrint('Response: $response');
+  }
+
+  static Future<void> deleteUEventfromId(String eventId) async {
+    UEvent? event = await getUEventById(eventId);
+    if (event != null) {
+      deleteUEvent(event);
+    }
+  }
+
   static Future<List<String>> getAttendeesByEvent(String id) async {
     final queryPredicate = UEvent.ID.eq(id);
 
