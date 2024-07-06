@@ -1,4 +1,4 @@
-package com.serve_to_be_free.flutter
+package com.example.serve_to_be_free
 
 import io.flutter.embedding.android.FlutterActivity
 
