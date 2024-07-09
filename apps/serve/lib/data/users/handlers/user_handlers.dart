@@ -233,7 +233,7 @@ class UserHandlers {
       // email: email ?? user.email,
       firstName: firstName ?? user.firstName,
       lastName: lastName ?? user.lastName,
-      // profilePictureUrl: profilePictureUrl ?? user.profilePictureUrl,
+      profilePictureUrl: profilePictureUrl ?? user.profilePictureUrl,
       // coverPictureUrl: coverPictureUrl ?? user.coverPictureUrl,
       // projects: projects ?? user.projects,
       // friends: friends ?? user.friends,

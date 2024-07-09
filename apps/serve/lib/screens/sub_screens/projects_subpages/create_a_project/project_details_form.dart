@@ -36,6 +36,8 @@ class ProjectDetailsForm extends StatefulWidget {
 }
 
 class ProjectDetailsFormState extends State<ProjectDetailsForm> {
+  bool _isLoading = true;
+
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final List<String> privacyOptions = ['Friends', 'Group', 'Public'];
   var projectData = UProject(
@@ -52,7 +54,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
 
   // final UProject proj = await ProjectHandlers.getUProjectById(id);
 
-  late XFile? imageCache = null;
+  late XFile? imageCache;
 
   Uint8List? webProjImage;
 
@@ -64,6 +66,8 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
     if (widget.id != null && widget.id!.isNotEmpty) {
       // Replace 'getUProjectById' with your actual data fetching method
       ProjectHandlers.getUProjectById(widget.id!).then((data) async {
+        projectData = data!;
+
         Uint8List? uint8List =
             await fetchImageFromUrl(projectData.projectPicture);
 
@@ -82,6 +86,13 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           'projectImage': [xFile],
           // 'leadership': "leader chosen"
         });
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -96,6 +107,9 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
   }
 
   Future<void> _submitForm() async {
+    setState(() {
+      _isLoading = true;
+    });
     // a null check on here?
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       _formKey.currentState!.save();
@@ -171,12 +185,21 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
         final createdUser = response.data;
         if (createdUser == null) {
           safePrint('errors: ${response.errors}');
+          setState(() {
+            _isLoading = false;
+          });
         } else {
           if (leaderStr == "") {
+            setState(() {
+              _isLoading = false;
+            });
             context.goNamed("leadprojectdetails",
                 pathParameters: {'id': createdUser.id},
                 queryParameters: {'id': createdUser.id});
           } else {
+            setState(() {
+              _isLoading = false;
+            });
             context.goNamed("projectdetails",
                 pathParameters: {'id': createdUser.id},
                 queryParameters: {'id': createdUser.id});
@@ -240,6 +263,9 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           final request = ModelMutations.update(uprojectUpdate);
           final response = await Amplify.API.mutate(request: request).response;
           var createdUser = response.data;
+          setState(() {
+            _isLoading = false;
+          });
           context.goNamed("projectdetails",
               pathParameters: {'id': createdUser!.id},
               queryParameters: {'id': createdUser.id});
@@ -381,499 +407,516 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
               ),
             ),
           )),
-      body: SingleChildScrollView(
-        child: FormBuilder(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Project Name",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      child: FormBuilderTextField(
-                          name: 'projectName',
-                          textCapitalization: TextCapitalization.words,
-                          validator: ValidationBuilder()
-                              .required()
-                              .minLength(3)
-                              .maxLength(50)
-                              .regExp(
-                                RegExp(r'^[a-zA-Z0-9 ]+$'),
-                                'Only alphanumeric characters are allowed',
-                              )
-                              .build(),
-                          decoration: _fieldDecoration(projectData.name)),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Date",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 12),
-                        child: FormBuilderDateTimePicker(
-                            name: 'projectDate',
-                            inputType: InputType.date,
-                            validator: dateValidator,
-
-                            //  FormBuilderValidators.compose(
-                            //     [FormBuilderValidators.required()]),
-                            decoration: _fieldDecoration(projectData.date)),
-                      ),
-                    ]),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Privacy",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      // decoration: BoxDecoration(
-                      //   color: Colors.grey[200],
-                      //   borderRadius: BorderRadius.circular(10),
-                      // ),
-                      child: FormBuilderDropdown<String>(
-                        name: 'privacy',
-                        decoration: _fieldDecoration("Project Privacy"),
-                        validator: ValidationBuilder().required().build(),
-
-                        // FormBuilderValidators.compose([
-                        //   FormBuilderValidators.required(),
-                        // ]),
-                        // elevation: 2,
-                        iconSize: 30,
-                        isExpanded: true,
-                        initialValue: null,
-                        items: privacyOptions
-                            .map((option) => DropdownMenuItem(
-                                  alignment: AlignmentDirectional.center,
-                                  value: option,
-                                  child: Text(option),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Leadership",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      child: FormBuilderDropdown<String>(
-                        name: 'leadership',
-                        decoration: _fieldDecoration(projectData.leader != null
-                            ? 'Use Current leader'
-                            : "Leadership Option"),
-                        validator: ValidationBuilder().required().build(),
-
-                        // FormBuilderValidators.compose([
-                        //   FormBuilderValidators.required(),
-                        // ]),
-                        elevation: 2,
-                        iconSize: 30,
-                        isExpanded: true,
-                        initialValue: (projectData.leader != null &&
-                                projectData.leader!.isNotEmpty)
-                            ? 'Current leader'
-                            : "Recruit leadership",
-                        items: [
-                          if (projectData.leader != null) 'Current leader',
-                          'Same as owner',
-                          'Recruit leadership',
-                        ]
-                            .map((option) => DropdownMenuItem(
-                                  alignment: AlignmentDirectional.center,
-                                  value: option,
-                                  child: Text(option),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Project Photo",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      // child: Container(
-                      //   width: 100,
-                      child: isWeb()
-                          ? GestureDetector(
-                              onTap: () => _pickImage(),
-                              child: Container(
-                                width: 160,
-                                height: 160,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Icon(
-                                  Icons.camera_alt,
-                                  size: 80,
-                                  color: Color.fromRGBO(0, 28, 72, 1.0),
-                                ),
-                              ),
-                            )
-                          : FormBuilderImagePicker(
-                              name: "projectImage",
-                              initialValue: projectData
-                                      .projectPicture.isNotEmpty
-                                  ? [
-                                      File(Uri.encodeFull(
-                                          projectData.projectPicture))
-                                    ] // Provide the initial image as a File
-                                  : [], // Or an empty list if there's no initial image
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                              validator: listValidator,
-
-                              fit: BoxFit.cover,
-                              maxImages: 1,
-                            ),
-                    ),
-                    //),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "City",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      child: FormBuilderTextField(
-                          name: 'city',
-                          textCapitalization: TextCapitalization.words,
-                          validator: ValidationBuilder()
-                              .required()
-                              .minLength(3)
-                              .maxLength(50)
-                              .regExp(
-                                RegExp(r'^[a-zA-Z0-9 ]+$'),
-                                'Only alphanumeric characters are allowed',
-                              )
-                              .build(),
-                          decoration: _fieldDecoration("City")),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 15),
-                      child: const Text(
-                        "State",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-
-                    //),
-
-                    FormBuilderDropdown<String>(
-                      name: 'state',
-                      decoration: _fieldDecoration("State"),
-                      validator: ValidationBuilder().required().build(),
-
-                      // FormBuilderValidators.compose([
-                      //   FormBuilderValidators.required(),
-                      // ]),
-                      elevation: 2,
-                      iconSize: 30,
-                      isExpanded: true,
-                      initialValue: null,
-                      //Right here we just have to map it to make them DropdownMenuItems instead of strings
-                      items: [
-                        'Alabama',
-                        'Alaska',
-                        'Arizona',
-                        'Arkansas',
-                        'California',
-                        'Colorado',
-                        'Connecticut',
-                        'Delaware',
-                        'Florida',
-                        'Georgia',
-                        'Hawaii',
-                        'Idaho',
-                        'Illinois',
-                        'Indiana',
-                        'Iowa',
-                        'Kansas',
-                        'Kentucky',
-                        'Louisiana',
-                        'Maine',
-                        'Maryland',
-                        'Massachusetts',
-                        'Michigan',
-                        'Minnesota',
-                        'Mississippi',
-                        'Missouri',
-                        'Montana',
-                        'Nebraska',
-                        'Nevada',
-                        'New Hampshire',
-                        'New Jersey',
-                        'New Mexico',
-                        'New York',
-                        'North Carolina',
-                        'North Dakota',
-                        'Ohio',
-                        'Oklahoma',
-                        'Oregon',
-                        'Pennsylvania',
-                        'Rhode Island',
-                        'South Carolina',
-                        'South Dakota',
-                        'Tennessee',
-                        'Texas',
-                        'Utah',
-                        'Vermont',
-                        'Virginia',
-                        'Washington',
-                        'West Virginia',
-                        'Wisconsin',
-                        'Wyoming'
-                      ]
-                          .map((state) => DropdownMenuItem(
-                                alignment: AlignmentDirectional.center,
-                                value: state,
-                                child: Text(state),
-                              ))
-                          .toList(),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Zip Code",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          // width: 350,
-                          // height: 200,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: FormBuilder(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Project Name",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
                           child: FormBuilderTextField(
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                              ],
-                              keyboardType: TextInputType.text,
-                              name: "zipCode",
-                              decoration: _fieldDecoration("Zip Code"),
+                              name: 'projectName',
+                              textCapitalization: TextCapitalization.words,
                               validator: ValidationBuilder()
-                                  .required('Zip code must be 5 digits long')
-                                  .build()
-
-                              // FormBuilderValidators.compose([
-                              //   FormBuilderValidators.required(),
-                              //   (value) {
-                              //     if (value == null || value.isEmpty) {
-                              //       return 'Please enter a 5-digit zip code';
-                              //     }
-                              //     if (value.length != 5) {
-                              //       return 'Zip code must be 5 digits long';
-                              //     }
-                              //     return null;
-                              //   },
-                              // ]),
-                              ),
+                                  .required()
+                                  .minLength(3)
+                                  .maxLength(50)
+                                  .regExp(
+                                    RegExp(r'^[a-zA-Z0-9 ]+$'),
+                                    'Only alphanumeric characters are allowed',
+                                  )
+                                  .build(),
+                              decoration: _fieldDecoration(projectData.name)),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Short Description",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Date",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w600),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 12),
+                            child: FormBuilderDateTimePicker(
+                                name: 'projectDate',
+                                inputType: InputType.date,
+                                validator: dateValidator,
+
+                                //  FormBuilderValidators.compose(
+                                //     [FormBuilderValidators.required()]),
+                                decoration: _fieldDecoration(projectData.date)),
+                          ),
+                        ]),
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Privacy",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          // decoration: BoxDecoration(
+                          //   color: Colors.grey[200],
+                          //   borderRadius: BorderRadius.circular(10),
+                          // ),
+                          child: FormBuilderDropdown<String>(
+                            name: 'privacy',
+                            decoration: _fieldDecoration("Project Privacy"),
+                            validator: ValidationBuilder().required().build(),
+
+                            // FormBuilderValidators.compose([
+                            //   FormBuilderValidators.required(),
+                            // ]),
+                            // elevation: 2,
+                            iconSize: 30,
+                            isExpanded: true,
+                            initialValue: null,
+                            items: privacyOptions
+                                .map((option) => DropdownMenuItem(
+                                      alignment: AlignmentDirectional.center,
+                                      value: option,
+                                      child: Text(option),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                      ],
                     ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          // width: 350,
-                          // height: 200,
-                          child: FormBuilderTextField(
-                            maxLines: null,
-                            textCapitalization: TextCapitalization.sentences,
-                            keyboardType: TextInputType.text,
-                            minLines: 2,
-                            name: "projectBio",
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Leadership",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          child: FormBuilderDropdown<String>(
+                            name: 'leadership',
                             decoration: _fieldDecoration(
-                                "Short synopsis about your project..."),
+                                projectData.leader != null
+                                    ? 'Use Current leader'
+                                    : "Leadership Option"),
                             validator: ValidationBuilder().required().build(),
 
                             // FormBuilderValidators.compose([
                             //   FormBuilderValidators.required(),
                             // ]),
+                            elevation: 2,
+                            iconSize: 30,
+                            isExpanded: true,
+                            initialValue: (projectData.leader != null &&
+                                    projectData.leader!.isNotEmpty)
+                                ? 'Current leader'
+                                : "Recruit leadership",
+                            items: [
+                              if (projectData.leader != null) 'Current leader',
+                              'Same as owner',
+                              'Recruit leadership',
+                            ]
+                                .map((option) => DropdownMenuItem(
+                                      alignment: AlignmentDirectional.center,
+                                      value: option,
+                                      child: Text(option),
+                                    ))
+                                .toList(),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    //),
-                  ],
-                ),
-              ),
-              const Divider(
-                //height: 1,
-                color: Colors.grey,
-                thickness: 0.5,
-              ),
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Detailed Description",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Project Photo",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          // child: Container(
+                          //   width: 100,
+                          child: isWeb()
+                              ? GestureDetector(
+                                  onTap: () => _pickImage(),
+                                  child: Container(
+                                    width: 160,
+                                    height: 160,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      size: 80,
+                                      color: Color.fromRGBO(0, 28, 72, 1.0),
+                                    ),
+                                  ),
+                                )
+                              : FormBuilderImagePicker(
+                                  name: "projectImage",
+                                  // initialValue: projectData
+                                  //         .projectPicture.isNotEmpty
+                                  //     ? [
+                                  //         File(Uri.encodeFull(
+                                  //             projectData.projectPicture))
+                                  //       ] // Provide the initial image as a File
+                                  //     : [], // Or an empty list if there's no initial image
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                  validator: listValidator,
+
+                                  fit: BoxFit.cover,
+                                  maxImages: 1,
+                                ),
+                        ),
+                        //),
+                      ],
                     ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          // width: 350,
-                          // height: 200,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "City",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
                           child: FormBuilderTextField(
-                            maxLines: null,
-                            minLines: 10,
-                            name: "projectDescription",
-                            textCapitalization: TextCapitalization.sentences,
-                            keyboardType: TextInputType.text,
-
-                            decoration:
-                                _fieldDecoration("About your project..."),
-                            validator: ValidationBuilder().required().build(),
-
-                            // FormBuilderValidators.compose([
-                            //   FormBuilderValidators.required(),
-                            // ]),
+                              name: 'city',
+                              textCapitalization: TextCapitalization.words,
+                              validator: ValidationBuilder()
+                                  .required()
+                                  .minLength(3)
+                                  .maxLength(50)
+                                  .regExp(
+                                    RegExp(r'^[a-zA-Z0-9 ]+$'),
+                                    'Only alphanumeric characters are allowed',
+                                  )
+                                  .build(),
+                              decoration: _fieldDecoration("City")),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: const Text(
+                            "State",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w600),
                           ),
                         ),
-                      ),
+
+                        //),
+
+                        FormBuilderDropdown<String>(
+                          name: 'state',
+                          decoration: _fieldDecoration("State"),
+                          validator: ValidationBuilder().required().build(),
+
+                          // FormBuilderValidators.compose([
+                          //   FormBuilderValidators.required(),
+                          // ]),
+                          elevation: 2,
+                          iconSize: 30,
+                          isExpanded: true,
+                          initialValue: null,
+                          //Right here we just have to map it to make them DropdownMenuItems instead of strings
+                          items: [
+                            'Alabama',
+                            'Alaska',
+                            'Arizona',
+                            'Arkansas',
+                            'California',
+                            'Colorado',
+                            'Connecticut',
+                            'Delaware',
+                            'Florida',
+                            'Georgia',
+                            'Hawaii',
+                            'Idaho',
+                            'Illinois',
+                            'Indiana',
+                            'Iowa',
+                            'Kansas',
+                            'Kentucky',
+                            'Louisiana',
+                            'Maine',
+                            'Maryland',
+                            'Massachusetts',
+                            'Michigan',
+                            'Minnesota',
+                            'Mississippi',
+                            'Missouri',
+                            'Montana',
+                            'Nebraska',
+                            'Nevada',
+                            'New Hampshire',
+                            'New Jersey',
+                            'New Mexico',
+                            'New York',
+                            'North Carolina',
+                            'North Dakota',
+                            'Ohio',
+                            'Oklahoma',
+                            'Oregon',
+                            'Pennsylvania',
+                            'Rhode Island',
+                            'South Carolina',
+                            'South Dakota',
+                            'Tennessee',
+                            'Texas',
+                            'Utah',
+                            'Vermont',
+                            'Virginia',
+                            'Washington',
+                            'West Virginia',
+                            'Wisconsin',
+                            'Wyoming'
+                          ]
+                              .map((state) => DropdownMenuItem(
+                                    alignment: AlignmentDirectional.center,
+                                    value: state,
+                                    child: Text(state),
+                                  ))
+                              .toList(),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Zip Code",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Container(
+                              // width: 350,
+                              // height: 200,
+                              child: FormBuilderTextField(
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9]')),
+                                  ],
+                                  keyboardType: TextInputType.text,
+                                  name: "zipCode",
+                                  decoration: _fieldDecoration("Zip Code"),
+                                  validator: ValidationBuilder()
+                                      .required(
+                                          'Zip code must be 5 digits long')
+                                      .build()
+
+                                  // FormBuilderValidators.compose([
+                                  //   FormBuilderValidators.required(),
+                                  //   (value) {
+                                  //     if (value == null || value.isEmpty) {
+                                  //       return 'Please enter a 5-digit zip code';
+                                  //     }
+                                  //     if (value.length != 5) {
+                                  //       return 'Zip code must be 5 digits long';
+                                  //     }
+                                  //     return null;
+                                  //   },
+                                  // ]),
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Short Description",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Container(
+                              // width: 350,
+                              // height: 200,
+                              child: FormBuilderTextField(
+                                maxLines: null,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                keyboardType: TextInputType.text,
+                                minLines: 2,
+                                name: "projectBio",
+                                decoration: _fieldDecoration(
+                                    "Short synopsis about your project..."),
+                                validator:
+                                    ValidationBuilder().required().build(),
+
+                                // FormBuilderValidators.compose([
+                                //   FormBuilderValidators.required(),
+                                // ]),
+                              ),
+                            ),
+                          ),
+                        ),
+                        //),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    //height: 1,
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Detailed Description",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Container(
+                              // width: 350,
+                              // height: 200,
+                              child: FormBuilderTextField(
+                                maxLines: null,
+                                minLines: 10,
+                                name: "projectDescription",
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                keyboardType: TextInputType.text,
+
+                                decoration:
+                                    _fieldDecoration("About your project..."),
+                                validator:
+                                    ValidationBuilder().required().build(),
+
+                                // FormBuilderValidators.compose([
+                                //   FormBuilderValidators.required(),
+                                // ]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      child: SolidRoundedButton("Next",
+                          passedFunction: _submitForm))
+                ],
               ),
-              Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  child:
-                      SolidRoundedButton("Next", passedFunction: _submitForm))
-            ],
+            ),
           ),
-        ), // Circular progress indicator displayed on top of the form when submitting
+          if (_isLoading)
+            Container(
+              color: Colors.black54,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ], // Circular progress indicator displayed on top of the form when submitting
       ),
     );
   }
