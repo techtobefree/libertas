@@ -19,6 +19,7 @@ type UUser @model {
   bio: String
   city: String
   state: String
+  admin: Boolean
 }
 
 type UProject @model @auth(rules: [{ allow: public }]){

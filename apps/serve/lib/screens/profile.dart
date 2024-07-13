@@ -81,10 +81,11 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     child: ProfilePicture(
                       Colors.pinkAccent,
                       120,
-                      BlocProvider.of<UserCubit>(context)
-                              .state
-                              .profilePictureUrl ??
-                          "",
+                      currUser.profilePictureUrl ?? "",
+                      // BlocProvider.of<UserCubit>(context)
+                      //         .state
+                      //         .profilePictureUrl ??
+                      //     "",
                       currUser.id,
                       borderRadius: 10,
                     ),
