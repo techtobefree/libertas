@@ -130,6 +130,70 @@ class GroupHandlers {
     }
   }
 
+  static Future<UGroup> updateUGroup(UGroup updatedGroup) async {
+    try {
+      final request = ModelMutations.update(updatedGroup);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+      return response.data!;
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+  }
+
+  static Future<UGroup> modifyGroup(
+    String id, {
+    String? name,
+    String? privacy,
+    String? bio,
+    String? description,
+    String? city,
+    String? state,
+    String? leader,
+    String? date,
+    List<String>? projects,
+    List<String>? members,
+    List<String>? posts,
+    String? groupPicture,
+    String? zipCode,
+  }) async {
+    // Fetch the existing group by ID
+    var group = await GroupHandlers.getUGroupById(id);
+
+    // Ensure the group exists before attempting to modify
+    if (group == null) {
+      throw Exception('Group not found');
+    }
+
+    // Create a new group instance with the updated fields
+    var newGroup = group.copyWith(
+      name: name ?? group.name,
+      privacy: privacy ?? group.privacy,
+      bio: bio ?? group.bio,
+      description: description ?? group.description,
+      city: city ?? group.city,
+      state: state ?? group.state,
+      leader: leader ?? group.leader,
+      date: date ?? group.date,
+      projects: projects ?? group.projects,
+      members: members ?? group.members,
+      posts: posts ?? group.posts,
+      groupPicture: groupPicture ?? group.groupPicture,
+      zipCode: zipCode ?? group.zipCode,
+    );
+
+    try {
+      // Update the group in the database
+      final request = ModelMutations.update(newGroup);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update group: $e');
+    }
+
+    return newGroup;
+  }
+
   static Future<void> removeProject(String groupId, String projId) async {
     UGroup? group = await getUGroupById(groupId);
 

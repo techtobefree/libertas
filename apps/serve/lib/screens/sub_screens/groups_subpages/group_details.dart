@@ -195,6 +195,7 @@ class GroupDetailsState extends State<GroupDetails> {
   @override
   Widget build(BuildContext context) {
     final currentUserID = BlocProvider.of<UserCubit>(context).state.id;
+    final bool isLeader = currentUserID == groupData['leader'];
 
     final members = groupData['members'] ?? [];
 
@@ -245,6 +246,21 @@ class GroupDetailsState extends State<GroupDetails> {
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 5),
+                    if (isLeader)
+                      ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStateProperty.all<Color>(
+                              const Color.fromARGB(255, 16, 34, 65),
+                            ),
+                          ),
+                          onPressed: () => context.goNamed('groupsdetailsform',
+                                  queryParameters: {
+                                    'id': groupData['id'],
+                                  }),
+                          child: const Text(
+                            "Edit Group",
+                            style: TextStyle(color: Colors.white),
+                          )),
 
                     Center(
                       child: Row(

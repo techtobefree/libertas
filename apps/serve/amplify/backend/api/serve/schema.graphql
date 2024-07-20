@@ -114,14 +114,14 @@ type UNotification @model {
   date: String!
   message: String!
   status: String!
-  # INCOMPLETE, APPROVED, DENIED, COMPLETE
+  # INCOMPLETE, APPROVED, DENIED, COMPLETE, ADMIN
 }
 
 type UGroup @model {
   id: ID!
   name: String!
   privacy: String!
-  bio: String
+  bio: String0
   description: String!
   city: String
   state: String
