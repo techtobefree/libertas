@@ -2,6 +2,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:serve_to_be_free/data/points/points_handlers.dart';
 import 'package:serve_to_be_free/services/platform.dart';
 import 'package:universal_io/io.dart';
 import 'dart:core';
@@ -92,6 +93,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       });
     } else {
       setState(() {
+        imageCache = null;
         _isLoading = false;
       });
     }
@@ -176,12 +178,6 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
         final request = ModelMutations.create(uproject);
         final response = await Amplify.API.mutate(request: request).response;
 
-        // If not, create a new account
-        // final response = await http.post(
-        //   _baseUrl,
-        //   headers: headers,
-        //   body: body,
-        // );
         final createdUser = response.data;
         if (createdUser == null) {
           safePrint('errors: ${response.errors}');
@@ -189,6 +185,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
             _isLoading = false;
           });
         } else {
+          await addPoints();
           if (leaderStr == "") {
             setState(() {
               _isLoading = false;
@@ -277,6 +274,11 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
       // Make it so the context only goes if the s3 upload is successful
       // context.go(widget._path);
     }
+  }
+
+  Future<void> addPoints() async {
+    await PointsHandlers.newPoints(
+        BlocProvider.of<UserCubit>(context).state.id, "CREATEPROJECT", 10);
   }
 
   Future<void> uploadImageToS3(

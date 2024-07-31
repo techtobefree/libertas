@@ -43,6 +43,8 @@ class UUser extends amplify_core.Model {
   final String? _bio;
   final String? _city;
   final String? _state;
+  final int? _pointsBalance;
+  final List<UPoints>? _pointsactions;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -155,6 +157,14 @@ class UUser extends amplify_core.Model {
     return _state;
   }
   
+  int? get pointsBalance {
+    return _pointsBalance;
+  }
+  
+  List<UPoints>? get pointsactions {
+    return _pointsactions;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -163,9 +173,9 @@ class UUser extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const UUser._internal({required this.id, required password, required email, required firstName, required lastName, profilePictureUrl, coverPictureUrl, projects, friends, posts, sponsors, notificationsSent, notificationsReceived, bio, city, state, createdAt, updatedAt}): _password = password, _email = email, _firstName = firstName, _lastName = lastName, _profilePictureUrl = profilePictureUrl, _coverPictureUrl = coverPictureUrl, _projects = projects, _friends = friends, _posts = posts, _sponsors = sponsors, _notificationsSent = notificationsSent, _notificationsReceived = notificationsReceived, _bio = bio, _city = city, _state = state, _createdAt = createdAt, _updatedAt = updatedAt;
+  const UUser._internal({required this.id, required password, required email, required firstName, required lastName, profilePictureUrl, coverPictureUrl, projects, friends, posts, sponsors, notificationsSent, notificationsReceived, bio, city, state, pointsBalance, pointsactions, createdAt, updatedAt}): _password = password, _email = email, _firstName = firstName, _lastName = lastName, _profilePictureUrl = profilePictureUrl, _coverPictureUrl = coverPictureUrl, _projects = projects, _friends = friends, _posts = posts, _sponsors = sponsors, _notificationsSent = notificationsSent, _notificationsReceived = notificationsReceived, _bio = bio, _city = city, _state = state, _pointsBalance = pointsBalance, _pointsactions = pointsactions, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory UUser({String? id, required String password, required String email, required String firstName, required String lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<String>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state}) {
+  factory UUser({String? id, required String password, required String email, required String firstName, required String lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<String>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state, int? pointsBalance, List<UPoints>? pointsactions}) {
     return UUser._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       password: password,
@@ -182,7 +192,9 @@ class UUser extends amplify_core.Model {
       notificationsReceived: notificationsReceived != null ? List<UNotification>.unmodifiable(notificationsReceived) : notificationsReceived,
       bio: bio,
       city: city,
-      state: state);
+      state: state,
+      pointsBalance: pointsBalance,
+      pointsactions: pointsactions != null ? List<UPoints>.unmodifiable(pointsactions) : pointsactions);
   }
   
   bool equals(Object other) {
@@ -208,7 +220,9 @@ class UUser extends amplify_core.Model {
       DeepCollectionEquality().equals(_notificationsReceived, other._notificationsReceived) &&
       _bio == other._bio &&
       _city == other._city &&
-      _state == other._state;
+      _state == other._state &&
+      _pointsBalance == other._pointsBalance &&
+      DeepCollectionEquality().equals(_pointsactions, other._pointsactions);
   }
   
   @override
@@ -230,6 +244,7 @@ class UUser extends amplify_core.Model {
     buffer.write("bio=" + "$_bio" + ", ");
     buffer.write("city=" + "$_city" + ", ");
     buffer.write("state=" + "$_state" + ", ");
+    buffer.write("pointsBalance=" + (_pointsBalance != null ? _pointsBalance!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -237,7 +252,7 @@ class UUser extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UUser copyWith({String? password, String? email, String? firstName, String? lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<String>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state}) {
+  UUser copyWith({String? password, String? email, String? firstName, String? lastName, String? profilePictureUrl, String? coverPictureUrl, List<UProject>? projects, List<String>? friends, List<UPost>? posts, List<USponsor>? sponsors, List<UNotification>? notificationsSent, List<UNotification>? notificationsReceived, String? bio, String? city, String? state, int? pointsBalance, List<UPoints>? pointsactions}) {
     return UUser._internal(
       id: id,
       password: password ?? this.password,
@@ -254,7 +269,9 @@ class UUser extends amplify_core.Model {
       notificationsReceived: notificationsReceived ?? this.notificationsReceived,
       bio: bio ?? this.bio,
       city: city ?? this.city,
-      state: state ?? this.state);
+      state: state ?? this.state,
+      pointsBalance: pointsBalance ?? this.pointsBalance,
+      pointsactions: pointsactions ?? this.pointsactions);
   }
   
   UUser copyWithModelFieldValues({
@@ -272,7 +289,9 @@ class UUser extends amplify_core.Model {
     ModelFieldValue<List<UNotification>?>? notificationsReceived,
     ModelFieldValue<String?>? bio,
     ModelFieldValue<String?>? city,
-    ModelFieldValue<String?>? state
+    ModelFieldValue<String?>? state,
+    ModelFieldValue<int?>? pointsBalance,
+    ModelFieldValue<List<UPoints>?>? pointsactions
   }) {
     return UUser._internal(
       id: id,
@@ -290,7 +309,9 @@ class UUser extends amplify_core.Model {
       notificationsReceived: notificationsReceived == null ? this.notificationsReceived : notificationsReceived.value,
       bio: bio == null ? this.bio : bio.value,
       city: city == null ? this.city : city.value,
-      state: state == null ? this.state : state.value
+      state: state == null ? this.state : state.value,
+      pointsBalance: pointsBalance == null ? this.pointsBalance : pointsBalance.value,
+      pointsactions: pointsactions == null ? this.pointsactions : pointsactions.value
     );
   }
   
@@ -371,11 +392,25 @@ class UUser extends amplify_core.Model {
       _bio = json['bio'],
       _city = json['city'],
       _state = json['state'],
+      _pointsBalance = (json['pointsBalance'] as num?)?.toInt(),
+      _pointsactions = json['pointsactions']  is Map
+        ? (json['pointsactions']['items'] is List
+          ? (json['pointsactions']['items'] as List)
+              .where((e) => e != null)
+              .map((e) => UPoints.fromJson(new Map<String, dynamic>.from(e)))
+              .toList()
+          : null)
+        : (json['pointsactions'] is List
+          ? (json['pointsactions'] as List)
+              .where((e) => e?['serializedData'] != null)
+              .map((e) => UPoints.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
+              .toList()
+          : null),
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'password': _password, 'email': _email, 'firstName': _firstName, 'lastName': _lastName, 'profilePictureUrl': _profilePictureUrl, 'coverPictureUrl': _coverPictureUrl, 'projects': _projects?.map((UProject? e) => e?.toJson()).toList(), 'friends': _friends, 'posts': _posts?.map((UPost? e) => e?.toJson()).toList(), 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'notificationsSent': _notificationsSent?.map((UNotification? e) => e?.toJson()).toList(), 'notificationsReceived': _notificationsReceived?.map((UNotification? e) => e?.toJson()).toList(), 'bio': _bio, 'city': _city, 'state': _state, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'password': _password, 'email': _email, 'firstName': _firstName, 'lastName': _lastName, 'profilePictureUrl': _profilePictureUrl, 'coverPictureUrl': _coverPictureUrl, 'projects': _projects?.map((UProject? e) => e?.toJson()).toList(), 'friends': _friends, 'posts': _posts?.map((UPost? e) => e?.toJson()).toList(), 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'notificationsSent': _notificationsSent?.map((UNotification? e) => e?.toJson()).toList(), 'notificationsReceived': _notificationsReceived?.map((UNotification? e) => e?.toJson()).toList(), 'bio': _bio, 'city': _city, 'state': _state, 'pointsBalance': _pointsBalance, 'pointsactions': _pointsactions?.map((UPoints? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -395,6 +430,8 @@ class UUser extends amplify_core.Model {
     'bio': _bio,
     'city': _city,
     'state': _state,
+    'pointsBalance': _pointsBalance,
+    'pointsactions': _pointsactions,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -426,6 +463,10 @@ class UUser extends amplify_core.Model {
   static final BIO = amplify_core.QueryField(fieldName: "bio");
   static final CITY = amplify_core.QueryField(fieldName: "city");
   static final STATE = amplify_core.QueryField(fieldName: "state");
+  static final POINTSBALANCE = amplify_core.QueryField(fieldName: "pointsBalance");
+  static final POINTSACTIONS = amplify_core.QueryField(
+    fieldName: "pointsactions",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UPoints'));
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UUser";
     modelSchemaDefinition.pluralName = "UUsers";
@@ -526,6 +567,19 @@ class UUser extends amplify_core.Model {
       key: UUser.STATE,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UUser.POINTSBALANCE,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+      key: UUser.POINTSACTIONS,
+      isRequired: false,
+      ofModelName: 'UPoints',
+      associatedKey: UPoints.USER
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(

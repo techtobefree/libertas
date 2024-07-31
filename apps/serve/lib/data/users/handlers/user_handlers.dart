@@ -222,6 +222,8 @@ class UserHandlers {
     List<USponsor>? sponsors,
     List<UNotification>? notificationsSent,
     List<UNotification>? notificationsReceived,
+    int? pointsBalance,
+    List<UPoints>? pointsActions,
     String? bio,
     String? city,
     String? state,
@@ -245,6 +247,8 @@ class UserHandlers {
       bio: bio ?? user.bio,
       city: city ?? user.city,
       state: state ?? user.state,
+      pointsBalance: pointsBalance ?? user.pointsBalance,
+      pointsactions: pointsActions ?? user.pointsactions,
       // uUserFriendsId: uUserFriendsId ?? user.uUserFriendsId,
     );
 

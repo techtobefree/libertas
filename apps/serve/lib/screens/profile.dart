@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/projects/cubit.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/data/points/points_handlers.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
@@ -23,6 +24,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   List<UProject> projs = [];
   bool isConnected = false;
   bool isButtonDisabled = false;
+  num totalPoints = 0;
 
   @override
   void initState() {
@@ -33,6 +35,9 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     ProjectHandlers.getMyUProjects(userId)
         .then((value) => setState(() => projs = value));
     BlocProvider.of<ProjectsCubit>(context).loadMyProjects(userId);
+    PointsHandlers.getTotalUserPoints(userId)
+        .then((points) => setState(() => totalPoints = points));
+
     super.initState();
   }
 
@@ -44,14 +49,8 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // BlocBuilder<UserCubit, UserCubitState>(
-        //     buildWhen: (previous, current) => previous != current,
-        //     builder: (context, state) => state.busy
-        //         ? const SizedBox.shrink()
-        //         :
-        Scaffold(
-            body: Column(children: [
+    return Scaffold(
+        body: Column(children: [
       Stack(
           //crossAxisAlignment: CrossAxisAlignment.center,
 
@@ -106,7 +105,15 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               ),
             ),
             SizedBox(height: 8), // Add some space between name and bio
-
+            Text(
+              'Total Points: ${totalPoints}',
+              style: const TextStyle(
+                // fontWeight: FontWeight.bold,
+                fontSize: 18,
+                fontFamily: 'Open Sans',
+              ),
+            ),
+            SizedBox(height: 8),
             if (currUser.bio != null && currUser.bio!.isNotEmpty)
               Text(
                 '${currUser.bio}',
@@ -289,7 +296,7 @@ class ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         ),
       ),
     ])
-            // )
-            );
+        // )
+        );
   }
 }

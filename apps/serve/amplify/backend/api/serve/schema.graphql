@@ -19,7 +19,8 @@ type UUser @model {
   bio: String
   city: String
   state: String
-  admin: Boolean
+  pointsBalance: Int
+  pointsactions: [UPoints] @hasMany
 }
 
 type UProject @model @auth(rules: [{ allow: public }]){
@@ -114,14 +115,14 @@ type UNotification @model {
   date: String!
   message: String!
   status: String!
-  # INCOMPLETE, APPROVED, DENIED, COMPLETE, ADMIN
+  # INCOMPLETE, APPROVED, DENIED, COMPLETE
 }
 
 type UGroup @model {
   id: ID!
   name: String!
   privacy: String!
-  bio: String0
+  bio: String
   description: String!
   city: String
   state: String
@@ -139,4 +140,12 @@ type UGroupUser @model {
   isAdmin: Boolean
   approvedByGroup: Boolean
   approvedByUser: Boolean
+}
+
+type UPoints @model {
+  id: ID!
+  user: UUser! @belongsTo
+  action: String!
+  points: Int!
+  date: String!
 }
