@@ -172,6 +172,7 @@ class EventHandlers {
         uEventCheckInEventId: event.id,
         uEventCheckInUserId: user.id,
         details: details);
+
     return await EventCheckInHandlers.createCheckIn(eventCheckIn);
   }
 

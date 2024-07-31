@@ -19,6 +19,8 @@ type UUser @model {
   bio: String
   city: String
   state: String
+  pointsBalance: Int
+  pointsactions: [UPoints] @hasMany
 }
 
 type UProject @model @auth(rules: [{ allow: public }]){
@@ -138,4 +140,12 @@ type UGroupUser @model {
   isAdmin: Boolean
   approvedByGroup: Boolean
   approvedByUser: Boolean
+}
+
+type UPoints @model {
+  id: ID!
+  user: UUser! @belongsTo
+  action: String!
+  points: Int!
+  date: String!
 }

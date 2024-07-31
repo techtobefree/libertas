@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,20 +8,27 @@ import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/groups/group_handlers.dart';
 
 import '../../../models/ModelProvider.dart';
 
 class GroupDetailsForm extends StatefulWidget {
-  const GroupDetailsForm({Key? key}) : super(key: key);
+  final String? id;
+  const GroupDetailsForm({super.key, this.id});
 
   @override
   _GroupDetailsFormState createState() => _GroupDetailsFormState();
 }
 
 class _GroupDetailsFormState extends State<GroupDetailsForm> {
+  bool _isLoading = true;
+
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+
+  UGroup groupData =
+      UGroup(description: "", name: "", privacy: "", groupPicture: "");
 
   String? dateValidator(DateTime? value) {
     if (value == null) {
@@ -28,6 +36,8 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
     }
     return null;
   }
+
+  late XFile? imageCache;
 
   final List<String> _states = [
     'Alabama',
@@ -85,6 +95,44 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
   @override
   void initState() {
     super.initState();
+    if (widget.id != null && widget.id!.isNotEmpty) {
+      // Replace 'getUProjectById' with your actual data fetching method
+      GroupHandlers.getUGroupById(widget.id!).then((data) async {
+        groupData = data!;
+
+        Uint8List? uint8List = await fetchImageFromUrl(groupData.groupPicture);
+
+        XFile xFile = XFile.fromData(uint8List!);
+        imageCache = xFile;
+
+        _formKey.currentState?.patchValue({
+          'name': groupData.name,
+          'privacy': groupData.privacy,
+          'description': groupData.description,
+          'bio': groupData.bio,
+          'city': groupData.city,
+          'state': groupData.state,
+          'zipCode': groupData.zipCode,
+          'groupPicture': [xFile],
+        });
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<Uint8List?> fetchImageFromUrl(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      return response.bodyBytes;
+    } else {
+      throw Exception('Failed to load image');
+    }
   }
 
   @override
@@ -93,238 +141,259 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
       appBar: AppBar(
         title: Text('Group Details'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FormBuilder(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Group Name",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FormBuilder(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Group Name",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 12),
+                                  child: FormBuilderTextField(
+                                    name: 'name',
+                                    validator: ValidationBuilder()
+                                        .required()
+                                        .minLength(3)
+                                        .maxLength(50)
+                                        .build(),
+                                    decoration: _fieldDecoration('Group Name'),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 12),
-                              child: FormBuilderTextField(
-                                name: 'name',
-                                validator: ValidationBuilder()
-                                    .required()
-                                    .minLength(3)
-                                    .maxLength(50)
-                                    .build(),
-                                decoration: _fieldDecoration('Group Name'),
-                              ),
+                          ),
+                          const Divider(color: Colors.grey, thickness: 0.5),
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Privacy",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 12),
+                                  child: FormBuilderDropdown<String>(
+                                    name: 'privacy',
+                                    decoration: _fieldDecoration("Privacy"),
+                                    validator:
+                                        ValidationBuilder().required().build(),
+                                    items: const [
+                                      DropdownMenuItem(
+                                          value: 'Private',
+                                          child: Text('Private')),
+                                      DropdownMenuItem(
+                                          value: 'Public',
+                                          child: Text('Public')),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          const Divider(color: Colors.grey, thickness: 0.5),
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Short Description",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 12),
+                                  child: FormBuilderTextField(
+                                    name: 'bio',
+                                    decoration:
+                                        _fieldDecoration('Short Description'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(color: Colors.grey, thickness: 0.5),
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Detailed Description",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 12),
+                                  child: FormBuilderTextField(
+                                    name: 'description',
+                                    decoration: _fieldDecoration(
+                                        'Detailed Description'),
+                                    validator:
+                                        ValidationBuilder().required().build(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(color: Colors.grey, thickness: 0.5),
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Group Photo",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: FormBuilderImagePicker(
+                                    name: 'groupPicture',
+                                    decoration: _fieldDecoration('Group Photo'),
+                                    validator: listValidator,
+                                    maxImages: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(color: Colors.grey, thickness: 0.5),
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "City",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 12),
+                                  child: FormBuilderTextField(
+                                    name: 'city',
+                                    decoration: _fieldDecoration('City'),
+                                    validator:
+                                        ValidationBuilder().required().build(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(color: Colors.grey, thickness: 0.5),
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "State",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 12),
+                                  child: FormBuilderDropdown<String>(
+                                    name: 'state',
+                                    decoration: _fieldDecoration('State'),
+                                    validator:
+                                        ValidationBuilder().required().build(),
+                                    items: _states
+                                        .map((state) => DropdownMenuItem(
+                                              value: state,
+                                              child: Text(state),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(color: Colors.grey, thickness: 0.5),
+                          Container(
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Zip Code",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 12),
+                                  child: FormBuilderTextField(
+                                    name: 'zipCode',
+                                    decoration: _fieldDecoration('Zip Code'),
+                                    validator: ValidationBuilder()
+                                        .required()
+                                        .maxLength(5)
+                                        .minLength(5)
+                                        // .length(5)
+                                        .regExp(RegExp(r'^\d{5}$'),
+                                            'Enter a valid 5-digit zip code')
+                                        .build(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.saveAndValidate()) {
+                                final formData = _formKey.currentState!.value;
+                                _submitForm(formData);
+                              }
+                            },
+                            child: const Text('Create Group'),
+                          ),
+                        ],
                       ),
-                      const Divider(color: Colors.grey, thickness: 0.5),
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Privacy",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 12),
-                              child: FormBuilderDropdown<String>(
-                                name: 'privacy',
-                                decoration: _fieldDecoration("Privacy"),
-                                validator:
-                                    ValidationBuilder().required().build(),
-                                items: const [
-                                  DropdownMenuItem(
-                                      value: 'Private', child: Text('Private')),
-                                  DropdownMenuItem(
-                                      value: 'Public', child: Text('Public')),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.grey, thickness: 0.5),
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Short Description",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 12),
-                              child: FormBuilderTextField(
-                                name: 'bio',
-                                decoration:
-                                    _fieldDecoration('Short Description'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.grey, thickness: 0.5),
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Detailed Description",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 12),
-                              child: FormBuilderTextField(
-                                name: 'description',
-                                decoration:
-                                    _fieldDecoration('Detailed Description'),
-                                validator:
-                                    ValidationBuilder().required().build(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.grey, thickness: 0.5),
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Group Photo",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: FormBuilderImagePicker(
-                                name: 'groupPicture',
-                                decoration: _fieldDecoration('Group Photo'),
-                                validator: listValidator,
-                                maxImages: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.grey, thickness: 0.5),
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "City",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 12),
-                              child: FormBuilderTextField(
-                                name: 'city',
-                                decoration: _fieldDecoration('City'),
-                                validator:
-                                    ValidationBuilder().required().build(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.grey, thickness: 0.5),
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "State",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 12),
-                              child: FormBuilderDropdown<String>(
-                                name: 'state',
-                                decoration: _fieldDecoration('State'),
-                                validator:
-                                    ValidationBuilder().required().build(),
-                                items: _states
-                                    .map((state) => DropdownMenuItem(
-                                          value: state,
-                                          child: Text(state),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.grey, thickness: 0.5),
-                      Container(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Zip Code",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 12),
-                              child: FormBuilderTextField(
-                                name: 'zipCode',
-                                decoration: _fieldDecoration('Zip Code'),
-                                validator: ValidationBuilder()
-                                    .required()
-                                    .maxLength(5)
-                                    .minLength(5)
-                                    // .length(5)
-                                    .regExp(RegExp(r'^\d{5}$'),
-                                        'Enter a valid 5-digit zip code')
-                                    .build(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.saveAndValidate()) {
-                            final formData = _formKey.currentState!.value;
-                            _submitForm(formData);
-                          }
-                        },
-                        child: const Text('Create Group'),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          if (_isLoading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -368,6 +437,9 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
   }
 
   Future<void> _submitForm(Map<String, dynamic> formData) async {
+    setState(() {
+      _isLoading = true;
+    });
     print(formData); // Print all form data
     const bucketName = 'servetobefree-images-dev';
     const region = 'us-east-1';
@@ -378,6 +450,35 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
     String timestamp = now.millisecondsSinceEpoch.toString();
 
     final selectedFile = formData['groupPicture'][0];
+    if (widget.id != null && widget.id != "") {
+      var url = groupData.groupPicture;
+      if (selectedFile != null) {
+        if (selectedFile != imageCache) {
+          final file = File(selectedFile.path);
+
+          url = await uploadImageToS3(
+              file, 'servetobefree-images', formData['name'], timestamp);
+        }
+      }
+
+      var updatedGroup = await GroupHandlers.modifyGroup(widget.id!,
+          name: formData['name'],
+          privacy: formData['privacy'],
+          description: formData['description'],
+          bio: formData['bio'],
+          city: formData['city'],
+          state: formData['state'],
+          zipCode: formData['zipCode'],
+          groupPicture: url);
+      if (updatedGroup != null) {
+        print(updatedGroup);
+        setState(() {
+          _isLoading = false;
+        });
+        context.go('/groups');
+        return;
+      }
+    }
 
     if (selectedFile != null) {
       if (selectedFile != imageCache) {
@@ -398,7 +499,12 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
             state: formData['state'],
             zipCode: formData['zipCode'],
             groupPicture: url);
+
         var createdGroup = await GroupHandlers.createGroup(newGroup);
+        setState(() {
+          _isLoading = false;
+        });
+
         if (createdGroup != null) {
           // ignore: use_build_context_synchronously
           context.go('/groups');

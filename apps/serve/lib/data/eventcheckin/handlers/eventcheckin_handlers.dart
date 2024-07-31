@@ -1,6 +1,7 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
+import 'package:serve_to_be_free/data/points/points_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -15,6 +16,8 @@ class EventCheckInHandlers {
         safePrint('errors: ${response.errors}');
         return null;
       } else {
+        await PointsHandlers.newPoints(
+            newCheckIn.uEventCheckInUserId, 'CHECKEDINEVENT', 5);
         return createdCheckIn;
       }
     } catch (exeption) {

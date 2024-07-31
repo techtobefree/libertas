@@ -305,7 +305,8 @@ final goRouter = GoRouter(
             GoRoute(
               path: 'groupsdetailsform',
               name: 'groupsdetailsform',
-              builder: (context, state) => const GroupDetailsForm(),
+              builder: (context, state) =>
+                  GroupDetailsForm(id: state.queryParameters['id'] ?? ""),
             ),
             GoRoute(
               path: 'findagroup',

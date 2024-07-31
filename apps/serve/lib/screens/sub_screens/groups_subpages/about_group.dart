@@ -104,7 +104,7 @@ class AboutGroupState extends State<AboutGroup> {
                     onPressed: () {
                       // Handle the edit button press here
                       context.goNamed(
-                        'groupdetailsform',
+                        'groupsdetailsform',
                         queryParameters: {
                           'id': groupData['id'],
                         },

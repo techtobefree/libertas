@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/data/points/points_handlers.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
@@ -282,6 +283,8 @@ class AboutProjectState extends State<AboutProject> {
       final response = await Amplify.API.mutate(request: request).response;
       safePrint('Response: $response');
       if (response.data!.members!.isNotEmpty) {
+        PointsHandlers.newPoints(
+            BlocProvider.of<UserCubit>(context).state.id, "JOINPROJECT", 3);
         setState(() {
           projectData['members'] = projectData['members'] != null
               ? [...projectData['members'], memID]
