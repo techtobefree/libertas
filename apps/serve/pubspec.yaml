@@ -65,7 +65,7 @@ dependencies:
   mobile_scanner: ^4.0.1
 
   # payments
-  flutter_stripe: ^9.5.0+1
+  # flutter_stripe: ^9.5.0+1
   http: ^0.13.6
 
 dev_dependencies:

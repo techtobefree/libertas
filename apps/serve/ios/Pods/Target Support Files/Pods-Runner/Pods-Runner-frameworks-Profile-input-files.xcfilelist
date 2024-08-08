@@ -7,14 +7,6 @@ ${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework
 ${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework
 ${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework
 ${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework
-${BUILT_PRODUCTS_DIR}/Stripe/Stripe.framework
-${BUILT_PRODUCTS_DIR}/StripeApplePay/StripeApplePay.framework
-${BUILT_PRODUCTS_DIR}/StripeCore/StripeCore.framework
-${BUILT_PRODUCTS_DIR}/StripeFinancialConnections/StripeFinancialConnections.framework
-${BUILT_PRODUCTS_DIR}/StripePaymentSheet/StripePaymentSheet.framework
-${BUILT_PRODUCTS_DIR}/StripePayments/StripePayments.framework
-${BUILT_PRODUCTS_DIR}/StripePaymentsUI/StripePaymentsUI.framework
-${BUILT_PRODUCTS_DIR}/StripeUICore/StripeUICore.framework
 ${BUILT_PRODUCTS_DIR}/SwiftyGif/SwiftyGif.framework
 ${BUILT_PRODUCTS_DIR}/TOCropViewController/TOCropViewController.framework
 ${BUILT_PRODUCTS_DIR}/amplify_auth_cognito/amplify_auth_cognito.framework
@@ -28,5 +20,4 @@ ${BUILT_PRODUCTS_DIR}/image_picker_ios/image_picker_ios.framework
 ${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework
 ${BUILT_PRODUCTS_DIR}/package_info_plus/package_info_plus.framework
 ${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework
-${BUILT_PRODUCTS_DIR}/stripe_ios/stripe_ios.framework
 ${BUILT_PRODUCTS_DIR}/url_launcher_ios/url_launcher_ios.framework

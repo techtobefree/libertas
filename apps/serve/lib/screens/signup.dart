@@ -1,9 +1,11 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/pages/signup/cubit.dart';
 import 'package:serve_to_be_free/data/policy_info.dart';
+import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/utilities/constants.dart';
 
 enum UserField {
@@ -43,7 +45,7 @@ class CreateAccountState extends State<CreateAccountScreen> {
   late SignupCubit cubit;
   bool? _isChecked = false;
 
-  Widget _buildTF(UserField userField) {
+  Widget _buildTF(UserField userField, String? fillText) {
     InputDecoration decoration = InputDecoration(
       border: InputBorder.none,
       hintText: ' Enter ${userField.toString()}',
@@ -70,7 +72,8 @@ class CreateAccountState extends State<CreateAccountScreen> {
           height: 50.0,
           child: Padding(
             padding: const EdgeInsets.all(5.0),
-            child: TextField(
+            child: TextFormField(
+              initialValue: fillText,
               keyboardType: TextInputType.text,
               obscureText: userField == UserField.password ||
                   userField == UserField.confirmPassword,
@@ -141,6 +144,8 @@ class CreateAccountState extends State<CreateAccountScreen> {
   @override
   Widget build(BuildContext context) {
     cubit = BlocProvider.of<SignupCubit>(context);
+    final user = cubit.state.user;
+
     return Scaffold(
         backgroundColor: const Color(0xff001B48),
         appBar: AppBar(
@@ -203,15 +208,15 @@ class CreateAccountState extends State<CreateAccountScreen> {
                             ),
                           ),
                           const SizedBox(height: 30.0),
-                          _buildTF(UserField.firstName),
+                          _buildTF(UserField.firstName, user.firstName),
                           const SizedBox(height: 20.0),
-                          _buildTF(UserField.lastName),
+                          _buildTF(UserField.lastName, user.lastName),
                           const SizedBox(height: 20.0),
-                          _buildTF(UserField.email),
+                          _buildTF(UserField.email, user.email),
                           const SizedBox(height: 20.0),
-                          _buildTF(UserField.password),
+                          _buildTF(UserField.password, user.password),
                           const SizedBox(height: 20.0),
-                          _buildTF(UserField.confirmPassword),
+                          _buildTF(UserField.confirmPassword, user.password),
                           const SizedBox(
                             height: 20.0,
                           ),
@@ -310,7 +315,27 @@ class CreateAccountState extends State<CreateAccountScreen> {
       }
 
       final user = cubit.state.user;
-      await cubit.signUpCognito(password: user.password, email: user.email);
+      final emailCheck = await UserHandlers.getUUserByEmail(email);
+      if (emailCheck == null) {
+        try {
+          await cubit.signUpCognito(password: password, email: email);
+        } catch (e) {
+          if (e is AuthException) {
+            if (e.runtimeTypeName.contains('UsernameExistsException')) {
+              var attributes = await cubit.fetchCurrentUserAttributes();
+              context.go('/login/communitypledge');
+              return;
+            }
+            if (e.runtimeTypeName.contains('InvalidPasswordException')) {
+              throw Exception('Invalid password format');
+            }
+            // Add more specific exceptions as needed
+          }
+          throw Exception('Sign up failed: ${e}');
+        }
+      } else {
+        throw (Exception("Email already in use"));
+      }
 
       /// I think isSignUpComplete is only marked as true after the confirmation
       /// process so we have to use a different metric here to see if it failed.
@@ -324,6 +349,12 @@ class CreateAccountState extends State<CreateAccountScreen> {
       //  print('Erorr message or sometihng');
       //}
     } catch (err) {
+      if (err is AuthException) {
+        if (err.runtimeTypeName.contains('UsernameExistsException')) {
+          context.go('/login/communitypledge');
+          return;
+        }
+      }
       showDialog(
         context: context,
         builder: (BuildContext context) {
