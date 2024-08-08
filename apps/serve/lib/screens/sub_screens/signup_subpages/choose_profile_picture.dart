@@ -27,6 +27,7 @@ class ChooseProfilePicture extends StatelessWidget {
 
       if (pickedImage != null) {
         cubit.update(profilePicture: File(pickedImage.path));
+        cubit.update(hasSelectedImage: true);
       }
     }
   }
@@ -48,6 +49,7 @@ class ChooseProfilePicture extends StatelessWidget {
       },
     );
     String s3url;
+
     if (isWeb()) {
       s3url = await uploadProfileImageToS3Web(
           state.webImage!, DateTime.now().millisecondsSinceEpoch.toString());
@@ -73,9 +75,30 @@ class ChooseProfilePicture extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-          if (cubit.state.imageBusy) {
+          if (!cubit.state.hasSelectedImage) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('No Photo Selected'),
+                  content:
+                      const Text('Please select a photo before proceeding.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
             return;
           }
+
+          if (cubit.state.imageBusy) return;
+
           cubit.update(imageBusy: true);
           await uploadImage(context, userCubit, cubit.state);
           cubit.update(imageBusy: false);

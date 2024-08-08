@@ -28,6 +28,7 @@ class SignupCubit extends Cubit<SignupState> {
     bool? signingUpBusy,
     bool? confirmBusy,
     Uint8List? webImage,
+    bool? hasSelectedImage,
   }) =>
       emit(SignupState(
         id: id ?? state.id,
@@ -45,6 +46,7 @@ class SignupCubit extends Cubit<SignupState> {
         signingUpBusy: signingUpBusy ?? state.signingUpBusy,
         confirmBusy: confirmBusy ?? state.confirmBusy,
         webImage: webImage ?? state.webImage,
+        hasSelectedImage: hasSelectedImage ?? state.hasSelectedImage,
       ));
 
   Future<void> signUpCognito({
@@ -57,6 +59,54 @@ class SignupCubit extends Cubit<SignupState> {
     );
     update(signUpResult: result);
     await _handleSignUpResult(result);
+  }
+
+  Future<void> resetPassword(String username) async {
+    try {
+      final result = await Amplify.Auth.resetPassword(
+        username: username,
+      );
+      await _handleResetPasswordResult(result);
+    } on AuthException catch (e) {
+      safePrint('Error resetting password: ${e.message}');
+    }
+  }
+
+  Future<void> _handleResetPasswordResult(ResetPasswordResult result) async {
+    switch (result.nextStep.updateStep) {
+      case AuthResetPasswordStep.confirmResetPasswordWithCode:
+        final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
+        _handleCodeDelivery(codeDeliveryDetails);
+        break;
+      case AuthResetPasswordStep.done:
+        safePrint('Successfully reset password');
+        break;
+    }
+  }
+
+  Future<void> fetchCurrentUserAttributes() async {
+    try {
+      final result = await Amplify.Auth.fetchUserAttributes();
+      for (final element in result) {
+        safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
+      }
+    } on AuthException catch (e) {
+      safePrint('Error fetching user attributes: ${e.message}');
+    }
+  }
+
+  Future<void> updatePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      await Amplify.Auth.updatePassword(
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      );
+    } on AuthException catch (e) {
+      safePrint('Error updating password: ${e.message}');
+    }
   }
 
   Future<void> _handleSignUpResult(SignUpResult result) async {
