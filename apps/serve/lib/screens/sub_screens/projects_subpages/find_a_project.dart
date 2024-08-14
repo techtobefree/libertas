@@ -115,7 +115,8 @@ class _FindAProjectState extends State<FindAProject> {
                 if (city.contains(query) ||
                     usaState.contains(query) ||
                     combined.contains(query) ||
-                    incompleteProjectsNotMember[i].zipCode!.contains(query)) {
+                    incompleteProjectsNotMember[i].zipCode!.contains(query) ||
+                    incompleteProjectsNotMember[i].name.contains(query)) {
                   return ProjectCard.fromUProject(
                       incompleteProjectsNotMember[i]);
                 }

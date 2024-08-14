@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/utilities/helper.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final String eventId;
@@ -207,7 +208,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 ),
                 if (eventData.containsKey('date'))
                   Text(
-                      '${eventData['date']}, ${_formatTime(eventData['time'])}'),
+                      '${formatDate(eventData['date'])}, ${_formatTime(eventData['time'])}'),
                 SizedBox(height: 10),
                 if (eventData.containsKey('bio')) Text('${eventData['bio']}'),
                 SizedBox(height: 10),

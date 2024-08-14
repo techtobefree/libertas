@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:serve_to_be_free/utilities/helper.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 
 class Post extends StatefulWidget {
@@ -90,7 +91,7 @@ class _PostState extends State<Post> {
                 Container(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Text(
-                      widget.date,
+                      formatDateTime(widget.date),
                       style: const TextStyle(color: Colors.grey),
                     )),
                 Container(

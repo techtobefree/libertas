@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
+import 'package:serve_to_be_free/utilities/helper.dart';
 import 'package:serve_to_be_free/widgets/dashboard_user_display.dart';
 import 'package:serve_to_be_free/widgets/ui/project_post.dart';
 import 'package:serve_to_be_free/widgets/project_post_dialogue.dart';
@@ -286,7 +287,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                     const SizedBox(height: 10),
                     if (projectData.containsKey('date'))
                       Text(
-                        '${projectData['date']}',
+                        formatDate(projectData['date']),
                         style: const TextStyle(
                           fontSize: 12,
                         ),
