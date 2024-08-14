@@ -121,6 +121,7 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
       });
     } else {
       setState(() {
+        imageCache = null;
         _isLoading = false;
       });
     }
