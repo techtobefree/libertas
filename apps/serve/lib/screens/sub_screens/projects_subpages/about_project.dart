@@ -244,8 +244,22 @@ class AboutProjectState extends State<AboutProject> {
                   endIndent: 0,
                 ),
                 if (sponsor > 0)
-                  Text(
-                      'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}'),
+                  GestureDetector(
+                    onTap: () {
+                      print("sproject sponsors");
+                      context.pushNamed("projectsponsors", queryParameters: {
+                        'projectId': projectData['id'],
+                      });
+                    },
+                    child: Text(
+                      'Money pledged to this project: \$${sponsor.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 10),
                 if (projectData.containsKey('city') &&
                     projectData.containsKey('state') &&

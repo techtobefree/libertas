@@ -30,6 +30,7 @@ import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/event_det
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/past_events.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/qr_display.dart';
 import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/qr_scan.dart';
+import 'package:serve_to_be_free/screens/sub_screens/projects_subpages/sponsor_a_project/project_sponsors.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/choose_profile_picture.dart';
 import 'package:serve_to_be_free/screens/sub_screens/signup_subpages/confirm_email.dart';
 import 'package:serve_to_be_free/screens/sub_screens/menu_subpages/how_it_works.dart';
@@ -218,6 +219,12 @@ final goRouter = GoRouter(
               name: 'projectdetails',
               builder: (context, state) =>
                   ProjectDetails(id: state.queryParameters['id']),
+            ),
+            GoRoute(
+              path: 'projectsponsors',
+              name: 'projectsponsors',
+              builder: (context, state) => ProjectSponsors(
+                  projectId: state.queryParameters['projectId']!),
             ),
             GoRoute(
               path: 'leadprojectdetails/:id',
