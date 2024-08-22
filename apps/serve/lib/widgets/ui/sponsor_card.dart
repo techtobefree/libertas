@@ -3,29 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:serve_to_be_free/utilities/helper.dart';
 import 'package:serve_to_be_free/widgets/profile_picture.dart';
 
-class Post extends StatefulWidget {
+class ProjectSponsorCard extends StatefulWidget {
   final String id;
   final String name;
-  final String postText;
+  final double sponsorAmount;
   final String profURL;
-  final String date;
   final String userId;
 
-  const Post({
+  const ProjectSponsorCard({
     Key? key,
     required this.id,
     required this.name,
-    required this.postText,
+    required this.sponsorAmount,
     required this.profURL,
-    required this.date,
     required this.userId,
   }) : super(key: key);
 
   @override
-  State<Post> createState() => _PostState();
+  State<ProjectSponsorCard> createState() => _ProjectSponsorCardState();
 }
 
-class _PostState extends State<Post> {
+class _ProjectSponsorCardState extends State<ProjectSponsorCard> {
   // How are we going to tie this to different users?
   bool isLiked = false;
   MaterialAccentColor getRandomAccentColor() {
@@ -87,18 +85,17 @@ class _PostState extends State<Post> {
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                // FINISH
-                Container(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      formatDateTime(widget.date),
-                      style: const TextStyle(color: Colors.grey),
-                    )),
+                // Container(
+                //     padding: const EdgeInsets.only(bottom: 10),
+                //     child: Text(
+                //       formatDateTime(widget.date),
+                //       style: const TextStyle(color: Colors.grey),
+                //     )),
                 Container(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Text(
                     softWrap: true,
-                    widget.postText,
+                    'Pledged: \$${widget.sponsorAmount.toStringAsFixed(2)}',
                     style: const TextStyle(),
                   ),
                 ),

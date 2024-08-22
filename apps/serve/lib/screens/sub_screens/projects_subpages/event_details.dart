@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
+import 'package:serve_to_be_free/utilities/helper.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final String eventId;
@@ -20,6 +21,7 @@ class EventDetailsPage extends StatefulWidget {
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   Map<String, dynamic> eventData = {};
+  bool _isLoading = false;
   String currentUserID = "";
   bool isAuthorized = false;
   bool isGoing = false;
@@ -207,7 +209,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 ),
                 if (eventData.containsKey('date'))
                   Text(
-                      '${eventData['date']}, ${_formatTime(eventData['time'])}'),
+                      '${formatDate(eventData['date'])}, ${_formatTime(eventData['time'])}'),
                 SizedBox(height: 10),
                 if (eventData.containsKey('bio')) Text('${eventData['bio']}'),
                 SizedBox(height: 10),
@@ -219,6 +221,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   Text(
                       '${eventData['city']}, ${eventData['state']} ${eventData['zipCode']}'),
                 SizedBox(height: 10),
+                if (eventData.containsKey('eventPicture') &&
+                    eventData['eventPicture'] != "")
+                  Image.network(eventData['eventPicture']),
+                const SizedBox(height: 10),
+
                 if (eventData
                     .containsKey('details')) // Displaying details field
                   Text('${eventData['details']}'), // Displaying details field

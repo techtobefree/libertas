@@ -26,7 +26,10 @@ class _MyProjectsState extends State<MyProjects> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('My Projects'),
+          title: const Text(
+            'My Projects',
+            style: TextStyle(color: Colors.white),
+          ),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(

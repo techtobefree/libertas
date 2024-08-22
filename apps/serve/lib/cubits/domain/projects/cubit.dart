@@ -70,6 +70,14 @@ class ProjectsCubit extends Cubit<ProjectsCubitState> {
       var projs = (await ProjectHandlers.getMyUProjects(userId))
           .whereType<UProject>()
           .toList();
+
+      projs.sort((a, b) {
+        if (a.isCompleted) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
       return projs;
     } catch (e) {
       throw Exception('Failed to load projects $e');

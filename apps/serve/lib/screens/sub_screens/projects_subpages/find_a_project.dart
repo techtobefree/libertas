@@ -62,7 +62,7 @@ class _FindAProjectState extends State<FindAProject> {
                     });
                   },
                   decoration: InputDecoration(
-                    hintText: 'Search by location',
+                    hintText: 'Search',
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -111,11 +111,14 @@ class _FindAProjectState extends State<FindAProject> {
                 final usaState =
                     incompleteProjectsNotMember[i].state?.toLowerCase() ?? '';
                 final combined = '$city, $usaState';
+                final projName =
+                    incompleteProjectsNotMember[i].name.toLowerCase();
                 final query = _searchQuery.toLowerCase();
                 if (city.contains(query) ||
                     usaState.contains(query) ||
                     combined.contains(query) ||
-                    incompleteProjectsNotMember[i].zipCode!.contains(query)) {
+                    incompleteProjectsNotMember[i].zipCode!.contains(query) ||
+                    projName.contains(query)) {
                   return ProjectCard.fromUProject(
                       incompleteProjectsNotMember[i]);
                 }

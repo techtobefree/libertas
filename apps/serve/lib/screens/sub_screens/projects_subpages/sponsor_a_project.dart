@@ -10,11 +10,15 @@ class SponsorAProject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ProjectsCubit>(context).loadProjects(); // TODO: hash cache
+    BlocProvider.of<ProjectsCubit>(context).loadProjects();
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         backgroundColor: const Color.fromARGB(255, 16, 34, 65),
-        title: const Text('Sponsor A Project'),
+        title: const Text('Sponsor A Project',
+            style: TextStyle(color: Colors.white)),
       ),
       body: BlocBuilder<ProjectsCubit, ProjectsCubitState>(
         buildWhen: (previous, current) => previous != current,

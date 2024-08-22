@@ -232,7 +232,7 @@ class ProjectsPageState extends State<ProjectsPage> {
                           ],
                         ),
                       )
-                    else
+                    else if (state.mine.length == 2)
                       Container(
                         margin: const EdgeInsets.only(left: 20, right: 20),
                         child: Column(
@@ -246,6 +246,27 @@ class ProjectsPageState extends State<ProjectsPage> {
                                 projectName: state.mine[1].name,
                                 id: state.mine[1].id,
                                 projectPhoto: state.mine[1].projectPicture)
+                          ],
+                        ),
+                      )
+                    else
+                      Container(
+                        margin: const EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            MyProjectCard(
+                                projectName: state.mine.first.name,
+                                id: state.mine.first.id,
+                                projectPhoto: state.mine.first.projectPicture),
+                            MyProjectCard(
+                                projectName: state.mine[1].name,
+                                id: state.mine[1].id,
+                                projectPhoto: state.mine[1].projectPicture),
+                            MyProjectCard(
+                                projectName: state.mine[2].name,
+                                id: state.mine[2].id,
+                                projectPhoto: state.mine[2].projectPicture)
                           ],
                         ),
                       )
