@@ -21,6 +21,7 @@ class EventDetailsPage extends StatefulWidget {
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   Map<String, dynamic> eventData = {};
+  bool _isLoading = false;
   String currentUserID = "";
   bool isAuthorized = false;
   bool isGoing = false;
@@ -220,6 +221,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   Text(
                       '${eventData['city']}, ${eventData['state']} ${eventData['zipCode']}'),
                 SizedBox(height: 10),
+                if (eventData.containsKey('eventPicture') &&
+                    eventData['eventPicture'] != "")
+                  Image.network(eventData['eventPicture']),
+                const SizedBox(height: 10),
+
                 if (eventData
                     .containsKey('details')) // Displaying details field
                   Text('${eventData['details']}'), // Displaying details field

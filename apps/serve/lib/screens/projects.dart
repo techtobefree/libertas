@@ -197,7 +197,7 @@ class ProjectsPageState extends State<ProjectsPage> {
                         size: 28.0,
                       ),
                       widget.sponsorProjectsPath),
-                  // const SponsorCard(),
+                  const SponsorCard(),
                   Container(
                     margin: const EdgeInsets.only(left: 25, right: 25, top: 30),
                     child: Row(children: [
