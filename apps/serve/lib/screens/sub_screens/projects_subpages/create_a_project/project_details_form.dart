@@ -168,6 +168,7 @@ class ProjectDetailsFormState extends State<ProjectDetailsForm> {
           city: formData['city'],
           state: formData['state'],
           sponsors: [],
+          events: [],
           bio: formData['projectBio'],
           isCompleted: false,
           leader: leaderStr,

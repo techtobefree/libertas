@@ -222,7 +222,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       '${eventData['city']}, ${eventData['state']} ${eventData['zipCode']}'),
                 SizedBox(height: 10),
                 if (eventData.containsKey('eventPicture') &&
-                    eventData['eventPicture'] != "")
+                    eventData['eventPicture'] != "" &&
+                    eventData['eventPicture'] != null)
                   Image.network(eventData['eventPicture']),
                 const SizedBox(height: 10),
 

@@ -86,6 +86,7 @@ type UPost @model @auth(rules: [{ allow: public }]) {
   date: String!
   comments: [UComment] @hasMany
   # project: UProject @belongsTo
+  postPicture: String
 }
 
 type UComment @model @auth(rules: [{ allow: public }]){

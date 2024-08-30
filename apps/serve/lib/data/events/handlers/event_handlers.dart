@@ -23,8 +23,20 @@ class EventHandlers {
       final createdEvent = response.data;
       if (createdEvent == null) {
         safePrint('errors: ${response.errors}');
+
         return null;
       } else {
+        final projEvents = event.project.events ?? [];
+        projEvents.add(event);
+        final addedEventUProj = event.project.copyWith(events: projEvents);
+
+        try {
+          final request = ModelMutations.update(addedEventUProj);
+          final response = await Amplify.API.mutate(request: request).response;
+          safePrint('Response: $response');
+        } catch (e) {
+          throw Exception('Failed to update project: $e');
+        }
         return createdEvent;
       }
     } catch (exeption) {
@@ -193,46 +205,92 @@ class EventHandlers {
   }
 
   static Future<List<UEvent?>> getPastUEventsByProject(String projId) async {
-    final queryPredicate = UEvent.PROJECT.eq(projId);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day).toIso8601String();
+
+    // Extend the queryPredicate to filter by both project ID and past dates
+    final queryPredicate = UEvent.PROJECT.eq(projId).and(UEvent.DATE.lt(today));
 
     final request = ModelQueries.list<UEvent>(
       UEvent.classType,
       where: queryPredicate,
     );
+
     final response = await Amplify.API.query(request: request).response;
+
     if (response.data != null) {
-      List<UEvent?> currentAndUpcoming = [];
-      for (var ev in response.data!.items) {
-        if (DateTime.parse(ev!.date!).isBefore(DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day))) {
-          currentAndUpcoming.add(ev);
-        }
-      }
-      return currentAndUpcoming;
+      // The server will only return past events
+      return response.data!.items.where((ev) => ev != null).toList();
     } else {
       print('get events failed');
       return [];
     }
   }
 
+  // static Future<List<UEvent?>> getPastUEventsByProject(String projId) async {
+  //   final queryPredicate = UEvent.PROJECT.eq(projId);
+
+  //   final request = ModelQueries.list<UEvent>(
+  //     UEvent.classType,
+  //     where: queryPredicate,
+  //   );
+  //   final response = await Amplify.API.query(request: request).response;
+  //   if (response.data != null) {
+  //     List<UEvent?> currentAndUpcoming = [];
+  //     for (var ev in response.data!.items) {
+  //       if (DateTime.parse(ev!.date!).isBefore(DateTime(
+  //           DateTime.now().year, DateTime.now().month, DateTime.now().day))) {
+  //         currentAndUpcoming.add(ev);
+  //       }
+  //     }
+  //     return currentAndUpcoming;
+  //   } else {
+  //     print('get events failed');
+  //     return [];
+  //   }
+  // }
+
+  // static Future<List<UEvent?>> getUpcomingAndCurrentUEventsByProject(
+  //     String projId) async {
+  //   final queryPredicate = UEvent.PROJECT.eq(projId);
+
+  //   final request = ModelQueries.list<UEvent>(
+  //     UEvent.classType,
+  //     where: queryPredicate,
+  //   );
+  //   final response = await Amplify.API.query(request: request).response;
+  //   if (response.data != null) {
+  //     List<UEvent?> currentAndUpcoming = [];
+  //     for (var ev in response.data!.items) {
+  //       if (!DateTime.parse(ev!.date!).isBefore(DateTime(
+  //           DateTime.now().year, DateTime.now().month, DateTime.now().day))) {
+  //         currentAndUpcoming.add(ev);
+  //       }
+  //     }
+  //     return currentAndUpcoming;
+  //   } else {
+  //     print('get events failed');
+  //     return [];
+  //   }
+  // }
   static Future<List<UEvent?>> getUpcomingAndCurrentUEventsByProject(
       String projId) async {
-    final queryPredicate = UEvent.PROJECT.eq(projId);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day).toIso8601String();
+
+    // Extend the queryPredicate to filter by both project ID and date
+    final queryPredicate = UEvent.PROJECT.eq(projId).and(UEvent.DATE.ge(today));
 
     final request = ModelQueries.list<UEvent>(
       UEvent.classType,
       where: queryPredicate,
     );
+
     final response = await Amplify.API.query(request: request).response;
+
     if (response.data != null) {
-      List<UEvent?> currentAndUpcoming = [];
-      for (var ev in response.data!.items) {
-        if (!DateTime.parse(ev!.date!).isBefore(DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day))) {
-          currentAndUpcoming.add(ev);
-        }
-      }
-      return currentAndUpcoming;
+      // The server will only return current and upcoming events
+      return response.data!.items.where((ev) => ev != null).toList();
     } else {
       print('get events failed');
       return [];
