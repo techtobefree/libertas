@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -33,21 +34,24 @@ class ProjectDetailsState extends State<ProjectDetails> {
 
   var sponsor = 0.0;
 
-  Future<Map<String, dynamic>> getProjects() async {
-    final queryPredicate = UProject.ID.eq(widget.id);
-
-    final request = ModelQueries.list<UProject>(
+  Future<Map<String, dynamic>> getProject() async {
+    // final queryPredicate = UProject.ID.eq(widget.id);
+// ModelQueries.get(modelType, modelIdentifier)
+    final request = ModelQueries.get<UProject>(
       UProject.classType,
-      where: queryPredicate,
+      UProjectModelIdentifier(id: widget.id!),
     );
     final response = await Amplify.API.query(request: request).response;
 
-    if (response.data!.items.isNotEmpty) {
+    if (response.data != null) {
+      UProject proj = response.data!;
+
+      print(proj.events);
       // var url = Uri.parse('http://44.203.120.103:3000/projects/${widget.id}');
       // var response = await http.get(url);
       // if (response.statusCode == 200) {
-      var jsonResponse = response.data!.items[0]!.toJson();
-      jsonResponse['uproject'] = response.data!.items[0];
+      var jsonResponse = response.data!.toJson();
+      jsonResponse['uproject'] = response.data!;
 
       // print(jsonResponse['sponsors']);
       // if (jsonResponse.containsKey('sponsors') &&
@@ -63,16 +67,15 @@ class ProjectDetailsState extends State<ProjectDetails> {
       if (jsonResponse.containsKey('posts') && jsonResponse['posts'] != null) {
         var newPosts = [];
         for (var post in jsonResponse['posts']) {
-          final queryPredicate = UPost.ID.eq(post);
-          final request = ModelQueries.list<UPost>(
+          // final queryPredicate = UPost.ID.eq(post);
+          final request = ModelQueries.get<UPost>(
             UPost.classType,
-            where: queryPredicate,
+            UPostModelIdentifier(id: post),
           );
           final response = await Amplify.API.query(request: request).response;
-          print(response);
 
-          if (response.data!.items.isNotEmpty) {
-            newPosts.add(response.data!.items[0]!.toJson());
+          if (response.data != null) {
+            newPosts.add(response.data!.toJson());
             newPosts[newPosts.length - 1]['name'] =
                 newPosts[newPosts.length - 1]['user']['firstName'] +
                     newPosts[newPosts.length - 1]['user']['lastName'];
@@ -85,7 +88,6 @@ class ProjectDetailsState extends State<ProjectDetails> {
             //     convertDate(newPosts[newPosts.length - 1]['date']);
           }
         }
-        print(jsonResponse['uproject']);
         jsonResponse['posts'] = newPosts;
       }
       return jsonResponse;
@@ -112,16 +114,16 @@ class ProjectDetailsState extends State<ProjectDetails> {
     return users;
   }
 
-  Future<Map<String, dynamic>> getSponsor(id) async {
-    final response =
-        await http.get(Uri.parse('http://44.203.120.103:3000/sponsors/$id'));
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      return jsonResponse as Map<String, dynamic>;
-    } else {
-      throw Exception('Failed to load sponsor');
-    }
-  }
+  // Future<Map<String, dynamic>> getSponsor(id) async {
+  //   final response =
+  //       await http.get(Uri.parse('http://44.203.120.103:3000/sponsors/$id'));
+  //   if (response.statusCode == 200) {
+  //     final jsonResponse = json.decode(response.body);
+  //     return jsonResponse as Map<String, dynamic>;
+  //   } else {
+  //     throw Exception('Failed to load sponsor');
+  //   }
+  // }
 
   String convertDate(String dateString) {
     // parse the input string into a DateTime object
@@ -138,7 +140,14 @@ class ProjectDetailsState extends State<ProjectDetails> {
 
   List<Widget> generateUserWidgets(List<dynamic> users) {
     List<Widget> userWidgets = [];
-    for (var i = 1; i < 4 && i < users.length; i++) {
+    if (users.isNotEmpty) {
+      users.removeAt(0);
+    }
+
+    // Shuffle the remaining users
+    users.shuffle(Random());
+
+    for (var i = 0; i < 4 && i < users.length; i++) {
       userWidgets.add(
         DashboardUserDisplay(
           dimension: 55.0,
@@ -162,7 +171,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
 
   void loadData() async {
     // try {
-    var data = await getProjects();
+    var data = await getProject();
     setState(() {
       projectData = data;
     });
@@ -330,7 +339,8 @@ class ProjectDetailsState extends State<ProjectDetails> {
                                 child: Container(
                               padding: const EdgeInsets.all(10),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: generateUserWidgets(users),
                               ),
                             )),
@@ -436,7 +446,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4,
-                                        child: Text(
+                                        child: const Text(
                                           "All Posts",
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
@@ -532,6 +542,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                   final reversedIndex = projectData['posts'].length -
                       index -
                       1; // compute the index of the reversed list
+
                   return Post(
                     id: '',
                     name:
@@ -542,6 +553,9 @@ class ProjectDetailsState extends State<ProjectDetails> {
                     date: projectData['posts'][reversedIndex]['date'] ?? '',
                     userId:
                         projectData['posts'][reversedIndex]['user']['id'] ?? '',
+                    photoUrl: projectData['posts'][reversedIndex]
+                            ['postPicture'] ??
+                        '',
                   );
                   // return DashboardUserDisplay(
                   //     dimension: 60.0,
@@ -568,7 +582,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
                     'Join project to post',
@@ -577,7 +591,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Dismiss the dialog
+                    Navigator.of(context).pop();
                   },
                   child: Text('Dismiss'),
                 ),
@@ -594,12 +608,13 @@ class ProjectDetailsState extends State<ProjectDetails> {
             projectId: projectData['id'],
           );
         },
-      ).then((value) => setState(() {}));
-      getProjects().then((data) {
-        setState(() {
-          projectData = data;
-        });
-      });
+      ).then((value) => setState(() {
+            getProject().then((data) {
+              setState(() {
+                projectData = data;
+              });
+            });
+          }));
     }
   }
 

@@ -10,6 +10,7 @@ class Post extends StatefulWidget {
   final String profURL;
   final String date;
   final String userId;
+  final String photoUrl;
 
   const Post({
     Key? key,
@@ -19,6 +20,7 @@ class Post extends StatefulWidget {
     required this.profURL,
     required this.date,
     required this.userId,
+    this.photoUrl = "",
   }) : super(key: key);
 
   @override
@@ -54,60 +56,66 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 2,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.profURL != "")
-              Container(
-                  margin: const EdgeInsets.only(right: 15),
-                  padding: const EdgeInsets.only(),
-                  child: ProfilePicture(
-                      Colors.blueAccent, 60, widget.profURL, widget.userId)),
-
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                // FINISH
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 2,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.profURL != "")
                 Container(
+                    margin: const EdgeInsets.only(right: 15),
+                    padding: const EdgeInsets.only(),
+                    child: ProfilePicture(
+                        Colors.blueAccent, 60, widget.profURL, widget.userId)),
+
+              Expanded(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.name,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  // FINISH
+                  Container(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        formatDateTime(widget.date),
+                        style: const TextStyle(color: Colors.grey),
+                      )),
+                  Container(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Text(
-                      formatDateTime(widget.date),
-                      style: const TextStyle(color: Colors.grey),
-                    )),
-                Container(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    softWrap: true,
-                    widget.postText,
-                    style: const TextStyle(),
+                      softWrap: true,
+                      widget.postText,
+                      style: const TextStyle(),
+                    ),
                   ),
-                ),
-              ],
-            )),
-            // Container(
-            //   child: Icon(Icons.more_horiz),
-            // )
-          ],
-        ));
+                ],
+              )),
+              // Container(
+              //   child: Icon(Icons.more_horiz),
+              // )
+            ],
+          ),
+          if (widget.photoUrl != "") Image.network(widget.photoUrl)
+        ],
+      ),
+    );
   }
 }

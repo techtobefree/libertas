@@ -20,12 +20,12 @@ class ProjectEvents extends StatefulWidget {
 }
 
 class _ProjectEventsState extends State<ProjectEvents> {
-  UProject _project = UProject(
-      name: '',
-      privacy: '',
-      description: '',
-      projectPicture: '',
-      isCompleted: false);
+  // UProject _project = UProject(
+  //     name: '',
+  //     privacy: '',
+  //     description: '',
+  //     projectPicture: '',
+  //     isCompleted: false);
   bool _isLoading = false;
   List<UEvent?> events = [];
   List<String> checkedInEventIds = [];
@@ -42,7 +42,7 @@ class _ProjectEventsState extends State<ProjectEvents> {
       _isLoading = true;
     });
     // Assume fetchData() is an asynchronous method in UProject class
-    UProject? project = await ProjectHandlers.getUProjectById(widget.projectId);
+    // UProject? project = await ProjectHandlers.getUProjectById(widget.projectId);
     List<UEvent?> uevents =
         // await EventHandlers.getUEventsByProject(widget.projectId);
         await EventHandlers.getUpcomingAndCurrentUEventsByProject(

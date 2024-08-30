@@ -163,6 +163,9 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
         _isLoading = false;
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -300,7 +303,11 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
                       onPressed: () {
                         if (_formKey.currentState!.saveAndValidate()) {
                           final formData = _formKey.currentState!.value;
-                          _submitForm(formData, _event!.eventPicture ?? "");
+                          if (_event != null) {
+                            _submitForm(formData, _event!.eventPicture ?? "");
+                          } else {
+                            _submitForm(formData, "");
+                          }
                         }
                       },
                       child: Text('Submit'),
@@ -341,7 +348,6 @@ class _EventDetailsFormState extends State<EventDetailsForm> {
       String timestamp = now.millisecondsSinceEpoch.toString();
 
       var finalUrl = oldImageUrl;
-      print(unchangedImage);
 
       if (formData['eventPicture'] != null &&
           formData['eventPicture'].length > 0 &&

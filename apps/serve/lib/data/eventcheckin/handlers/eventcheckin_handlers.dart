@@ -26,11 +26,11 @@ class EventCheckInHandlers {
   }
 
   static Future<List<UEvent>> getCheckedInActiveEvents(String userId) async {
-    final user = await UserHandlers.getUUserById(userId);
+    // final user = await UserHandlers.getUUserById(userId);
     List<UEventCheckIn?> checkIns = [];
-    if (user != null) {
-      checkIns = await getUserCheckedIns(user);
-    }
+    // if (user != null) {
+    checkIns = await getUserCheckedIns(userId);
+    // }
     List<UEvent?> activeevents =
         await EventHandlers.getUUserActiveEvents(userId);
     List<UEvent> checkedInActiveEvents = [];
@@ -48,11 +48,11 @@ class EventCheckInHandlers {
 
   static Future<List<UEvent>> getCheckedInFromEvents(
       String userId, List<UEvent?> activeEvents) async {
-    final user = await UserHandlers.getUUserById(userId);
+    // final user = await UserHandlers.getUUserById(userId);
     List<UEventCheckIn?> checkIns = [];
-    if (user != null) {
-      checkIns = await getUserCheckedIns(user);
-    }
+    // if (user != null) {
+    checkIns = await getUserCheckedIns(userId);
+    // }
 
     List<UEvent> checkedInEvents = [];
     for (var event in activeEvents) {
@@ -81,14 +81,16 @@ class EventCheckInHandlers {
   //   return [];
   // }
 
-  static Future<List<UEventCheckIn?>> getUserCheckedIns(UUser user) async {
+  static Future<List<UEventCheckIn?>> getUserCheckedIns(String userId) async {
     final allCheckIns = await getCheckIns();
     List<UEventCheckIn> userCheckedIns = [];
     for (var checkIn in allCheckIns) {
-      UUser? checkInUser =
-          await UserHandlers.getUUserById(checkIn!.uEventCheckInUserId);
-      if (checkInUser == user) {
-        userCheckedIns.add(checkIn);
+      // UUser? checkInUser =
+      //     await UserHandlers.getUUserById(checkIn!.uEventCheckInUserId);
+      if (checkIn != null) {
+        if (checkIn.uEventCheckInUserId == userId) {
+          userCheckedIns.add(checkIn);
+        }
       }
     }
     return userCheckedIns;

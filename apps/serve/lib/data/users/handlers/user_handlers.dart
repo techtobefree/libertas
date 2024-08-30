@@ -99,16 +99,14 @@ class UserHandlers {
   }
 
   static Future<UUser?> getUUserById(String id) async {
-    final queryPredicate = UUser.ID.eq(id);
-
-    final request = ModelQueries.list<UUser>(
+    final request = ModelQueries.get<UUser>(
       UUser.classType,
-      where: queryPredicate,
+      UUserModelIdentifier(id: id),
     );
     final response = await Amplify.API.query(request: request).response;
 
-    if (response.data!.items.isNotEmpty) {
-      return response.data!.items[0];
+    if (response.data != null) {
+      return response.data;
     }
 
     return null;

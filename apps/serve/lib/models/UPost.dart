@@ -32,6 +32,7 @@ class UPost extends amplify_core.Model {
   final String? _content;
   final String? _date;
   final List<UComment>? _comments;
+  final String? _postPicture;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -91,6 +92,10 @@ class UPost extends amplify_core.Model {
     return _comments;
   }
   
+  String? get postPicture {
+    return _postPicture;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -99,15 +104,16 @@ class UPost extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const UPost._internal({required this.id, required user, required content, required date, comments, createdAt, updatedAt}): _user = user, _content = content, _date = date, _comments = comments, _createdAt = createdAt, _updatedAt = updatedAt;
+  const UPost._internal({required this.id, required user, required content, required date, comments, postPicture, createdAt, updatedAt}): _user = user, _content = content, _date = date, _comments = comments, _postPicture = postPicture, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory UPost({String? id, required UUser user, required String content, required String date, List<UComment>? comments}) {
+  factory UPost({String? id, required UUser user, required String content, required String date, List<UComment>? comments, String? postPicture}) {
     return UPost._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       user: user,
       content: content,
       date: date,
-      comments: comments != null ? List<UComment>.unmodifiable(comments) : comments);
+      comments: comments != null ? List<UComment>.unmodifiable(comments) : comments,
+      postPicture: postPicture);
   }
   
   bool equals(Object other) {
@@ -122,7 +128,8 @@ class UPost extends amplify_core.Model {
       _user == other._user &&
       _content == other._content &&
       _date == other._date &&
-      DeepCollectionEquality().equals(_comments, other._comments);
+      DeepCollectionEquality().equals(_comments, other._comments) &&
+      _postPicture == other._postPicture;
   }
   
   @override
@@ -137,6 +144,7 @@ class UPost extends amplify_core.Model {
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("content=" + "$_content" + ", ");
     buffer.write("date=" + "$_date" + ", ");
+    buffer.write("postPicture=" + "$_postPicture" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -144,27 +152,30 @@ class UPost extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UPost copyWith({UUser? user, String? content, String? date, List<UComment>? comments}) {
+  UPost copyWith({UUser? user, String? content, String? date, List<UComment>? comments, String? postPicture}) {
     return UPost._internal(
       id: id,
       user: user ?? this.user,
       content: content ?? this.content,
       date: date ?? this.date,
-      comments: comments ?? this.comments);
+      comments: comments ?? this.comments,
+      postPicture: postPicture ?? this.postPicture);
   }
   
   UPost copyWithModelFieldValues({
     ModelFieldValue<UUser>? user,
     ModelFieldValue<String>? content,
     ModelFieldValue<String>? date,
-    ModelFieldValue<List<UComment>?>? comments
+    ModelFieldValue<List<UComment>?>? comments,
+    ModelFieldValue<String?>? postPicture
   }) {
     return UPost._internal(
       id: id,
       user: user == null ? this.user : user.value,
       content: content == null ? this.content : content.value,
       date: date == null ? this.date : date.value,
-      comments: comments == null ? this.comments : comments.value
+      comments: comments == null ? this.comments : comments.value,
+      postPicture: postPicture == null ? this.postPicture : postPicture.value
     );
   }
   
@@ -190,11 +201,12 @@ class UPost extends amplify_core.Model {
               .map((e) => UComment.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
               .toList()
           : null),
+      _postPicture = json['postPicture'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user': _user?.toJson(), 'content': _content, 'date': _date, 'comments': _comments?.map((UComment? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user': _user?.toJson(), 'content': _content, 'date': _date, 'comments': _comments?.map((UComment? e) => e?.toJson()).toList(), 'postPicture': _postPicture, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -203,6 +215,7 @@ class UPost extends amplify_core.Model {
     'content': _content,
     'date': _date,
     'comments': _comments,
+    'postPicture': _postPicture,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -217,6 +230,7 @@ class UPost extends amplify_core.Model {
   static final COMMENTS = amplify_core.QueryField(
     fieldName: "comments",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UComment'));
+  static final POSTPICTURE = amplify_core.QueryField(fieldName: "postPicture");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UPost";
     modelSchemaDefinition.pluralName = "UPosts";
@@ -258,6 +272,12 @@ class UPost extends amplify_core.Model {
       isRequired: false,
       ofModelName: 'UComment',
       associatedKey: UComment.POST
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: UPost.POSTPICTURE,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
