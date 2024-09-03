@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/data/posts/post_handlers.dart';
 import 'package:serve_to_be_free/data/projects/project_handlers.dart';
 import 'package:serve_to_be_free/models/UPost.dart';
 
@@ -47,21 +48,25 @@ class PostsCubit extends Cubit<PostsCubitState> {
       projs.add(proj!.toJson());
     }
     for (var proj in projs) {
-      if (proj.containsKey('posts') && proj['posts'] != null) {
-        for (var post in proj['posts']) {
-          final response = await Amplify.API
-              .query(
-                  request: ModelQueries.list<UPost>(
-                UPost.classType,
-                where: UPost.ID.eq(post),
-              ))
-              .response;
-          if (response.data!.items.isNotEmpty) {
-            // TODO: safe? why would it return nulls?
-            posts.add(response.data!.items[0]!);
-          }
-        }
+      var projPosts = await PostHandlers.getUPostsByProject(proj['id']);
+      for (var post in projPosts!) {
+        posts.add(post!);
       }
+      // if (proj.containsKey('posts') && proj['posts'] != null) {
+      //   for (var post in proj['posts']) {
+      //     final response = await Amplify.API
+      //         .query(
+      //             request: ModelQueries.list<UPost>(
+      //           UPost.classType,
+      //           where: UPost.ID.eq(post),
+      //         ))
+      //         .response;
+      //     if (response.data!.items.isNotEmpty) {
+      //       // TODO: safe? why would it return nulls?
+      //       posts.add(response.data!.items[0]!);
+      //     }
+      //   }
+      // }
     }
     return posts;
   }

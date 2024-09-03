@@ -144,15 +144,16 @@ class ProjectPostDialogState extends State<ProjectPostDialog> {
         user: uuser!,
         content: text,
         postPicture: finalUrl,
+        project: uproject,
         date:
             '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}');
     final request = ModelMutations.create(upost);
     final response = await Amplify.API.mutate(request: request).response;
 
     if (uprojectPosts == null) {
-      uprojectPosts = [response.data!.id];
+      uprojectPosts = [response.data!];
     } else {
-      uprojectPosts.add(response.data!.id);
+      uprojectPosts.add(response.data!);
     }
 
     final addedPostUProj = uproject.copyWith(posts: uprojectPosts);

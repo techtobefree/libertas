@@ -8,6 +8,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serve_to_be_free/cubits/domain/user/cubit.dart';
+import 'package:serve_to_be_free/data/posts/post_handlers.dart';
 import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/utilities/helper.dart';
@@ -64,32 +65,41 @@ class ProjectDetailsState extends State<ProjectDetails> {
       //     }
       //   }
       // }
-      if (jsonResponse.containsKey('posts') && jsonResponse['posts'] != null) {
-        var newPosts = [];
-        for (var post in jsonResponse['posts']) {
-          // final queryPredicate = UPost.ID.eq(post);
-          final request = ModelQueries.get<UPost>(
-            UPost.classType,
-            UPostModelIdentifier(id: post),
-          );
-          final response = await Amplify.API.query(request: request).response;
+      var newPosts = await PostHandlers.getUPostsByProject(widget.id!);
+      jsonResponse['posts'] = [];
 
-          if (response.data != null) {
-            newPosts.add(response.data!.toJson());
-            newPosts[newPosts.length - 1]['name'] =
-                newPosts[newPosts.length - 1]['user']['firstName'] +
-                    newPosts[newPosts.length - 1]['user']['lastName'];
-            newPosts[newPosts.length - 1]['text'] =
-                newPosts[newPosts.length - 1]['content'];
-            newPosts[newPosts.length - 1]['imageUrl'] =
-                newPosts[newPosts.length - 1]['user']['profilePictureUrl'];
-
-            // newPosts[newPosts.length - 1] =
-            //     convertDate(newPosts[newPosts.length - 1]['date']);
-          }
-        }
-        jsonResponse['posts'] = newPosts;
+      for (var post in newPosts!) {
+        jsonResponse['posts'].add(post!.toJson());
       }
+      // jsonResponse['posts'] = data.toJson();
+      jsonResponse['posts'] = newPosts;
+      print(jsonResponse['posts']);
+
+      // if (jsonResponse.containsKey('posts') && jsonResponse['posts'] != null) {
+      //   for (var post in jsonResponse['posts']) {
+      //     // final queryPredicate = UPost.ID.eq(post);
+      //     final request = ModelQueries.get<UPost>(
+      //       UPost.classType,
+      //       UPostModelIdentifier(id: post),
+      //     );
+      //     final response = await Amplify.API.query(request: request).response;
+
+      //     if (response.data != null) {
+      //       newPosts.add(response.data!.toJson());
+      //       newPosts[newPosts.length - 1]['name'] =
+      //           newPosts[newPosts.length - 1]['user']['firstName'] +
+      //               newPosts[newPosts.length - 1]['user']['lastName'];
+      //       newPosts[newPosts.length - 1]['text'] =
+      //           newPosts[newPosts.length - 1]['content'];
+      //       newPosts[newPosts.length - 1]['imageUrl'] =
+      //           newPosts[newPosts.length - 1]['user']['profilePictureUrl'];
+
+      //       // newPosts[newPosts.length - 1] =
+      //       //     convertDate(newPosts[newPosts.length - 1]['date']);
+      //     }
+      //   }
+      //   jsonResponse['posts'] = newPosts;
+      // }
       return jsonResponse;
     } else {
       throw Exception('Failed to load projects');
@@ -539,24 +549,40 @@ class ProjectDetailsState extends State<ProjectDetails> {
                 shrinkWrap: true,
                 itemCount: projectData['posts']?.length ?? 0,
                 itemBuilder: (context, index) {
-                  final reversedIndex = projectData['posts'].length -
-                      index -
-                      1; // compute the index of the reversed list
-
+                  // final reversedIndex = projectData['posts'].length -
+                  //     index -
+                  //     1; // compute the index of the reversed list
+                  final reversedIndex = index;
                   return Post(
                     id: '',
                     name:
-                        '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
-                    postText: projectData['posts'][reversedIndex]['text'],
-                    profURL:
-                        projectData['posts'][reversedIndex]['imageUrl'] ?? '',
-                    date: projectData['posts'][reversedIndex]['date'] ?? '',
-                    userId:
-                        projectData['posts'][reversedIndex]['user']['id'] ?? '',
-                    photoUrl: projectData['posts'][reversedIndex]
-                            ['postPicture'] ??
+                        '${projectData['posts'][reversedIndex].user.firstName} ${projectData['posts'][reversedIndex].user.lastName}',
+                    postText: projectData['posts'][reversedIndex].content,
+                    profURL: projectData['posts'][reversedIndex]
+                            .user
+                            .profilePictureUrl ??
                         '',
+                    date: projectData['posts'][reversedIndex].date ?? '',
+                    userId: projectData['posts'][reversedIndex].user.id ?? '',
+                    photoUrl:
+                        projectData['posts'][reversedIndex].postPicture ?? '',
                   );
+
+                  // return Post(
+                  //   id: '',
+                  //   name:
+                  //       '${projectData['posts'][reversedIndex]['user']['firstName']} ${projectData['posts'][reversedIndex]['user']['lastName']}',
+                  //   postText: projectData['posts'][reversedIndex]['content'],
+                  //   profURL: projectData['posts'][reversedIndex]['user']
+                  //           ['profilePictureUrl'] ??
+                  //       '',
+                  //   date: projectData['posts'][reversedIndex]['date'] ?? '',
+                  //   userId:
+                  //       projectData['posts'][reversedIndex]['user']['id'] ?? '',
+                  //   photoUrl: projectData['posts'][reversedIndex]
+                  //           ['postPicture'] ??
+                  //       '',
+                  // );
                   // return DashboardUserDisplay(
                   //     dimension: 60.0,
                   //     name: projectData['posts']?[index]['text']);

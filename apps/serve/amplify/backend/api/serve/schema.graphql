@@ -35,7 +35,7 @@ type UProject @model @auth(rules: [{ allow: public }]){
   leader: String
   date: String
   members: [String]
-  posts: [String]
+  posts: [UPost] @hasMany
   projectPicture: String!
   sponsors: [USponsor] @hasMany
   notifications: [UNotification] @hasMany
@@ -85,7 +85,7 @@ type UPost @model @auth(rules: [{ allow: public }]) {
   content: String!
   date: String!
   comments: [UComment] @hasMany
-  # project: UProject @belongsTo
+  project: UProject @belongsTo
   postPicture: String
 }
 

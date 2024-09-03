@@ -38,7 +38,7 @@ class UProject extends amplify_core.Model {
   final String? _leader;
   final String? _date;
   final List<String>? _members;
-  final List<String>? _posts;
+  final List<UPost>? _posts;
   final String? _projectPicture;
   final List<USponsor>? _sponsors;
   final List<UNotification>? _notifications;
@@ -129,7 +129,7 @@ class UProject extends amplify_core.Model {
     return _members;
   }
   
-  List<String>? get posts {
+  List<UPost>? get posts {
     return _posts;
   }
   
@@ -189,7 +189,7 @@ class UProject extends amplify_core.Model {
   
   const UProject._internal({required this.id, required name, required privacy, bio, required description, city, state, hoursSpent, leader, date, members, posts, required projectPicture, sponsors, notifications, required isCompleted, events, zipCode, createdAt, updatedAt, uUserProjectsId}): _name = name, _privacy = privacy, _bio = bio, _description = description, _city = city, _state = state, _hoursSpent = hoursSpent, _leader = leader, _date = date, _members = members, _posts = posts, _projectPicture = projectPicture, _sponsors = sponsors, _notifications = notifications, _isCompleted = isCompleted, _events = events, _zipCode = zipCode, _createdAt = createdAt, _updatedAt = updatedAt, _uUserProjectsId = uUserProjectsId;
   
-  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, required String projectPicture, List<USponsor>? sponsors, List<UNotification>? notifications, required bool isCompleted, List<UEvent>? events, String? zipCode, String? uUserProjectsId}) {
+  factory UProject({String? id, required String name, required String privacy, String? bio, required String description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<UPost>? posts, required String projectPicture, List<USponsor>? sponsors, List<UNotification>? notifications, required bool isCompleted, List<UEvent>? events, String? zipCode, String? uUserProjectsId}) {
     return UProject._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
@@ -202,7 +202,7 @@ class UProject extends amplify_core.Model {
       leader: leader,
       date: date,
       members: members != null ? List<String>.unmodifiable(members) : members,
-      posts: posts != null ? List<String>.unmodifiable(posts) : posts,
+      posts: posts != null ? List<UPost>.unmodifiable(posts) : posts,
       projectPicture: projectPicture,
       sponsors: sponsors != null ? List<USponsor>.unmodifiable(sponsors) : sponsors,
       notifications: notifications != null ? List<UNotification>.unmodifiable(notifications) : notifications,
@@ -260,7 +260,6 @@ class UProject extends amplify_core.Model {
     buffer.write("leader=" + "$_leader" + ", ");
     buffer.write("date=" + "$_date" + ", ");
     buffer.write("members=" + (_members != null ? _members!.toString() : "null") + ", ");
-    buffer.write("posts=" + (_posts != null ? _posts!.toString() : "null") + ", ");
     buffer.write("projectPicture=" + "$_projectPicture" + ", ");
     buffer.write("isCompleted=" + (_isCompleted != null ? _isCompleted!.toString() : "null") + ", ");
     buffer.write("zipCode=" + "$_zipCode" + ", ");
@@ -272,7 +271,7 @@ class UProject extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<String>? posts, String? projectPicture, List<USponsor>? sponsors, List<UNotification>? notifications, bool? isCompleted, List<UEvent>? events, String? zipCode, String? uUserProjectsId}) {
+  UProject copyWith({String? name, String? privacy, String? bio, String? description, String? city, String? state, double? hoursSpent, String? leader, String? date, List<String>? members, List<UPost>? posts, String? projectPicture, List<USponsor>? sponsors, List<UNotification>? notifications, bool? isCompleted, List<UEvent>? events, String? zipCode, String? uUserProjectsId}) {
     return UProject._internal(
       id: id,
       name: name ?? this.name,
@@ -306,7 +305,7 @@ class UProject extends amplify_core.Model {
     ModelFieldValue<String?>? leader,
     ModelFieldValue<String?>? date,
     ModelFieldValue<List<String>?>? members,
-    ModelFieldValue<List<String>?>? posts,
+    ModelFieldValue<List<UPost>?>? posts,
     ModelFieldValue<String>? projectPicture,
     ModelFieldValue<List<USponsor>?>? sponsors,
     ModelFieldValue<List<UNotification>?>? notifications,
@@ -350,7 +349,19 @@ class UProject extends amplify_core.Model {
       _leader = json['leader'],
       _date = json['date'],
       _members = json['members']?.cast<String>(),
-      _posts = json['posts']?.cast<String>(),
+      _posts = json['posts']  is Map
+        ? (json['posts']['items'] is List
+          ? (json['posts']['items'] as List)
+              .where((e) => e != null)
+              .map((e) => UPost.fromJson(new Map<String, dynamic>.from(e)))
+              .toList()
+          : null)
+        : (json['posts'] is List
+          ? (json['posts'] as List)
+              .where((e) => e?['serializedData'] != null)
+              .map((e) => UPost.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
+              .toList()
+          : null),
       _projectPicture = json['projectPicture'],
       _sponsors = json['sponsors']  is Map
         ? (json['sponsors']['items'] is List
@@ -398,7 +409,7 @@ class UProject extends amplify_core.Model {
       _uUserProjectsId = json['uUserProjectsId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'leader': _leader, 'date': _date, 'members': _members, 'posts': _posts, 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'notifications': _notifications?.map((UNotification? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'events': _events?.map((UEvent? e) => e?.toJson()).toList(), 'zipCode': _zipCode, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
+    'id': id, 'name': _name, 'privacy': _privacy, 'bio': _bio, 'description': _description, 'city': _city, 'state': _state, 'hoursSpent': _hoursSpent, 'leader': _leader, 'date': _date, 'members': _members, 'posts': _posts?.map((UPost? e) => e?.toJson()).toList(), 'projectPicture': _projectPicture, 'sponsors': _sponsors?.map((USponsor? e) => e?.toJson()).toList(), 'notifications': _notifications?.map((UNotification? e) => e?.toJson()).toList(), 'isCompleted': _isCompleted, 'events': _events?.map((UEvent? e) => e?.toJson()).toList(), 'zipCode': _zipCode, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'uUserProjectsId': _uUserProjectsId
   };
   
   Map<String, Object?> toMap() => {
@@ -437,7 +448,9 @@ class UProject extends amplify_core.Model {
   static final LEADER = amplify_core.QueryField(fieldName: "leader");
   static final DATE = amplify_core.QueryField(fieldName: "date");
   static final MEMBERS = amplify_core.QueryField(fieldName: "members");
-  static final POSTS = amplify_core.QueryField(fieldName: "posts");
+  static final POSTS = amplify_core.QueryField(
+    fieldName: "posts",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UPost'));
   static final PROJECTPICTURE = amplify_core.QueryField(fieldName: "projectPicture");
   static final SPONSORS = amplify_core.QueryField(
     fieldName: "sponsors",
@@ -529,11 +542,11 @@ class UProject extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: UProject.POSTS,
       isRequired: false,
-      isArray: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
+      ofModelName: 'UPost',
+      associatedKey: UPost.PROJECT
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
