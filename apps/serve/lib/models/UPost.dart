@@ -32,6 +32,7 @@ class UPost extends amplify_core.Model {
   final String? _content;
   final String? _date;
   final List<UComment>? _comments;
+  final UProject? _project;
   final String? _postPicture;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -92,6 +93,10 @@ class UPost extends amplify_core.Model {
     return _comments;
   }
   
+  UProject? get project {
+    return _project;
+  }
+  
   String? get postPicture {
     return _postPicture;
   }
@@ -104,15 +109,16 @@ class UPost extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const UPost._internal({required this.id, required user, required content, required date, comments, postPicture, createdAt, updatedAt}): _user = user, _content = content, _date = date, _comments = comments, _postPicture = postPicture, _createdAt = createdAt, _updatedAt = updatedAt;
+  const UPost._internal({required this.id, required user, required content, required date, comments, project, postPicture, createdAt, updatedAt}): _user = user, _content = content, _date = date, _comments = comments, _project = project, _postPicture = postPicture, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory UPost({String? id, required UUser user, required String content, required String date, List<UComment>? comments, String? postPicture}) {
+  factory UPost({String? id, required UUser user, required String content, required String date, List<UComment>? comments, UProject? project, String? postPicture}) {
     return UPost._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       user: user,
       content: content,
       date: date,
       comments: comments != null ? List<UComment>.unmodifiable(comments) : comments,
+      project: project,
       postPicture: postPicture);
   }
   
@@ -129,6 +135,7 @@ class UPost extends amplify_core.Model {
       _content == other._content &&
       _date == other._date &&
       DeepCollectionEquality().equals(_comments, other._comments) &&
+      _project == other._project &&
       _postPicture == other._postPicture;
   }
   
@@ -144,6 +151,7 @@ class UPost extends amplify_core.Model {
     buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("content=" + "$_content" + ", ");
     buffer.write("date=" + "$_date" + ", ");
+    buffer.write("project=" + (_project != null ? _project!.toString() : "null") + ", ");
     buffer.write("postPicture=" + "$_postPicture" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -152,13 +160,14 @@ class UPost extends amplify_core.Model {
     return buffer.toString();
   }
   
-  UPost copyWith({UUser? user, String? content, String? date, List<UComment>? comments, String? postPicture}) {
+  UPost copyWith({UUser? user, String? content, String? date, List<UComment>? comments, UProject? project, String? postPicture}) {
     return UPost._internal(
       id: id,
       user: user ?? this.user,
       content: content ?? this.content,
       date: date ?? this.date,
       comments: comments ?? this.comments,
+      project: project ?? this.project,
       postPicture: postPicture ?? this.postPicture);
   }
   
@@ -167,6 +176,7 @@ class UPost extends amplify_core.Model {
     ModelFieldValue<String>? content,
     ModelFieldValue<String>? date,
     ModelFieldValue<List<UComment>?>? comments,
+    ModelFieldValue<UProject?>? project,
     ModelFieldValue<String?>? postPicture
   }) {
     return UPost._internal(
@@ -175,6 +185,7 @@ class UPost extends amplify_core.Model {
       content: content == null ? this.content : content.value,
       date: date == null ? this.date : date.value,
       comments: comments == null ? this.comments : comments.value,
+      project: project == null ? this.project : project.value,
       postPicture: postPicture == null ? this.postPicture : postPicture.value
     );
   }
@@ -201,12 +212,17 @@ class UPost extends amplify_core.Model {
               .map((e) => UComment.fromJson(new Map<String, dynamic>.from(e?['serializedData'])))
               .toList()
           : null),
+      _project = json['project'] != null
+        ? json['project']['serializedData'] != null
+          ? UProject.fromJson(new Map<String, dynamic>.from(json['project']['serializedData']))
+          : UProject.fromJson(new Map<String, dynamic>.from(json['project']))
+        : null,
       _postPicture = json['postPicture'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user': _user?.toJson(), 'content': _content, 'date': _date, 'comments': _comments?.map((UComment? e) => e?.toJson()).toList(), 'postPicture': _postPicture, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user': _user?.toJson(), 'content': _content, 'date': _date, 'comments': _comments?.map((UComment? e) => e?.toJson()).toList(), 'project': _project?.toJson(), 'postPicture': _postPicture, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -215,6 +231,7 @@ class UPost extends amplify_core.Model {
     'content': _content,
     'date': _date,
     'comments': _comments,
+    'project': _project,
     'postPicture': _postPicture,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
@@ -230,6 +247,9 @@ class UPost extends amplify_core.Model {
   static final COMMENTS = amplify_core.QueryField(
     fieldName: "comments",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UComment'));
+  static final PROJECT = amplify_core.QueryField(
+    fieldName: "project",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'UProject'));
   static final POSTPICTURE = amplify_core.QueryField(fieldName: "postPicture");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UPost";
@@ -272,6 +292,13 @@ class UPost extends amplify_core.Model {
       isRequired: false,
       ofModelName: 'UComment',
       associatedKey: UComment.POST
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
+      key: UPost.PROJECT,
+      isRequired: false,
+      targetNames: ['uProjectPostsId'],
+      ofModelName: 'UProject'
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
