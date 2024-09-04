@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
+import 'package:serve_to_be_free/data/points/points_handlers.dart';
 import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:serve_to_be_free/data/users/handlers/user_handlers.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
@@ -261,6 +262,53 @@ class ProjectHandlers {
       } else {
         print("failed");
       }
+    }
+  }
+
+  static Future<List<UUser?>> getProjMembers(String projectId) async {
+    final queryPredicate = UUser.PROJECTS.contains(projectId);
+
+    final request = ModelQueries.list<UUser>(
+      UUser.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+    if (response.data != null) {
+      return response.data?.items ?? [];
+    } else {
+      print('get memebers failed');
+      return [];
+    }
+  }
+
+  static Future<void> addMember(String projectId, String userId) async {
+    UProject? uproject = await ProjectHandlers.getUProjectById(projectId);
+    var uprojectMems = uproject!.members;
+    if (uprojectMems != null) {
+      uprojectMems.add(userId);
+    }
+    uprojectMems = uprojectMems!.toSet().toList();
+
+    final addedMemUProj = uproject.copyWith(members: uprojectMems);
+
+    UUser? uuser = await UserHandlers.getUUserById(userId);
+    if (uuser != null) {
+      var projects = uuser.projects ?? [];
+      projects.add(uproject);
+      final addedProjMember = uuser.copyWith(projects: projects);
+      final request = ModelMutations.update(addedProjMember);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    }
+    try {
+      final request = ModelMutations.update(addedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+      if (response.data!.members!.isNotEmpty) {
+        PointsHandlers.newPoints(userId, "JOINPROJECT", 3);
+      }
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
     }
   }
 

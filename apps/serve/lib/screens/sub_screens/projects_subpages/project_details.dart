@@ -33,7 +33,7 @@ class ProjectDetailsState extends State<ProjectDetails> {
   List<dynamic> users = [];
   bool isLoading = true;
 
-  var sponsor = 0.0;
+  // var sponsor = 0.0;
 
   Future<Map<String, dynamic>> getProject() async {
     // final queryPredicate = UProject.ID.eq(widget.id);
@@ -187,17 +187,18 @@ class ProjectDetailsState extends State<ProjectDetails> {
     });
 
     var members = await getMembers(data['members']);
+    // var members = await ProjectHandlers.getProjMembers(widget.id!);
     setState(() {
       users = members;
     });
 
-    var id = widget.id;
-    if (id != null) {
-      var sponsorAmount = await SponsorHandlers.getUSponsorAmountByProject(id);
-      setState(() {
-        sponsor = sponsorAmount;
-      });
-    }
+    // var id = widget.id;
+    // if (id != null) {
+    //   var sponsorAmount = await SponsorHandlers.getUSponsorAmountByProject(id);
+    //   setState(() {
+    //     sponsor = sponsorAmount;
+    //   });
+    // }
 
     // Set isLoading to false to enable the screen
     setState(() {
@@ -214,11 +215,11 @@ class ProjectDetailsState extends State<ProjectDetails> {
   Widget build(BuildContext context) {
     final currentUserID = BlocProvider.of<UserCubit>(context).state.id;
 
-    final members = projectData['members'] ?? [];
+    // final members = projectData['members'] ?? [];
 
-    final hasJoined = members.contains(currentUserID);
+    // final hasJoined = members.contains(currentUserID);
 
-    final joinButtonText = hasJoined ? 'Post' : 'Join';
+    // final joinButtonText = hasJoined ? 'Post' : 'Join';
     if (isLoading) {
       // Return a loading indicator or a splash screen while data is being fetched
       return Scaffold(

@@ -281,33 +281,43 @@ class AboutProjectState extends State<AboutProject> {
   }
 
   Future<void> addMember() async {
-    UProject? uproject =
-        await ProjectHandlers.getUProjectById(projectData['id']);
-    var uprojectMems = uproject!.members;
-    var memID = BlocProvider.of<UserCubit>(context).state.id;
-    if (uprojectMems != null) {
-      uprojectMems.add(memID);
-    }
-    uprojectMems = uprojectMems!.toSet().toList();
+    ProjectHandlers.addMember(
+        projectData['id'], BlocProvider.of<UserCubit>(context).state.id);
+    setState(() {
+      projectData['members'] = projectData['members'] != null
+          ? [
+              ...projectData['members'],
+              BlocProvider.of<UserCubit>(context).state.id
+            ]
+          : [BlocProvider.of<UserCubit>(context).state.id];
+    });
+    // UProject? uproject =
+    //     await ProjectHandlers.getUProjectById(projectData['id']);
+    // var uprojectMems = uproject!.members;
+    // var memID = BlocProvider.of<UserCubit>(context).state.id;
+    // if (uprojectMems != null) {
+    //   uprojectMems.add(memID);
+    // }
+    // uprojectMems = uprojectMems!.toSet().toList();
 
-    final addedMemUProj = uproject.copyWith(members: uprojectMems);
+    // final addedMemUProj = uproject.copyWith(members: uprojectMems);
 
-    try {
-      final request = ModelMutations.update(addedMemUProj);
-      final response = await Amplify.API.mutate(request: request).response;
-      safePrint('Response: $response');
-      if (response.data!.members!.isNotEmpty) {
-        PointsHandlers.newPoints(
-            BlocProvider.of<UserCubit>(context).state.id, "JOINPROJECT", 3);
-        setState(() {
-          projectData['members'] = projectData['members'] != null
-              ? [...projectData['members'], memID]
-              : [memID];
-        });
-      }
-    } catch (e) {
-      throw Exception('Failed to update project: $e');
-    }
+    // try {
+    //   final request = ModelMutations.update(addedMemUProj);
+    //   final response = await Amplify.API.mutate(request: request).response;
+    //   safePrint('Response: $response');
+    //   if (response.data!.members!.isNotEmpty) {
+    //     PointsHandlers.newPoints(
+    //         BlocProvider.of<UserCubit>(context).state.id, "JOINPROJECT", 3);
+    //     setState(() {
+    //       projectData['members'] = projectData['members'] != null
+    //           ? [...projectData['members'], memID]
+    //           : [memID];
+    //     });
+    //   }
+    // } catch (e) {
+    //   throw Exception('Failed to update project: $e');
+    // }
   }
 
   Future<void> removeMember() async {
