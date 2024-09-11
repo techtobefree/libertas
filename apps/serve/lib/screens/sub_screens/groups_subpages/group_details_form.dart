@@ -370,14 +370,44 @@ class _GroupDetailsFormState extends State<GroupDetailsForm> {
                               ],
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.saveAndValidate()) {
-                                final formData = _formKey.currentState!.value;
-                                _submitForm(formData);
-                              }
-                            },
-                            child: const Text('Create Group'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!
+                                      .saveAndValidate()) {
+                                    final formData =
+                                        _formKey.currentState!.value;
+                                    _submitForm(formData);
+                                  }
+                                },
+                                child: const Text(
+                                  'Create Group',
+                                ),
+                              ),
+                              if (widget.id != null && widget.id!.isNotEmpty)
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    await GroupHandlers.deleteGroupFromId(
+                                        widget.id!);
+
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                    // ignore: use_build_context_synchronously
+                                    context.go('/groups');
+                                  },
+
+                                  // Optional: Changes the button color to red
+
+                                  child: const Text('Delete',
+                                      style: TextStyle(color: Colors.red)),
+                                ),
+                            ],
                           ),
                         ],
                       ),

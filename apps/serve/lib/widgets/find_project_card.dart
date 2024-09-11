@@ -62,9 +62,16 @@ class ProjectCard extends StatelessWidget {
           onTap: () {
             // Do something when the container is clicked
             if (lead == false) {
-              context.pushNamed("projectdetails",
-                  queryParameters: {'id': project['id']},
-                  pathParameters: {'id': project['id']});
+              if (project['members']
+                  .contains(BlocProvider.of<UserCubit>(context).state.id)) {
+                context.pushNamed("projectdetails",
+                    queryParameters: {'id': project['id']},
+                    pathParameters: {'id': project['id']});
+              } else {
+                context.pushNamed("projectabout",
+                    queryParameters: {'id': project['id']},
+                    pathParameters: {'id': project['id']});
+              }
             }
             if (lead == true) {
               context.pushNamed("leadprojectdetails",

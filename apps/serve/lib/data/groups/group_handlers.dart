@@ -40,6 +40,22 @@ class GroupHandlers {
     }
   }
 
+  static Future<void> deleteGroupFromId(String groupId) async {
+    UGroup? group = await getUGroupById(groupId);
+    if (group != null) {
+      await deleteUGroup(group);
+      return;
+    } else {
+      print('group not found');
+    }
+  }
+
+  static Future<void> deleteUGroup(UGroup group) async {
+    final request = ModelMutations.delete(group);
+    final response = await Amplify.API.mutate(request: request).response;
+    safePrint('Response: $response');
+  }
+
   static Future<List<UGroup>> getMyUGroups(String id) async {
     try {
       var groups = await GroupHandlers.getUGroups();
