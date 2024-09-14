@@ -77,6 +77,31 @@ class NotificationHandlers {
     }
   }
 
+  static Future<List<UNotification?>> getNotificationsByReceiverIDandSenderId(
+      String ownerID) async {
+    try {
+      final queryPredicate = UNotification.RECEIVER.eq(ownerID);
+      final queryPredicate2 = UNotification.SENDER.eq(ownerID);
+      final finalPredicate = queryPredicate.or(queryPredicate2);
+
+      final request = ModelQueries.list<UNotification>(
+        UNotification.classType,
+        where: finalPredicate,
+      );
+
+      final response = await Amplify.API.query(request: request).response;
+
+      if (response.data != null) {
+        return response.data!.items;
+      } else {
+        safePrint('errors: ${response.errors}');
+        return [];
+      }
+    } catch (e) {
+      throw Exception('Failed to get leader requests by owner: $e');
+    }
+  }
+
   static Future<List<UNotification?>> getNotificationsByReceiverIDandIncomplete(
       String ownerID) async {
     try {
@@ -100,6 +125,12 @@ class NotificationHandlers {
     } catch (e) {
       throw Exception('Failed to get leader requests by owner: $e');
     }
+  }
+
+  static Future<void> deleteUNotification(UNotification notification) async {
+    final request = ModelMutations.delete(notification);
+    final response = await Amplify.API.mutate(request: request).response;
+    safePrint('Response: $response');
   }
 
   static Future<List<UNotification?>> getNotificationsBySenderIDandIncomplete(

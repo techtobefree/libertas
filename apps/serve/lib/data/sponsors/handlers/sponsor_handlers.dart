@@ -68,6 +68,29 @@ class SponsorHandlers {
     }
   }
 
+  static Future<List<USponsor?>?> getUSponsorsByUser(String userId) async {
+    // final proj = await ProjectHandlers.getUProjectById(projId);
+    final queryPredicate = USponsor.USER.eq(userId);
+
+    final request = ModelQueries.list<USponsor>(
+      USponsor.classType,
+      where: queryPredicate,
+    );
+    final response = await Amplify.API.query(request: request).response;
+    if (response.data != null) {
+      return response.data?.items;
+    } else {
+      print('get sponsors failed');
+      return null;
+    }
+  }
+
+  static Future<void> deleteUSponsor(USponsor sponsor) async {
+    final request = ModelMutations.delete(sponsor);
+    final response = await Amplify.API.mutate(request: request).response;
+    safePrint('Response: $response');
+  }
+
   static Future<List<USponsor?>?> getAllUSponsors() async {
     try {
       final request = ModelQueries.list(USponsor.classType);

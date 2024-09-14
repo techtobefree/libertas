@@ -1,6 +1,12 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:serve_to_be_free/data/events/handlers/event_handlers.dart';
+import 'package:serve_to_be_free/data/groups/group_handlers.dart';
+import 'package:serve_to_be_free/data/notifications/notification.dart';
+import 'package:serve_to_be_free/data/posts/post_handlers.dart';
+import 'package:serve_to_be_free/data/projects/project_handlers.dart';
+import 'package:serve_to_be_free/data/sponsors/handlers/sponsor_handlers.dart';
 import 'package:serve_to_be_free/data/users/models/user_class.dart';
 import 'package:serve_to_be_free/models/ModelProvider.dart';
 
@@ -112,6 +118,83 @@ class UserHandlers {
     return null;
   }
 
+  static Future<void> deleteUser(String id) async {
+    // 1. Delete user and references concurrently
+
+    final userFuture = getUUserById(id).then((user) async {
+      if (user != null) {
+        for (var friend in user.friends ?? []) {
+          removeFriend(friend, id);
+        }
+        await deleteUUser(user);
+      }
+    });
+
+    // 2. Remove the user from all projects
+    final projectFuture =
+        ProjectHandlers.getMyUProjects(id).then((projs) async {
+      for (var proj in projs) {
+        await ProjectHandlers.removeMember(proj.id, id);
+      }
+    });
+
+    // 3. Remove the user from all groups
+    final groupFuture = GroupHandlers.getMyUGroups(id).then((groups) async {
+      for (var group in groups) {
+        await GroupHandlers.removeMember(group.id, id);
+      }
+    });
+
+    // 4. Delete posts and related comments
+    final postFuture = PostHandlers.getPostsByID(id).then((posts) async {
+      for (var post in posts) {
+        await PostHandlers.deleteUPost(post!);
+      }
+    });
+
+    // 5. Delete notifications (sent and received)
+    final notificationFuture =
+        NotificationHandlers.getNotificationsByReceiverIDandSenderId(id)
+            .then((notifications) async {
+      for (var notification in notifications) {
+        await NotificationHandlers.deleteUNotification(notification!);
+      }
+    });
+
+    // 6. Remove the user from events
+    final eventFuture =
+        EventHandlers.getUEventsIncludingUser(id).then((events) async {
+      for (var event in events) {
+        await EventHandlers.removeMember(event.id, id);
+      }
+    });
+
+    // 7. Delete sponsorships
+    final sponsorFuture =
+        SponsorHandlers.getUSponsorsByUser(id).then((sponsorships) async {
+      for (var sponsor in sponsorships!) {
+        await SponsorHandlers.deleteUSponsor(sponsor!);
+      }
+    });
+
+    // Wait for all futures to complete
+    Future.wait([
+      userFuture,
+      projectFuture,
+      groupFuture,
+      postFuture,
+      notificationFuture,
+      eventFuture,
+      sponsorFuture
+    ]);
+  }
+
+  static Future<void> deleteUUser(UUser user) async {
+    final request = ModelMutations.delete(user);
+    final response = await Amplify.API.mutate(request: request).response;
+    safePrint('Response: $response');
+  }
+
   static Future<List<String>> getFriendsIds(String userId) async {
     var uuser = await getUUserById(userId);
 
@@ -143,6 +226,14 @@ class UserHandlers {
     }
 
     return null;
+  }
+
+  static Future<void> removeFriend(String userId, String friendId) async {
+    UUser? user = await getUUserById(userId);
+    var newFriends = user!.friends ?? [];
+    newFriends.remove(friendId);
+    await modifyUser(user.id, friends: newFriends);
+    return;
   }
 
   static Future<void> addFriend(String friendId, userId) async {
@@ -215,7 +306,7 @@ class UserHandlers {
     String? profilePictureUrl,
     String? coverPictureUrl,
     List<UProject>? projects,
-    List<UUser>? friends,
+    List<String>? friends,
     List<UPost>? posts,
     List<USponsor>? sponsors,
     List<UNotification>? notificationsSent,
