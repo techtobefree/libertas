@@ -29,9 +29,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Serve to be free would like to access the camera</string>
+	<string>Serve to be free needs camera access to allow you to take and upload photos for your profile and for projects.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Serve to be free would like to access your photo library</string>
+	<string>Serve to be free needs access to your photo library so you can select and upload photos for your profile and for projects. Your photos will only be used within the app and will not be shared without your consent.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

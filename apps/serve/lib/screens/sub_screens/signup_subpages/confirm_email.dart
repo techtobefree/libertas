@@ -22,49 +22,47 @@ class ConfirmationCodePage extends StatelessWidget {
     if (cubit.state.confirmBusy) {
       return;
     }
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: Colors.lightBlueAccent,
-          ),
-        );
-      },
-    );
+
     cubit.update(confirmBusy: true);
     if (cubit.state.confirmationCode.length == 6) {
       var confirmed = await cubit.confirmUser();
       if (confirmed == false) {
         _showErrorDialog(context, 'The code was wrong');
-        return;
-      }
-      await userCubit.signInUser(
-        userCubit.state.email,
-        userCubit.state.password,
-      );
-      UserClass user = userCubit.state.userClass;
-      user.friendRequests = [];
-      user.friends = [];
-      user.posts = [];
-      user.projects = [];
-      final isSignedIn = await userCubit.isUserSignedIn();
-      if (isSignedIn) {
-        final createdUser = await UserHandlers.createUser(user);
-        if (createdUser != null) {
-          // Do something with the created user
-          print('User created: ${createdUser.toJson()}');
-          cubit.update(id: createdUser.id);
-          userCubit.update(id: createdUser.id);
-          context.go('/projects'); // Replace with the actual route
-        }
       } else {
-        // Show an error message or handle invalid code length
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.lightBlueAccent,
+              ),
+            );
+          },
+        );
+        await userCubit.signInUser(
+          userCubit.state.email,
+          userCubit.state.password,
+        );
+        UserClass user = userCubit.state.userClass;
+        user.friendRequests = [];
+        user.friends = [];
+        user.posts = [];
+        user.projects = [];
+        final isSignedIn = await userCubit.isUserSignedIn();
+        if (isSignedIn) {
+          final createdUser = await UserHandlers.createUser(user);
+          if (createdUser != null) {
+            // Do something with the created user
+            print('User created: ${createdUser.toJson()}');
+            cubit.update(id: createdUser.id);
+            userCubit.update(id: createdUser.id);
+            context.go('/projects'); // Replace with the actual route
+          }
+        }
       }
     }
     cubit.update(confirmBusy: false);
-    Navigator.of(context).pop(); // Dismiss the progress indicator
   }
 
   void _showErrorDialog(BuildContext context, String message) {
@@ -77,7 +75,7 @@ class ConfirmationCodePage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Dismiss the progress indicator
               },
               child: const Text('OK'),
             ),

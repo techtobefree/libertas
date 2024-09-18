@@ -76,24 +76,35 @@ class ChooseProfilePicture extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () async {
           if (!cubit.state.hasSelectedImage) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('No Photo Selected'),
-                  content:
-                      const Text('Please select a photo before proceeding.'),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) {
+            //     return AlertDialog(
+            //       title: const Text('No Photo Selected'),
+            //       content:
+            //           const Text('Please select a photo before proceeding.'),
+            //       actions: <Widget>[
+            //         TextButton(
+            //           child: const Text('OK'),
+            //           onPressed: () {
+            //             Navigator.of(context).pop();
+            //           },
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // );
+            // return;
+            cubit.update(imageBusy: true);
+
+            userCubit.fromUserClass(userClass: cubit.state.user);
+            userCubit.update(
+                profilePictureUrl:
+                    'https://servetobefree-images-dev.s3.amazonaws.com/ProfileImages/genericProfile/genericUser.jpg');
+            cubit.update(imageBusy: false);
+            Navigator.of(context).pop(); // Dismiss the progress indicator
+
+            context.goNamed('confirmemail');
             return;
           }
 
