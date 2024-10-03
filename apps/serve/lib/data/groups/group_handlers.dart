@@ -210,6 +210,38 @@ class GroupHandlers {
     return newGroup;
   }
 
+  static Future<void> wipePosts(groupId) async {
+    UGroup? ugroup = await getUGroupById(groupId);
+
+    final removedMemUProj = ugroup!.copyWith(posts: []);
+
+    try {
+      final request = ModelMutations.update(removedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+  }
+
+  static Future<void> removeMember(groupId, userId) async {
+    UGroup? ugroup = await getUGroupById(groupId);
+    var ugroupmMems = ugroup!.members;
+    if (ugroupmMems != null) {
+      ugroupmMems.remove(userId);
+    }
+
+    final removedMemUProj = ugroup.copyWith(members: ugroupmMems);
+
+    try {
+      final request = ModelMutations.update(removedMemUProj);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } catch (e) {
+      throw Exception('Failed to update project: $e');
+    }
+  }
+
   static Future<void> removeProject(String groupId, String projId) async {
     UGroup? group = await getUGroupById(groupId);
 

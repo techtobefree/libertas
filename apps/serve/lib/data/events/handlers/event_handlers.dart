@@ -44,6 +44,21 @@ class EventHandlers {
     }
   }
 
+  static Future<UEvent?> removeMember(String eventId, String memberId) async {
+    UEvent? event = await getUEventById(eventId);
+    var newMembersAttending = event!.membersAttending ?? [];
+    var newMembersNotAttending = event.membersNotAttending ?? [];
+    newMembersAttending.remove(memberId);
+
+    newMembersNotAttending.remove(memberId);
+
+    UEvent updatedEvent = event.copyWith(
+        membersAttending: newMembersAttending,
+        membersNotAttending: newMembersNotAttending);
+    await updateUEvent(updatedEvent);
+    return updatedEvent;
+  }
+
   static Future<UEvent?> updateUEvent(UEvent event) async {
     try {
       final request = ModelMutations.update(event);
@@ -130,6 +145,25 @@ class EventHandlers {
       final response = await Amplify.API.query(request: request).response;
 
       return response.data?.items ?? [];
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
+  }
+
+  static Future<List<UEvent>> getUEventsIncludingUser(String id) async {
+    try {
+      var events = await getAllUEvents();
+      var myUEvents = <UEvent>[];
+
+      for (var event in events!) {
+        if (event!.membersAttending!.contains(id) ||
+            event!.membersNotAttending!.contains(id)) {
+          myUEvents.add(event);
+        }
+      }
+
+      return myUEvents;
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
       return const [];

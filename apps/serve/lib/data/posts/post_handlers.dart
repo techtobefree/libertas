@@ -83,4 +83,32 @@ class PostHandlers {
       return const [];
     }
   }
+
+  static Future<List<UPost?>> getPostsByID(String userId) async {
+    try {
+      // Fetching leader requests where the ownerID matches the provided ownerID
+      final queryPredicate = UPost.USER.eq(userId);
+      final request = ModelQueries.list<UPost>(
+        UPost.classType,
+        where: queryPredicate,
+      );
+
+      final response = await Amplify.API.query(request: request).response;
+
+      if (response.data != null) {
+        return response.data!.items;
+      } else {
+        safePrint('errors: ${response.errors}');
+        return [];
+      }
+    } catch (e) {
+      throw Exception('Failed to get leader requests by owner: $e');
+    }
+  }
+
+  static Future<void> deleteUPost(UPost post) async {
+    final request = ModelMutations.delete(post);
+    final response = await Amplify.API.mutate(request: request).response;
+    safePrint('Response: $response');
+  }
 }
